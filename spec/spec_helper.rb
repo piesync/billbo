@@ -13,3 +13,13 @@ VCR.configure do |c|
     allow_unused_http_interactions: false
   }
 end
+
+# Minitest clear db hook
+module MiniTestHooks
+  def setup
+    $db[:invoices].delete
+  end
+end
+
+# Include these hooks in every testcase.
+MiniTest::Spec.send :include, MiniTestHooks

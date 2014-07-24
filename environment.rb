@@ -20,9 +20,13 @@ end
 $: << File.expand_path('../app', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
 
+# Models.
+require 'invoice'
+
 # Services.
 require 'vat_service'
 require 'vat_subscription_service'
+require 'invoice_service'
 
 # The main app.
 require 'app'
