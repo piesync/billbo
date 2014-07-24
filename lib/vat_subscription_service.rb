@@ -38,9 +38,15 @@ class VatSubscriptionService
   #
   # invoice - A Stripe invoice object.
   #
-  # Returns Nothing.
-  def apply_vat(invoice)
+  # Returns the finalized stripe invoice.
+  def finalize(invoice)
+    # Add VAT to the invoice.
+    charge_vat_of(invoice.total, invoice_id: invoice.id)
 
+    # Snapshot.
+    snapshot(invoice)
+
+    invoice
   end
 
   # Charges VAT for a certain amount.

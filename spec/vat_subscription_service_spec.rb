@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe VatSubscriptionService do
 
+  let(:metadata) {{
+    country_code: 'NL',
+    is_company: 'false',
+    other: 'random'
+  }}
+
   let(:plan) do
     Stripe::Plan.retrieve('test') || Stripe::Plan.create(\
       id: 'test',
@@ -20,19 +26,15 @@ describe VatSubscriptionService do
         exp_year: '30',
         cvc: '222'
       },
-      metadata: {
-        country_code: 'NL',
-        is_company: false,
-        other: 'random'
-      }
+      metadata: metadata
   end
 
   let(:service) { VatSubscriptionService.new(customer_id: customer.id) }
 
-  describe '#apply_vat' do
+  describe '#charge_vat_of' do
     describe 'no invoice is given (upcoming)' do
       it 'adds a VAT invoice item' do
-        VCR.use_cassette('apply_vat_success') do
+        VCR.use_cassette('charge_vat_of_success') do
           service.charge_vat_of(100)
 
           invoices = customer.invoices
@@ -51,6 +53,25 @@ describe VatSubscriptionService do
     end
   end
 
+  describe '#finalize' do
+    it 'finalizes an invoice by charging vat and snapshotting it' do
+      VCR.use_cassette('finalize_success') do
+        Stripe::InvoiceItem.create \
+          customer: customer.id,
+          amount: 100,
+          currency: 'usd'
+
+        # Finalize the upcoming invoice.
+        service.finalize(Stripe::Invoice.create(customer: customer.id))
+          .must_be_kind_of(Stripe::Invoice)
+
+        invoice = customer.invoices.first
+        invoice.total.must_equal 121
+        invoice.metadata.to_h.must_equal metadata
+      end
+    end
+  end
+
   describe '#create_subscription' do
     it 'creates a subscription and adds VAT to the first invoice' do
       VCR.use_cassette('create_subscription_success') do
@@ -61,10 +82,7 @@ describe VatSubscriptionService do
         invoice = invoices.first
         invoice.total.must_equal 1813
         invoice.lines.to_a.size.must_equal 2
-        invoice.metadata.to_h.must_equal \
-          country_code: 'NL',
-          is_company: 'false',
-          other: 'random'
+        invoice.metadata.to_h.must_equal metadata
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.
