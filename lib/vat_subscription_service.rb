@@ -1,6 +1,5 @@
 # This Service handles creating and updating Stripe subscriptions,
 # because these 2 actions have VAT/invoice consequences.
-# TK INVOICE NUMBERS IN METADATA
 class VatSubscriptionService
 
   # customer_id - Stripe customer id.
@@ -77,7 +76,7 @@ class VatSubscriptionService
   #
   # invoice - A Stripe invoice object.
   #
-  # Returns Nothing
+  # Returns the Stripe invoice
   def snapshot(invoice)
     invoice.metadata = customer.metadata.to_h
     invoice.save

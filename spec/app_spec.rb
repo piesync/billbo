@@ -1,11 +1,16 @@
 require 'spec_helper'
 
-describe Hooks do
+describe App do
   include Rack::Test::Methods
 
   def app
-    Hooks
+    App
   end
+
+  let(:subscription) {{
+    customer: '10',
+    plan: 'test'
+  }}
 
   let(:invoice) {{
     id: '1',
@@ -13,8 +18,6 @@ describe Hooks do
   }}
 
   let(:stripe_invoice) { Stripe::Invoice.construct_from(invoice) }
-
-  let(:internal_invoice) { Invoice.new }
 
   let(:vat_subscription_service) { mock }
 
@@ -25,19 +28,11 @@ describe Hooks do
 
   describe 'post /invoice/created' do
     it 'finalizes the invoice' do
-      vat_subscription_service.expects(:finalize).with do |i|
-        i.to_h == self.invoice
+      vat_subscription_service.expects(:create_subscription).with do |s|
+        s[:plan] == 'test'
       end.returns(stripe_invoice)
 
-      post '/invoice/created', json(invoice)
-      last_response.ok?.must_equal true
-      last_response.body.must_be_empty
-    end
-  end
-
-  describe 'post /invoice/payment_succeeded' do
-    it 'finalizes the invoice' do
-      post '/invoice/payment_succeeded', json(invoice)
+      post '/subscriptions', json(subscription)
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
     end
