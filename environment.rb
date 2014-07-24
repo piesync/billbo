@@ -29,5 +29,6 @@ require 'vat_subscription_service'
 require 'invoice_service'
 
 # The Apis.
+require 'base'
 require 'hooks'
 require 'app'

@@ -12,6 +12,8 @@ gem 'sqlite3', group: [:test, :development]
 group :test do
   gem 'webmock'
   gem 'vcr'
+  gem 'mocha', :require => 'mocha/mini_test'
+  gem 'rack-test', :require => 'rack/test'
   gem 'guard'
   gem 'guard-minitest'
 end

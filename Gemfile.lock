@@ -36,10 +36,13 @@ GEM
     lumberjack (1.0.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
+    metaclass (0.0.4)
     method_source (0.8.2)
     mime-types (1.25.1)
     mini_portile (0.6.0)
     minitest (5.4.0)
+    mocha (1.1.0)
+      metaclass (~> 0.0.1)
     multi_json (1.10.1)
     netrc (0.7.7)
     nokogiri (1.6.3.1)
@@ -53,6 +56,8 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -109,8 +114,10 @@ PLATFORMS
 DEPENDENCIES
   guard
   guard-minitest
+  mocha
   multi_json
   oj
+  rack-test
   sequel
   shotgun
   sinatra
