@@ -6,11 +6,15 @@ class VatService
   #
   # amount       - Base amount that is VAT taxable in cents (or not).
   # country_code - ISO country code.
-  # company      - true if customer is a company
+  # is_company   - true if customer is a company
   #
   # Returns amount of VAT payable (rounded down).
-  def calculate(amount:, country_code:, company:)
-    amount*vat_percentage(country_code, company)/100
+  def calculate(amount:, country_code:, is_company:)
+    amount*vat_percentage(country_code, is_company)/100
+  end
+
+  # Checks if givet VAT number is valid.
+  def valid?(vat_number:)
   end
 
   private
@@ -18,16 +22,16 @@ class VatService
   # Calculates VAT percentage.
   #
   # country_code - ISO country code.
-  # company      - true if customer is a company
+  # is_company   - true if customer is a company
   #
   # Returns an integer (percentage).
-  def vat_percentage(country_code, company)
+  def vat_percentage(country_code, is_company)
     # Both individuals and companies pay VAT in Belgium.
     if country_code == BELGIUM
       21
     elsif eu?(country_code)
       # Companies in other EU countries don't need to pay VAT.
-      if company
+      if is_company
         0
       # Individuals in other EU countries do need to pay VAT.
       else

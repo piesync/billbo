@@ -19,6 +19,6 @@ describe VatService do
 
   def example amount, country_code, company
     service.calculate(
-      amount: amount, country_code: country_code, company: company)
+      amount: amount, country_code: country_code, is_company: company)
   end
 end
