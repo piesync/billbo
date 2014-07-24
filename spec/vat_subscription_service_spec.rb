@@ -22,7 +22,8 @@ describe VatSubscriptionService do
       },
       metadata: {
         country_code: 'NL',
-        is_company: false
+        is_company: false,
+        other: 'random'
       }
   end
 
@@ -57,8 +58,13 @@ describe VatSubscriptionService do
 
         invoices = customer.invoices
         invoices.to_a.size.must_equal 1
-        invoices.first.total.must_equal 1813
-        invoices.first.lines.to_a.size.must_equal 2
+        invoice = invoices.first
+        invoice.total.must_equal 1813
+        invoice.lines.to_a.size.must_equal 2
+        invoice.metadata.to_h.must_equal \
+          country_code: 'NL',
+          is_company: 'false',
+          other: 'random'
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.

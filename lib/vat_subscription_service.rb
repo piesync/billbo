@@ -2,7 +2,6 @@
 # because these 2 actions have VAT/invoice consequences.
 # TK INVOICE NUMBERS IN METADATA
 class VatSubscriptionService
-  CURRENCY = 'usd'
 
   # customer_id - Stripe customer id.
   def initialize(customer_id:)
@@ -23,9 +22,14 @@ class VatSubscriptionService
     # Get the plan.
     plan = Stripe::Plan.retrieve(options[:plan])
     # Add vat charges.
+    # TK what if subscription fails?
     charge_vat_of(plan.amount, currency: plan.currency)
     # Start subscription.
     customer.subscriptions.create(options)
+    # Get the last invoice to add metadata snapshot.
+    last_invoice = Stripe::Invoice.all(
+      customer: customer.id, limit: 1).first
+    snapshot(last_invoice)
   end
 
   # Applies VAT to a Stripe invoice if necessary.
@@ -69,7 +73,7 @@ class VatSubscriptionService
   #
   # Returns Nothing
   def snapshot(invoice)
-    invoice.metadata = customer.metadata
+    invoice.metadata = customer.metadata.to_h
     invoice.save
   end
 
