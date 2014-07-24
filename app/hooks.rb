@@ -1,7 +1,5 @@
 # Receives Webhooks from Stripe.
 class Hooks < Base
-  enable :raise_errors
-  enable :dump_errors
 
   # This is used to:
   #   * Add VAT to the invoice.
