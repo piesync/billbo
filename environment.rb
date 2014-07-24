@@ -28,5 +28,6 @@ require 'vat_service'
 require 'vat_subscription_service'
 require 'invoice_service'
 
-# The main app.
+# The Apis.
+require 'hooks'
 require 'app'

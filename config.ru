@@ -1,4 +1,7 @@
 # Environment.
 require './environment'
 
-run App
+run Rack::URLMap.new(
+  '/' => App,
+  '/hooks' => Hooks
+)
