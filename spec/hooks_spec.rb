@@ -23,21 +23,23 @@ describe Hooks do
       .with(customer_id: '10').returns(vat_subscription_service)
   end
 
-  describe 'post /invoice/created' do
+  describe 'post invoice created' do
     it 'finalizes the invoice' do
       vat_subscription_service.expects(:finalize).with do |i|
         i.to_h == self.invoice
       end.returns(stripe_invoice)
 
-      post '/invoice/created', json(invoice)
+      post '/', json(type: 'invoice.created',
+        data: { object: invoice })
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
     end
   end
 
-  describe 'post /invoice/payment_succeeded' do
-    it 'finalizes the invoice' do
-      post '/invoice/payment_succeeded', json(invoice)
+  describe 'post invoice payment succeeded' do
+    it 'creates an invoice' do
+      post '/', json(type: 'invoice.payment_succeeded',
+        data: { object: invoice})
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
     end
