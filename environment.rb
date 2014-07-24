@@ -1,3 +1,5 @@
+$environment ||= :development
+
 require 'bundler/setup'
 
 # Require needed gems.
@@ -9,7 +11,13 @@ STRIPE_SECRET_KEY = ENV['STRIPE_SECRET_KEY'] || 'sk_test_SY84Wlp5UbI0Zv8rhGPkrqP
 # Configure Stripe.
 Stripe.api_key = STRIPE_SECRET_KEY
 
+# Configure Sequel.
+$db = if [:test, :development].include?($environment.to_sym)
+  Sequel.connect('sqlite://invoices.db')
+end
+
 # Include lib.
+$: << File.expand_path('../app', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
 
 # Services.
@@ -17,4 +25,4 @@ require 'vat_service'
 require 'vat_subscription_service'
 
 # The main app.
-require './app'
+require 'app'

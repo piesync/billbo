@@ -5,6 +5,9 @@ gem 'stripe'
 gem 'valvat'
 gem 'multi_json'
 gem 'oj'
+gem 'sequel'
+
+gem 'sqlite3', group: [:test, :development]
 
 group :test do
   gem 'webmock'
