@@ -76,6 +76,7 @@ describe VatSubscriptionService do
     it 'creates a subscription and adds VAT to the first invoice' do
       VCR.use_cassette('create_subscription_success') do
         service.create_subscription(plan: plan.id)
+          .must_be_kind_of(Stripe::Invoice)
 
         invoices = customer.invoices
         invoices.to_a.size.must_equal 1
