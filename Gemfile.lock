@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.3.6)
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
@@ -8,6 +9,8 @@ GEM
     celluloid (0.15.2)
       timers (~> 1.1.0)
     coderay (1.1.0)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
     daemons (1.1.9)
     eventmachine (1.0.3)
     ffi (1.9.3)
@@ -56,6 +59,7 @@ GEM
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
+    safe_yaml (1.0.3)
     savon (2.6.0)
       akami (~> 1.2.0)
       builder (>= 2.1.2)
@@ -93,6 +97,9 @@ GEM
       httpi (~> 2.0)
       mime-types (< 2.0.0)
       nokogiri (>= 1.4.0)
+    webmock (1.18.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
 
 PLATFORMS
   ruby
@@ -108,3 +115,4 @@ DEPENDENCIES
   thin
   valvat
   vcr
+  webmock

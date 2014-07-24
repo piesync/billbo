@@ -7,6 +7,7 @@ gem 'multi_json'
 gem 'oj'
 
 group :test do
+  gem 'webmock'
   gem 'vcr'
   gem 'guard'
   gem 'guard-minitest'
