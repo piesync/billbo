@@ -9,13 +9,16 @@ describe VatSubscriptionService do
   }}
 
   let(:plan) do
-    Stripe::Plan.retrieve('test') || Stripe::Plan.create(\
-      id: 'test',
-      name: 'Test Plan',
-      amount: 1499,
-      currency: 'usd',
-      interval: 'month'
-    )
+    begin
+      Stripe::Plan.retrieve('test')
+    rescue
+      Stripe::Plan.create \
+        id: 'test',
+        name: 'Test Plan',
+        amount: 1499,
+        currency: 'usd',
+        interval: 'month'
+    end
   end
 
   let(:customer) do

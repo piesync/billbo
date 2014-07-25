@@ -12,6 +12,10 @@ VCR.configure do |c|
     record: :once,
     allow_unused_http_interactions: false
   }
+
+  c.filter_sensitive_data('<AUTH>') do |interaction|
+    interaction.request.headers['Authorization'].first
+  end
 end
 
 # Minitest clear db hook
