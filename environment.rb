@@ -23,7 +23,6 @@ require 'invoice'
 # Services.
 require 'vat_service'
 require 'vat_subscription_service'
-require 'invoice_service'
 
 # The Apis.
 require 'base'

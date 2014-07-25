@@ -1,7 +1,10 @@
 language: ruby
 rvm:
   - 2.1.1
-cache: bundler
+install: bundle install --without development --deployment
+cache:
+  directories:
+    - vendor/bundle
 before_script: ruby migrate.rb
 addons:
   code_climate:
