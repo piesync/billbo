@@ -1,5 +1,3 @@
-require './environment'
-
 $db.create_table :invoices do
   primary_key :id
 
@@ -9,4 +7,4 @@ $db.create_table :invoices do
   String  :stripe_id
   Boolean :added_vat
   Time    :finalized_at
-end
+end unless $db.tables.include?(:invoices)
