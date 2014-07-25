@@ -1,7 +1,7 @@
 # Receives Webhooks from Stripe.
 class Hooks < Base
 
-
+  # All hooks are idempotent.
   # Returns 200 if successful
   post '/' do
     event  = Stripe::Event.construct_from(json)
@@ -24,7 +24,7 @@ class Hooks < Base
     invoice = Stripe::Invoice.construct_from(object)
 
     vat_subscription_service(customer_id: invoice.customer)
-      .finalize(invoice)
+      .apply_vat(invoice)
   end
 
   # Used to create internal invoices.
