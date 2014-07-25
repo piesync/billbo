@@ -49,8 +49,12 @@ describe Hooks do
       post '/', json(type: 'invoice.created',
         data: { object: invoice })
 
+      last_response.ok?.must_equal true
+
       post '/', json(type: 'invoice.created',
         data: { object: invoice })
+
+      last_response.ok?.must_equal true
 
       Invoice.count.must_equal 1
       invoice = Invoice.first
@@ -78,8 +82,12 @@ describe Hooks do
       post '/', json(type: 'invoice.payment_succeeded',
         data: { object: invoice})
 
+      last_response.ok?.must_equal true
+
       post '/', json(type: 'invoice.payment_succeeded',
         data: { object: invoice})
+
+      last_response.ok?.must_equal true
 
       Invoice.count.must_equal 1
       invoice = Invoice.first

@@ -33,6 +33,7 @@ class Hooks < Base
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
     invoice(object[:id]).finalize
+  rescue Invoice::AlreadyFinalized
   end
 
   def invoice stripe_id
