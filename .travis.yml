@@ -5,6 +5,7 @@ install: bundle install --without development --deployment
 cache:
   directories:
     - vendor/bundle
+before_script: mkdir tmp
 addons:
   code_climate:
     repo_token:
