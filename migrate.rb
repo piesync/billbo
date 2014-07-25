@@ -6,6 +6,6 @@ $db.create_table :invoices do
   Integer :year
   Integer :sequence_number
   String  :number
-  Strimg  :stripe_id
+  String  :stripe_id
   Time    :created_at
 end
