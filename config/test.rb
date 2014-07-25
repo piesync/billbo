@@ -17,7 +17,7 @@ VCR.configure do |c|
   }
 
   c.filter_sensitive_data('<AUTH>') do |interaction|
-    interaction.request.headers['Authorization'].first
+    (interaction.request.headers['Authorization'] || []).first
   end
 end
 

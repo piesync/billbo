@@ -22,4 +22,8 @@ class Base < Sinatra::Base
   def invoice_service
     InvoiceService.new
   end
+
+  def vat_service
+    VatService.new
+  end
 end
