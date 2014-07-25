@@ -29,6 +29,8 @@ class Hooks < Base
 
   # Used to create internal invoices.
   def invoice_payment_succeeded(object)
-    invoice_service.find_or_create(stripe_id: object[:id])
+    Invoice
+      .find_or_create_from_stripe(stripe_id: object[:id])
+      .finalize
   end
 end

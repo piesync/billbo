@@ -7,5 +7,6 @@ $db.create_table :invoices do
   Integer :sequence_number
   String  :number
   String  :stripe_id
-  Time    :created_at
+  Boolean :added_vat
+  Time    :finalized_at
 end

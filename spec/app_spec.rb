@@ -33,8 +33,13 @@ describe App do
       end.returns(stripe_invoice)
 
       post '/subscriptions', json(subscription)
+
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
+
+      Invoice.count.must_equal 1
+      invoice = Invoice.first
+      invoice.finalized_at.wont_be_nil
     end
   end
 

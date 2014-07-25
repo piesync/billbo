@@ -31,6 +31,7 @@ describe Hooks do
 
       post '/', json(type: 'invoice.created',
         data: { object: invoice })
+
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
     end
@@ -40,6 +41,7 @@ describe Hooks do
     it 'creates an invoice' do
       post '/', json(type: 'invoice.payment_succeeded',
         data: { object: invoice})
+
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
     end
@@ -52,6 +54,7 @@ describe Hooks do
 
       post '/', json(type: 'invoice.created',
         data: { object: invoice })
+
       last_response.ok?.must_equal false
       last_response.body.must_equal '{"message":"not good"}'
     end

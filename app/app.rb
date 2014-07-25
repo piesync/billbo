@@ -16,7 +16,7 @@ class App < Base
 
     # TK ONLY IF SUCCESFUL
     # If succesful, store the invoice.
-    invoice_service.find_or_create(stripe_id: invoice.id)
+    Invoice.new(stripe_id: invoice.id).finalize
 
     status 200
   end
