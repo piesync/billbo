@@ -1,11 +1,12 @@
-require 'minitest/spec'
-require 'minitest/autorun'
-
 $environment = :test
 require './environment'
 
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
+
+require 'minitest/spec'
+require 'minitest/autorun'
+require 'mocha/mini_test'
 
 # Configure VCR.
 VCR.configure do |c|
