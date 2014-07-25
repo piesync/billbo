@@ -21,6 +21,14 @@ class App < Base
     status 200
   end
 
+  get '/vat/:number' do
+    if vat_service.valid?(vat_number: params[:number])
+      status 200
+    else
+      status 404
+    end
+  end
+
   get '/ping' do
     status 200
   end

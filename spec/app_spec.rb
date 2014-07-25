@@ -20,10 +20,12 @@ describe App do
   let(:stripe_invoice) { Stripe::Invoice.construct_from(invoice) }
 
   let(:vat_subscription_service) { mock }
+  let(:vat_service) { mock }
 
   before do
     app.any_instance.stubs(:vat_subscription_service)
       .with(customer_id: '10').returns(vat_subscription_service)
+    app.any_instance.stubs(:vat_service).returns(vat_service)
   end
 
   describe 'post /invoice/created' do
@@ -34,6 +36,24 @@ describe App do
 
       post '/subscriptions', json(subscription)
       last_response.ok?.must_equal true
+      last_response.body.must_be_empty
+    end
+  end
+
+  describe 'get /vat/' do
+    it 'validates a valid vat number' do
+      vat_service.expects(:valid?).with(vat_number: '1').returns(true)
+
+      get '/vat/1'
+      last_response.ok?.must_equal true
+      last_response.body.must_be_empty
+    end
+
+    it "doesn't find an invalid vat number" do
+      vat_service.expects(:valid?).with(vat_number: '2').returns(false)
+
+      get '/vat/2'
+      last_response.ok?.must_equal false
       last_response.body.must_be_empty
     end
   end

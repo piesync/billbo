@@ -13,8 +13,14 @@ class VatService
     amount*vat_percentage(country_code, is_company)/100
   end
 
-  # Checks if givet VAT number is valid.
+  # Checks if given VAT number is valid.
   def valid?(vat_number:)
+    vies_valid = Valvat::Lookup.validate(vat_number)
+    if vies_valid.nil?
+      Valvat.new(vat_number).valid_checksum?
+    else
+      vies_valid
+    end
   end
 
   private
