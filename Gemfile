@@ -14,11 +14,11 @@ gem 'rake', group: [:test, :development]
 group :test do
   gem 'webmock'
   gem 'vcr'
-  gem 'mocha', :require => 'mocha/mini_test'
+  gem 'mocha'
   gem 'rack-test', :require => 'rack/test'
   gem 'guard'
   gem 'guard-minitest'
-  gem 'codeclimate-test-reporter', :require => nil
+  gem 'codeclimate-test-reporter', :require => false
 end
 
 group :development do
