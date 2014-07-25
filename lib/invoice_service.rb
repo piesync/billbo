@@ -1,10 +1,20 @@
 class InvoiceService
 
+  def find_or_create(stripe_id: nil)
+    # CHeck if an invoice exists already with that stripe id.
+    invoice = Invoice.where(stripe_id: stripe_id)
+      .limit(1).first if stripe_id
+
+    invoice || create(stripe_id: stripe_id)
+  end
+
+  private
+
   def create(stripe_id: nil)
     # First reserve a slot in the table.
     invoice = Invoice.create(stripe_id: stripe_id)
 
-    year = Time.now.utc.year
+    year = Time.now.year
     sequence_number = next_sequence_number(year)
 
     # Number is a formatted version of this.
@@ -15,12 +25,10 @@ class InvoiceService
       year: year,
       sequence_number: sequence_number,
       number: number,
-      created_at: Time.now.utc
+      created_at: Time.now
 
     invoice
   end
-
-  private
 
   def next_sequence_number(year)
     last_invoice = Invoice
