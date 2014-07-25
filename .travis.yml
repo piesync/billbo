@@ -3,3 +3,7 @@ rvm:
   - 2.1.1
 cache: bundler
 before_script: ruby migrate.rb
+addons:
+  code_climate:
+    repo_token:
+      secure: "c8ZzZa0NJycJ/uJZw8XG2CgHwBzkBOG17ZIFFXqvARmCJHgpu5Qkt4oSG9RUQOV4AaOMLzVjY7ry1ptGgxHi0nMGwQ8R65Xtq9jM6EfGmNrA0VpEGra8JQ5pYCaFi49zMjmFthEwm14EiSnIm2+OzfWbwSwYvwAapVG6YaR9gwI="

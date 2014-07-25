@@ -4,6 +4,9 @@ require 'minitest/autorun'
 $environment = :test
 require './environment'
 
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 # Configure VCR.
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/cassettes'

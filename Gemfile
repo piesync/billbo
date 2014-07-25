@@ -18,6 +18,7 @@ group :test do
   gem 'rack-test', :require => 'rack/test'
   gem 'guard'
   gem 'guard-minitest'
+  gem 'codeclimate-test-reporter', :require => nil
 end
 
 group :development do
