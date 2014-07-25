@@ -56,16 +56,16 @@ describe VatSubscriptionService do
     end
   end
 
-  describe '#finalize' do
+  describe '#apply_vat' do
     it 'finalizes an invoice by charging vat and snapshotting it' do
-      VCR.use_cassette('finalize_success') do
+      VCR.use_cassette('apply_vat_success') do
         Stripe::InvoiceItem.create \
           customer: customer.id,
           amount: 100,
           currency: 'usd'
 
-        # Finalize the upcoming invoice.
-        service.finalize(Stripe::Invoice.create(customer: customer.id))
+        # Apply VAT on the upcoming invoice.
+        service.apply_vat(Stripe::Invoice.create(customer: customer.id))
           .must_be_kind_of(Stripe::Invoice)
 
         invoice = customer.invoices.first

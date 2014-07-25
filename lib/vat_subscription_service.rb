@@ -38,7 +38,7 @@ class VatSubscriptionService
   # invoice - A Stripe invoice object.
   #
   # Returns the finalized stripe invoice.
-  def finalize(invoice)
+  def apply_vat(invoice)
     # Add VAT to the invoice.
     charge_vat_of(invoice.total, invoice_id: invoice.id)
 
@@ -62,12 +62,13 @@ class VatSubscriptionService
       is_company: (customer.metadata[:is_company] == 'true')
 
     # Add an invoice item to the invoice with this amount.
+    # TK dont do this if vat amount is 0
     Stripe::InvoiceItem.create \
       customer: customer.id,
       invoice: invoice_id,
       amount: vat_amount,
       currency: currency,
-      description: 'VAT'
+      description: 'VAT' # TK add %
 
     nil
   end
@@ -78,6 +79,7 @@ class VatSubscriptionService
   #
   # Returns the Stripe invoice
   def snapshot(invoice)
+    # TK can we add VAT percentage to metadata
     invoice.metadata = customer.metadata.to_h
     invoice.save
   end

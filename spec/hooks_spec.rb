@@ -25,7 +25,7 @@ describe Hooks do
 
   describe 'post invoice created' do
     it 'finalizes the invoice' do
-      vat_subscription_service.expects(:finalize).with do |i|
+      vat_subscription_service.expects(:apply_vat).with do |i|
         i.to_h == self.invoice
       end.returns(stripe_invoice)
 
@@ -47,7 +47,7 @@ describe Hooks do
 
   describe 'a stripe error occurs' do
     it 'responds with the error' do
-      vat_subscription_service.expects(:finalize)
+      vat_subscription_service.expects(:apply_vat)
         .raises(Stripe::StripeError.new('not good'))
 
       post '/', json(type: 'invoice.created',
