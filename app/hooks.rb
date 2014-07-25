@@ -25,12 +25,17 @@ class Hooks < Base
 
     vat_subscription_service(customer_id: invoice.customer)
       .apply_vat(invoice)
+
+
+    invoice(object[:id]).added_vat!
   end
 
-  # Used to create internal invoices.
+  # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
-    Invoice
-      .find_or_create_from_stripe(stripe_id: object[:id])
-      .finalize
+    invoice(object[:id]).finalize
+  end
+
+  def invoice stripe_id
+    Invoice.find_or_create_from_stripe(stripe_id: stripe_id)
   end
 end

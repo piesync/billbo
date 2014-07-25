@@ -24,26 +24,59 @@ describe Hooks do
   end
 
   describe 'post invoice created' do
-    it 'finalizes the invoice' do
+    before do
       vat_subscription_service.expects(:apply_vat).with do |i|
         i.to_h == self.invoice
-      end.returns(stripe_invoice)
+      end.at_least_once.returns(stripe_invoice)
+    end
 
+    it 'adds VAT to the invoice' do
       post '/', json(type: 'invoice.created',
         data: { object: invoice })
 
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
+
+      Invoice.count.must_equal 1
+      invoice = Invoice.first
+      invoice.stripe_id.must_equal '1'
+      invoice.sequence_number.must_be_nil
+      invoice.added_vat?.must_equal true
+      invoice.finalized_at.must_be_nil
+    end
+
+    it 'is idempotent' do
+      post '/', json(type: 'invoice.created',
+        data: { object: invoice })
+
+      post '/', json(type: 'invoice.created',
+        data: { object: invoice })
+
+      Invoice.count.must_equal 1
+      invoice = Invoice.first
+      invoice.sequence_number.must_be_nil
+      invoice.added_vat?.must_equal true
+      invoice.finalized_at.must_be_nil
     end
   end
 
   describe 'post invoice payment succeeded' do
-    it 'creates an invoice' do
+    it 'finalizes the invoice' do
       post '/', json(type: 'invoice.payment_succeeded',
         data: { object: invoice})
 
       last_response.ok?.must_equal true
       last_response.body.must_be_empty
+
+      Invoice.count.must_equal 1
+      invoice = Invoice.first
+      invoice.sequence_number.must_equal 1
+      invoice.finalized_at.wont_be_nil
+    end
+
+    it 'is idempotent' do
+      post '/', json(type: 'invoice.payment_succeeded',
+        data: { object: invoice})
     end
   end
 

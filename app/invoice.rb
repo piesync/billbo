@@ -11,6 +11,7 @@ class Invoice < Sequel::Model
   end
 
   # TK what about finalizing 2 invoices at the same time?
+  # TK only finalize when vat was added?
   def finalize
     raise AlreadyFinalized if finalized_at
 
@@ -28,6 +29,16 @@ class Invoice < Sequel::Model
       finalized_at: Time.now
 
     self
+  end
+
+  def added_vat!
+    update added_vat: true
+
+    self
+  end
+
+  def added_vat?
+    !!added_vat
   end
 
   private
