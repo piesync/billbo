@@ -19,6 +19,8 @@ VCR.configure do |c|
   c.filter_sensitive_data('<AUTH>') do |interaction|
     (interaction.request.headers['Authorization'] || []).first
   end
+
+  c.ignore_hosts 'codeclimate.com'
 end
 
 # Minitest clear db hook
