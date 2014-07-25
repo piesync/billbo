@@ -1,9 +1,9 @@
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'mocha/mini_test'
-
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
 
 $db = Sequel.connect('sqlite://tmp/invoices_test.db')
 
