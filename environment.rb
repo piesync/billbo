@@ -6,7 +6,7 @@ require 'bundler/setup'
 Bundler.require(:default, $environment)
 
 # Configure Stripe.
-Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+Stripe.api_key = ENV['STRIPE_SECRET_KEY'] || 'dummy'
 
 # Configure Sequel.
 $db = if [:test, :development].include?($environment.to_sym)
