@@ -45,6 +45,18 @@ describe Hooks do
     end
   end
 
+  describe 'a stripe error occurs' do
+    it 'responds with the error' do
+      vat_subscription_service.expects(:finalize)
+        .raises(Stripe::StripeError.new('not good'))
+
+      post '/', json(type: 'invoice.created',
+        data: { object: invoice })
+      last_response.ok?.must_equal false
+      last_response.body.must_equal '{"message":"not good"}'
+    end
+  end
+
   def json(object)
     MultiJson.dump(object)
   end
