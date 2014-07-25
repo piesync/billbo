@@ -16,12 +16,12 @@ group :test do
   gem 'vcr'
   gem 'mocha'
   gem 'rack-test', :require => 'rack/test'
-  gem 'guard'
-  gem 'guard-minitest'
   gem 'codeclimate-test-reporter', :require => false
 end
 
 group :development do
+  gem 'guard'
+  gem 'guard-minitest'
   gem 'thin'
   gem 'shotgun'
 end
