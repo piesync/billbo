@@ -9,6 +9,7 @@ gem 'oj'
 gem 'sequel'
 
 gem 'sqlite3', group: [:test, :development]
+gem 'rake', group: [:test, :development]
 
 group :test do
   gem 'webmock'
