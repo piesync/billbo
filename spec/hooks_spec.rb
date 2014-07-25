@@ -77,6 +77,14 @@ describe Hooks do
     it 'is idempotent' do
       post '/', json(type: 'invoice.payment_succeeded',
         data: { object: invoice})
+
+      post '/', json(type: 'invoice.payment_succeeded',
+        data: { object: invoice})
+
+      Invoice.count.must_equal 1
+      invoice = Invoice.first
+      invoice.sequence_number.must_equal 1
+      invoice.finalized_at.wont_be_nil
     end
   end
 
