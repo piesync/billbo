@@ -20,11 +20,8 @@ Features
 
 * Automatic VAT addition according to legal regulations
 * Automatic and consistent invoice numbering
-* Revenue analytics with [Segment.io] ( optional - work in progress )
+* Revenue analytics with [Segment.io](https://segment.io/) ( optional - work in progress )
 * Automatic pdf invoice generation and emailing ( work in progress )
-
-[Segment.io]: https://segment.io/
-
 
 Installation and Deployment
 ------------
