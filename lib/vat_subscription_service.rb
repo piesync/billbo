@@ -24,6 +24,7 @@ class VatSubscriptionService
     # TK what if subscription fails?
     vat = charge_vat_of(plan.amount, currency: plan.currency)
     # Start subscription.
+    # TK what if this fails? VAT is already applied.
     customer.subscriptions.create(options)
     # Get the last invoice to add metadata snapshot.
     # TK This is tricky, does this always generate an invoice? What about second subscription.
