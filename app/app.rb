@@ -16,7 +16,8 @@ class App < Base
 
     # TK ONLY IF SUCCESFUL
     # If succesful, store the invoice.
-    Invoice.new(stripe_id: invoice.id).finalize
+    # TK This is tricky, does this always generate an invoice? What about second subscription.
+    Invoice.new(stripe_id: invoice.id, added_vat: true).finalize
 
     status 200
   end
