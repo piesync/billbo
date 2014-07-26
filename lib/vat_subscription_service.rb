@@ -26,6 +26,7 @@ class VatSubscriptionService
     # Start subscription.
     customer.subscriptions.create(options)
     # Get the last invoice to add metadata snapshot.
+    # TK This is tricky, does this always generate an invoice? What about second subscription.
     last_invoice = Stripe::Invoice.all(
       customer: customer.id, limit: 1).first
     snapshot(last_invoice)
