@@ -35,7 +35,7 @@ describe Invoice do
       invoice.finalized_at.must_be :>, Time.now - 10
     end
 
-    it 'can not be finalized twice' do
+    it 'can not be finalized twice (idempotent)' do
       proc do
         Invoice.new.finalize.finalize
       end.must_raise Invoice::AlreadyFinalized

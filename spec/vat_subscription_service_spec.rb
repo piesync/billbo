@@ -51,6 +51,26 @@ describe VatSubscriptionService do
         invoice.metadata.to_h.must_equal metadata
       end
     end
+
+    it 'is idempotent' do
+      VCR.use_cassette('apply_vat_idempotent') do
+        Stripe::InvoiceItem.create \
+          customer: customer.id,
+          amount: 100,
+          currency: 'usd'
+
+        # Apply VAT on the upcoming invoice.
+        invoice = service.apply_vat(Stripe::Invoice.create(customer: customer.id))
+        invoice.must_be_kind_of(Stripe::Invoice)
+
+        # Apply again.
+        service.apply_vat(invoice)
+
+        invoice = customer.invoices.first
+        invoice.total.must_equal 121
+        invoice.metadata.to_h.must_equal metadata
+      end
+    end
   end
 
   describe '#create_subscription' do

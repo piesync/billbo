@@ -1,11 +1,10 @@
 class Invoice < Sequel::Model
   AlreadyFinalized = Class.new(StandardError)
 
-  def self.find_or_create_from_stripe(attributes = {}, stripe_id:)
+  def self.find_or_create_from_stripe(stripe_id:, **attributes)
     attributes = attributes.merge(stripe_id: stripe_id)
     # Check if an invoice exists already with that stripe id.
-    invoice = Invoice.where(stripe_id: stripe_id)
-      .limit(1).first
+    invoice = Invoice.first(stripe_id: stripe_id)
 
     invoice || create(attributes)
   end

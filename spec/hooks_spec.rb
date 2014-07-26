@@ -7,102 +7,80 @@ describe Hooks do
     Hooks
   end
 
-  let(:invoice) {{
-    id: '1',
-    customer: '10'
+  let(:metadata) {{
+    country_code: 'NL',
+    is_company: 'false',
+    other: 'random'
   }}
 
-  let(:stripe_invoice) { Stripe::Invoice.construct_from(invoice) }
+  let(:customer) do
+    Stripe::Customer.create \
+      card: {
+        number: '4242424242424242',
+        exp_month: '12',
+        exp_year: '30',
+        cvc: '222'
+      },
+      metadata: metadata
+  end
 
-  let(:internal_invoice) { Invoice.new }
+  let(:stripe_invoice) do
+    Stripe::InvoiceItem.create \
+      customer: customer.id,
+      amount: 100,
+      currency: 'usd'
 
-  let(:vat_subscription_service) { mock }
-
-  before do
-    app.any_instance.stubs(:vat_subscription_service)
-      .with(customer_id: '10').returns(vat_subscription_service)
+    Stripe::Invoice.create(customer: customer.id)
   end
 
   describe 'post invoice created' do
-    before do
-      vat_subscription_service.expects(:apply_vat).with do |i|
-        i.to_h == self.invoice
-      end.at_least_once.returns(stripe_invoice)
-    end
-
     it 'adds VAT to the invoice' do
-      post '/', json(type: 'invoice.created',
-        data: { object: invoice })
+      VCR.use_cassette('hook_invoice_created') do
+        post '/', json(type: 'invoice.created',
+          data: { object: stripe_invoice })
 
-      last_response.ok?.must_equal true
-      last_response.body.must_be_empty
+        last_response.ok?.must_equal true
+        last_response.body.must_be_empty
 
-      Invoice.count.must_equal 1
-      invoice = Invoice.first
-      invoice.stripe_id.must_equal '1'
-      invoice.sequence_number.must_be_nil
-      invoice.added_vat?.must_equal true
-      invoice.finalized_at.must_be_nil
-    end
-
-    it 'is idempotent' do
-      post '/', json(type: 'invoice.created',
-        data: { object: invoice })
-
-      last_response.ok?.must_equal true
-
-      post '/', json(type: 'invoice.created',
-        data: { object: invoice })
-
-      last_response.ok?.must_equal true
-
-      Invoice.count.must_equal 1
-      invoice = Invoice.first
-      invoice.sequence_number.must_be_nil
-      invoice.added_vat?.must_equal true
-      invoice.finalized_at.must_be_nil
+        Invoice.count.must_equal 1
+        invoice = Invoice.first
+        invoice.stripe_id.must_equal stripe_invoice.id
+        invoice.sequence_number.must_be_nil
+        invoice.added_vat?.must_equal true
+        invoice.finalized_at.must_be_nil
+      end
     end
   end
 
   describe 'post invoice payment succeeded' do
     it 'finalizes the invoice' do
-      post '/', json(type: 'invoice.payment_succeeded',
-        data: { object: invoice})
+      VCR.use_cassette('hook_invoice_payment_succeeded') do
+        post '/', json(type: 'invoice.payment_succeeded',
+          data: { object: stripe_invoice})
 
-      last_response.ok?.must_equal true
-      last_response.body.must_be_empty
+        last_response.ok?.must_equal true
+        last_response.body.must_be_empty
 
-      Invoice.count.must_equal 1
-      invoice = Invoice.first
-      invoice.sequence_number.must_equal 1
-      invoice.finalized_at.wont_be_nil
-    end
-
-    it 'is idempotent' do
-      post '/', json(type: 'invoice.payment_succeeded',
-        data: { object: invoice})
-
-      last_response.ok?.must_equal true
-
-      post '/', json(type: 'invoice.payment_succeeded',
-        data: { object: invoice})
-
-      last_response.ok?.must_equal true
-
-      Invoice.count.must_equal 1
-      invoice = Invoice.first
-      invoice.sequence_number.must_equal 1
-      invoice.finalized_at.wont_be_nil
+        Invoice.count.must_equal 1
+        invoice = Invoice.first
+        invoice.sequence_number.must_equal 1
+        invoice.finalized_at.wont_be_nil
+      end
     end
   end
 
   describe 'a stripe error occurs' do
     it 'responds with the error' do
+      vat_subscription_service = stub
+
+      app.any_instance.stubs(:vat_subscription_service)
+        .with(customer_id: '10').returns(vat_subscription_service)
+
       vat_subscription_service.expects(:apply_vat)
         .raises(Stripe::StripeError.new('not good'))
 
       post '/', json(type: 'invoice.created',
-        data: { object: invoice })
+        data: { object: { customer: '10'} })
 
       last_response.ok?.must_equal false
       last_response.body.must_equal '{"message":"not good"}'
