@@ -34,28 +34,6 @@ describe VatSubscriptionService do
 
   let(:service) { VatSubscriptionService.new(customer_id: customer.id) }
 
-  describe '#charge_vat_of' do
-    describe 'no invoice is given (upcoming)' do
-      it 'adds a VAT invoice item' do
-        VCR.use_cassette('charge_vat_of_success') do
-          service.charge_vat_of(100)
-
-          invoices = customer.invoices
-          invoices.to_a.size.must_equal 0
-
-          upcoming = customer.upcoming_invoice
-          upcoming.total.must_equal 21
-          upcoming.lines.to_a.size.must_equal 1
-          upcoming.lines.first.amount.must_equal 21
-        end
-      end
-    end
-
-    describe 'an invoice is given' do
-      # TK todo
-    end
-  end
-
   describe '#apply_vat' do
     it 'finalizes an invoice by charging vat and snapshotting it' do
       VCR.use_cassette('apply_vat_success') do

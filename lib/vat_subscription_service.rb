@@ -48,6 +48,8 @@ class VatSubscriptionService
     invoice
   end
 
+  private
+
   # Charges VAT for a certain amount.
   #
   # amount - Amount to charge VAT for.
@@ -83,8 +85,6 @@ class VatSubscriptionService
     invoice.metadata = customer.metadata.to_h
     invoice.save
   end
-
-  private
 
   def customer
     @customer ||= Stripe::Customer.retrieve(@customer_id)
