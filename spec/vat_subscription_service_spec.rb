@@ -48,7 +48,9 @@ describe VatSubscriptionService do
 
         invoice = customer.invoices.first
         invoice.total.must_equal 121
-        invoice.metadata.to_h.must_equal metadata
+        invoice.metadata.to_h.must_equal metadata.merge(
+          vat_amount: '21', vat_rate: '21'
+        )
         invoice.lines.to_a.find { |l| l.description =~ /VAT/ }
           .description.must_equal 'VAT (21%)'
       end
@@ -112,7 +114,9 @@ describe VatSubscriptionService do
         invoice = invoices.first
         invoice.total.must_equal 1813
         invoice.lines.to_a.size.must_equal 2
-        invoice.metadata.to_h.must_equal metadata
+        invoice.metadata.to_h.must_equal metadata.merge(
+          vat_amount: '314', vat_rate: '21'
+        )
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.

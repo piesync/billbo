@@ -22,14 +22,15 @@ class VatSubscriptionService
     plan = Stripe::Plan.retrieve(options[:plan])
     # Add vat charges.
     # TK what if subscription fails?
-    charge_vat_of(plan.amount, currency: plan.currency)
+    vat = charge_vat_of(plan.amount, currency: plan.currency)
     # Start subscription.
+    # TK what if this fails? VAT is already applied.
     customer.subscriptions.create(options)
     # Get the last invoice to add metadata snapshot.
     # TK This is tricky, does this always generate an invoice? What about second subscription.
     last_invoice = Stripe::Invoice.all(
       customer: customer.id, limit: 1).first
-    snapshot(last_invoice)
+    snapshot(last_invoice, vat_amount: vat.amount, vat_rate: vat.rate)
   end
 
   # Applies VAT to a Stripe invoice if necessary.
@@ -45,13 +46,13 @@ class VatSubscriptionService
     return stripe_invoice if invoice.added_vat?
 
     # Add VAT to the invoice.
-    charge_vat_of(stripe_invoice.total, invoice_id: stripe_invoice.id)
+    vat = charge_vat_of(stripe_invoice.total, invoice_id: stripe_invoice.id)
 
     # Confirm VAT has been added.
     invoice.added_vat!
 
     # Snapshot.
-    snapshot(stripe_invoice)
+    snapshot(stripe_invoice, vat_amount: vat.amount, vat_rate: vat.rate)
 
     stripe_invoice
   end
@@ -63,7 +64,7 @@ class VatSubscriptionService
   # amount - Amount to charge VAT for.
   # invoice_id - optional invoice_id (upcoming invoice by default).
   #
-  # Returns Nothing
+  # Returns a VatCharge object.
   def charge_vat_of(amount, currency: 'usd', invoice_id: nil)
     # Calculate the amount of VAT to be paid.
     vat = vat_service.calculate \
@@ -80,7 +81,7 @@ class VatSubscriptionService
       description: "VAT (#{vat.rate}%)"
     ) unless vat.amount.zero?
 
-    nil
+    vat
   end
 
   # Adds a snapshot of the customer metadata to the invoice.
@@ -88,9 +89,8 @@ class VatSubscriptionService
   # invoice - A Stripe invoice object.
   #
   # Returns the Stripe invoice
-  def snapshot(invoice)
-    # TK can we add VAT percentage to metadata
-    invoice.metadata = customer.metadata.to_h
+  def snapshot(invoice, extra = {})
+    invoice.metadata = customer.metadata.to_h.merge(extra)
     invoice.save
   end
 
