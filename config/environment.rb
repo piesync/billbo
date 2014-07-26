@@ -21,6 +21,7 @@ require 'schema'
 require 'invoice'
 
 # Services.
+require 'configuration_service'
 require 'vat_service'
 require 'vat_subscription_service'
 
