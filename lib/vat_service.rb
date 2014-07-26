@@ -1,7 +1,36 @@
 class VatService
   VatCharge = Struct.new(:amount, :rate)
 
-  BELGIUM = 'BE'
+  VAT_RATES = {
+    'BE' => 21,
+    'BG' => 20,
+    'CZ' => 21,
+    'DK' => 25,
+    'DE' => 19,
+    'EE' => 20,
+    'EL' => 23,
+    'ES' => 21,
+    'FR' => 20,
+    'HR' => 25,
+    'IE' => 23,
+    'IT' => 22,
+    'CY' => 19,
+    'LV' => 21,
+    'LT' => 21,
+    'LU' => 15,
+    'HU' => 27,
+    'MT' => 18,
+    'NL' => 21,
+    'AT' => 20,
+    'PL' => 23,
+    'PT' => 23,
+    'RO' => 24,
+    'SI' => 22,
+    'SK' => 20,
+    'FI' => 24,
+    'SE' => 25,
+    'UK' => 20
+  }
 
   # Calculates VAT amount based on country and whether the customer
   # is a company or not.
@@ -35,16 +64,17 @@ class VatService
   #
   # Returns an integer (percentage).
   def vat_rate(country_code, is_company)
-    # Both individuals and companies pay VAT in Belgium.
-    if country_code == BELGIUM
-      21
+    # Both individuals and companies pay VAT
+    # in a country where you are VAT registered.
+    if configuration_service.registered_countries.include?(country_code)
+      VAT_RATES[country_code]
     elsif eu?(country_code)
       # Companies in other EU countries don't need to pay VAT.
       if is_company
         0
       # Individuals in other EU countries do need to pay VAT.
       else
-        21
+        VAT_RATES[configuration_service.primary_country]
       end
     # All non-EU customers don't need to pay VAT.
     else
@@ -54,5 +84,9 @@ class VatService
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
+  end
+
+  def configuration_service
+    @configuration_service ||= ConfigurationService.new
   end
 end
