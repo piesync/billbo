@@ -49,6 +49,8 @@ describe VatSubscriptionService do
         invoice = customer.invoices.first
         invoice.total.must_equal 121
         invoice.metadata.to_h.must_equal metadata
+        invoice.lines.to_a.find { |l| l.description =~ /VAT/ }
+          .description.must_equal 'VAT (21%)'
       end
     end
 

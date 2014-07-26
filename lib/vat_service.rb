@@ -1,4 +1,6 @@
 class VatService
+  VatCharge = Struct.new(:amount, :rate)
+
   BELGIUM = 'BE'
 
   # Calculates VAT amount based on country and whether the customer
@@ -10,7 +12,8 @@ class VatService
   #
   # Returns amount of VAT payable (rounded down).
   def calculate(amount:, country_code:, is_company:)
-    amount*vat_percentage(country_code, is_company)/100
+    rate = vat_rate(country_code, is_company)
+    VatCharge.new(amount*rate/100, rate)
   end
 
   # Checks if given VAT number is valid.
@@ -31,7 +34,7 @@ class VatService
   # is_company   - true if customer is a company
   #
   # Returns an integer (percentage).
-  def vat_percentage(country_code, is_company)
+  def vat_rate(country_code, is_company)
     # Both individuals and companies pay VAT in Belgium.
     if country_code == BELGIUM
       21

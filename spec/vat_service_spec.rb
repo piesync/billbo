@@ -6,14 +6,14 @@ describe VatService do
 
   describe '#calculate' do
     it 'calculates correct VAT amount' do
-      example(100, 'US', true).must_equal(0)
-      example(100, 'US', false).must_equal(0)
+      example(100, 'US', true).amount.must_equal(0)
+      example(100, 'US', false).amount.must_equal(0)
 
-      example(100, 'FR', true).must_equal(0)
-      example(100, 'FR', false).must_equal(21)
+      example(100, 'FR', true).amount.must_equal(0)
+      example(100, 'FR', false).amount.must_equal(21)
 
-      example(100, 'BE', false).must_equal(21)
-      example(100, 'BE', true).must_equal(21)
+      example(100, 'BE', false).amount.must_equal(21)
+      example(100, 'BE', true).amount.must_equal(21)
     end
   end
 

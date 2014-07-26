@@ -66,7 +66,7 @@ class VatSubscriptionService
   # Returns Nothing
   def charge_vat_of(amount, currency: 'usd', invoice_id: nil)
     # Calculate the amount of VAT to be paid.
-    vat_amount = vat_service.calculate \
+    vat = vat_service.calculate \
       amount: amount,
       country_code: customer.metadata[:country_code],
       is_company: (customer.metadata[:is_company] == 'true')
@@ -75,10 +75,10 @@ class VatSubscriptionService
     Stripe::InvoiceItem.create(
       customer: customer.id,
       invoice: invoice_id,
-      amount: vat_amount,
+      amount: vat.amount,
       currency: currency,
-      description: 'VAT' # TK add %
-    ) unless vat_amount.zero?
+      description: "VAT (#{vat.rate}%)"
+    ) unless vat.amount.zero?
 
     nil
   end
