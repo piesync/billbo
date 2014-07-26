@@ -71,6 +71,31 @@ describe VatSubscriptionService do
         invoice.metadata.to_h.must_equal metadata
       end
     end
+
+    describe 'customer does not have to pay VAT' do
+      let(:metadata) {{
+        country_code: 'US',
+        is_company: 'true',
+        other: 'random'
+      }}
+
+      it 'does not add vat when amount is 0' do
+        VCR.use_cassette('apply_vat_success_novat') do
+          Stripe::InvoiceItem.create \
+            customer: customer.id,
+            amount: 100,
+            currency: 'usd'
+
+          # Apply VAT on the upcoming invoice.
+          service.apply_vat(Stripe::Invoice.create(customer: customer.id))
+            .must_be_kind_of(Stripe::Invoice)
+
+          invoice = customer.invoices.first
+          invoice.total.must_equal 100
+          invoice.lines.to_a.size.must_equal 1
+        end
+      end
+    end
   end
 
   describe '#create_subscription' do

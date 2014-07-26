@@ -72,13 +72,13 @@ class VatSubscriptionService
       is_company: (customer.metadata[:is_company] == 'true')
 
     # Add an invoice item to the invoice with this amount.
-    # TK dont do this if vat amount is 0
-    Stripe::InvoiceItem.create \
+    Stripe::InvoiceItem.create(
       customer: customer.id,
       invoice: invoice_id,
       amount: vat_amount,
       currency: currency,
       description: 'VAT' # TK add %
+    ) unless vat_amount.zero?
 
     nil
   end
