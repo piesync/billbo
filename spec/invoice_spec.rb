@@ -17,18 +17,18 @@ describe Invoice do
     end
   end
 
-  describe '#finalize' do
+  describe '#finalize!' do
     let(:invoice) { Invoice.new }
 
     it 'assigns a number to the invoice and saves it' do
-      invoice.finalize
+      invoice.finalize!
       Invoice.count.must_equal 1
       invoice.year.must_equal year
       invoice.sequence_number.must_equal 1
       invoice.number.must_equal "#{year}.1"
       invoice.finalized_at.must_be :>, Time.now - 10
 
-      invoice = Invoice.new.finalize
+      invoice = Invoice.new.finalize!
       invoice.year.must_equal year
       invoice.sequence_number.must_equal 2
       invoice.number.must_equal "#{year}.2"
@@ -37,7 +37,7 @@ describe Invoice do
 
     it 'can not be finalized twice (idempotent)' do
       proc do
-        Invoice.new.finalize.finalize
+        Invoice.new.finalize!.finalize!
       end.must_raise Invoice::AlreadyFinalized
     end
   end

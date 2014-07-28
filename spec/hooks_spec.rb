@@ -71,19 +71,19 @@ describe Hooks do
 
   describe 'a stripe error occurs' do
     it 'responds with the error' do
-      vat_subscription_service = stub
+      invoice_service = stub
 
-      app.any_instance.stubs(:vat_subscription_service)
-        .with(customer_id: '10').returns(vat_subscription_service)
+      app.any_instance.stubs(:invoice_service)
+        .with(customer_id: '10').returns(invoice_service)
 
-      vat_subscription_service.expects(:apply_vat)
-        .raises(Stripe::StripeError.new('not good'))
+      invoice_service.expects(:apply_vat)
+        .raises(Stripe::APIError.new('not good'))
 
       post '/', json(type: 'invoice.created',
-        data: { object: { customer: '10'} })
+        data: { object: { id: '1', customer: '10'} })
 
       last_response.ok?.must_equal false
-      last_response.body.must_equal '{"message":"not good"}'
+      last_response.body.must_equal '{"message":"not good","type":"api_error"}'
     end
   end
 

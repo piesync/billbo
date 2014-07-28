@@ -23,13 +23,13 @@ class Hooks < Base
   def invoice_created(object)
     invoice = Stripe::Invoice.construct_from(object)
 
-    vat_subscription_service(customer_id: invoice.customer)
-      .apply_vat(invoice)
+    invoice_service(customer_id: invoice.customer)
+      .apply_vat(stripe_invoice_id: invoice.id)
   end
 
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
-    Invoice.find_or_create_from_stripe(stripe_id: object[:id]).finalize
+    Invoice.find_or_create_from_stripe(stripe_id: object[:id]).finalize!
   rescue Invoice::AlreadyFinalized
   end
 end
