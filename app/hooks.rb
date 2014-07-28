@@ -12,7 +12,7 @@ class Hooks < Base
     send(method_name, object) if respond_to?(method_name, true)
 
     # Send rumor event.
-    rumor(:charge_succeeded).on(object).mention(event: event).spread
+    rumor(method_name).on(object).mention(event: event).spread
 
     status 200
   end
