@@ -53,6 +53,7 @@ GEM
       mini_portile (= 0.6.0)
     nori (2.4.0)
     oj (2.9.9)
+    pg (0.17.1)
     pry (0.10.0)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -131,6 +132,7 @@ DEPENDENCIES
   mocha
   multi_json
   oj
+  pg
   puma
   rack-test
   rake
