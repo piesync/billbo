@@ -12,7 +12,7 @@ class Invoice < Sequel::Model
   # TK what about finalizing 2 invoices at the same time?
   # TK only finalize when vat was added?
   def finalize!
-    raise AlreadyFinalized if finalized_at
+    raise AlreadyFinalized if finalized?
 
     year = Time.now.year
     sequence_number = next_sequence_number(year)
