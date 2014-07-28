@@ -18,14 +18,17 @@ class StripeService
   #
   # Returns the created Stripe subscription and invoice.
   def create_subscription(options)
+    # Get the plan.
+    plan = Stripe::Plan.retrieve(options[:plan])
+
     # Charge VAT in advance because subscription call will create and pay an invoice.
     # TK actually we need to apply VAT for invoiceitems that are pending and scheduled
     # for the next invoice.
-    vat, invoice_item = charge_vat_of_plan(options[:plan])
+    # Do not charge VAT if the plan is still in trial.
+    vat, invoice_item = charge_vat_of_plan(plan) unless plan.trial_period_days
 
     # Start subscription.
     # This call automatically creates an invoice, always.
-    # TK what if subscription has a trial?
     subscription = customer.subscriptions.create(options)
 
     # The subscription creation has immediately created an invoice as well (only
@@ -68,11 +71,8 @@ class StripeService
     Stripe::Invoice.all(customer: customer.id, limit: 1).first
   end
 
-  def charge_vat_of_plan(plan_id)
-    # Get the plan.
-    plan = Stripe::Plan.retrieve(plan_id)
+  def charge_vat_of_plan(plan)
     # Add vat charges.
-    # TK what if subscription fails?
     charge_vat(plan.amount, currency: plan.currency)
   end
 
@@ -108,8 +108,8 @@ class StripeService
   # Returns the Stripe invoice
   def snapshot(invoice, vat, extra = {})
     invoice.metadata = customer.metadata.to_h.merge(
-      vat_amount: vat.amount,
-      vat_rate: vat.rate
+      vat_amount: vat && vat.amount,
+      vat_rate: vat && vat.rate
     ).merge(extra)
     invoice.save
   end

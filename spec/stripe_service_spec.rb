@@ -8,6 +8,20 @@ describe StripeService do
     other: 'random'
   }}
 
+  let(:trial_plan) do
+    begin
+      Stripe::Plan.retrieve('trial_plan')
+    rescue
+      Stripe::Plan.create \
+        id: 'trial_plan',
+        name: 'Trial Plan',
+        amount: 1499,
+        currency: 'usd',
+        interval: 'month',
+        trial_period_days: 10
+    end
+  end
+
   let(:plan) do
     begin
       Stripe::Plan.retrieve('test')
@@ -108,6 +122,27 @@ describe StripeService do
         upcoming.total.must_equal 1499
       end
     end
+
+    describe 'the plan has a trial period' do
+      it 'creates a subscription but does not add VAT' do
+      VCR.use_cassette('create_subscription_trial_success') do
+        subscription, invoice = service.create_subscription(plan: trial_plan.id)
+        invoice.must_be_kind_of(Stripe::Invoice)
+        invoice.id.wont_be_nil
+
+        invoices = customer.invoices
+        invoices.to_a.size.must_equal 1
+        invoice = invoices.first
+        invoice.total.must_equal 0
+        invoice.lines.to_a.size.must_equal 1
+        invoice.metadata.to_h.must_equal metadata
+
+        upcoming = customer.upcoming_invoice
+        # Upcoming does not have VAT yet, waiting to close invoice.
+        upcoming.total.must_equal 1499
+      end
+    end
+  end
 
     describe 'the subscription could not be created' do
       let(:card) { '4000000000000341' }
