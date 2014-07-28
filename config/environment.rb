@@ -11,6 +11,16 @@ require 'boot'
 # Configure Stripe.
 Stripe.api_key = ENV['STRIPE_SECRET_KEY'] || 'dummy'
 
+# Configure Analytics if enabled.
+if ENV['SEGMENTIO_WRITE_KEY']
+  AnalyticsRuby.init({
+    secret: ENV['SEGMENTIO_WRITE_KEY'],
+    on_error: Proc.new { |status, msg| puts msg }
+  })
+
+  Rumor.register :analytics, AnalyticsChannel.new
+end
+
 # Configure Rumor.
 require 'rumor/async/sucker_punch'
 
