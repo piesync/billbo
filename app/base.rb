@@ -5,6 +5,10 @@ class Base < Sinatra::Base
     json(message: e.to_s)
   end
 
+  error do |e|
+    json(message: 'Something went wrong')
+  end
+
   def json body = nil
     if body
       MultiJson.dump(body)
