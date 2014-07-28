@@ -59,12 +59,7 @@ describe App do
         post '/subscriptions', json(subscription)
 
         last_response.ok?.must_equal true
-        last_response.body.must_be_empty
-
-        Invoice.count.must_equal 1
-        invoice = Invoice.first
-        invoice.added_vat?.must_equal true
-        invoice.finalized_at.wont_be_nil
+        MultiJson.load(last_response.body)['customer'].must_equal customer.id
       end
     end
   end

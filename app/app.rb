@@ -11,15 +11,10 @@ class App < Base
     customer = json.delete(:customer)
 
     # Create subscription.
-    invoice = vat_subscription_service(customer_id: customer)
+    subscription = invoice_service(customer_id: customer)
       .create_subscription(json)
 
-    # TK ONLY IF SUCCESFUL
-    # If succesful, store the invoice.
-    # TK This is tricky, does this always generate an invoice? What about second subscription.
-    Invoice.new(stripe_id: invoice.id, added_vat: true).finalize
-
-    status 200
+    json(subscription)
   end
 
   get '/vat/:number' do

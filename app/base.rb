@@ -15,12 +15,8 @@ class Base < Sinatra::Base
 
   protected
 
-  def vat_subscription_service(options)
-    VatSubscriptionService.new(options)
-  end
-
-  def invoice_service
-    InvoiceService.new
+  def invoice_service(customer_id:)
+    InvoiceService.new(customer_id: customer_id)
   end
 
   def vat_service
