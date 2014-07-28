@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'securerandom'
+require 'choice'
+
+Choice.options do
+  banner 'Usage: ./deploy-heroku [APPNAME] options...'
+  option :api_token do
+    short '-t'
+    long '--token=TOKEN'
+    desc 'Security token used to access the API of your Billbo instance'
+    default SecureRandom.uuid
+  end
+
+  option :stripe_secret_key, required: true do
+    short '-s'
+    long '--stripe=STIPE_SECRET_KEY'
+    desc 'Your secret Stripe API key'
+  end
+end
+
+app = ARGV[0]
+
+if app.nil?
+  puts 'Usage: ./deploy-heroku [APPNAME]'
+  exit
+end
+
+# Check if the app already exists.
+`heroku ps --app #{app} > /dev/null 2>&1`
+exists = $?.success?
+
+if exists
+  puts 'App already exists... Try again'
+else
+  puts "Deploying for the first time... Creating #{app} on Heroku"
+  `heroku create #{app} --addons heroku-postgresql`
+
+  puts "Pushing..."
+  `git push git@heroku.com:#{app}.git master --force`
+
+  heroku_env = [:api_token, :stripe_secret_key].map do |key|
+    [key.to_s.upcase, Choice.choices[key]].join('=') if Choice.choices[key]
+  end.join(' ')
+
+  puts 'Configuring Remote Billbo Instance...'
+  `heroku config:set #{heroku_env} --app #{app}`
+
+  puts 'Billbo has been deployed to Heroku'
+  puts "Check this url to confirm that it works: https://X:#{Choice.choices[:api_token]}@#{app}.herokuapp.com/ping"
+end
