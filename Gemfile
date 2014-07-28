@@ -24,4 +24,10 @@ group :development do
   gem 'guard-minitest'
   gem 'thin'
   gem 'shotgun'
+  gem 'choice'
+end
+
+group :production do
+  gem 'pg'
+  gem 'puma'
 end

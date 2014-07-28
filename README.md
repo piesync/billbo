@@ -23,10 +23,19 @@ Features
 * Revenue analytics with [Segment.io](https://segment.io/) ( optional - work in progress )
 * Automatic pdf invoice generation and emailing ( work in progress )
 
-Installation and Deployment
+Deployment
 ------------
 
-to be completed
+The easiest way to get Billbo online to use it for production is Heroku. The `deploy-heroku` script in the root directory helps you with that. It provisions a Heroku instance with a Postgres database and all the right settings.
+
+The fastest path we can offer you:
+
+```
+git clone git@github.com:piesync/billbo.git && cd billbo
+./deploy-heroku [HEROKU_APP_NAME] -s [SECRET_STRIPE_KEY]
+```
+
+The deploy script takes lots of additional options to customize your Billbo instance. Just run `./deploy-heroku` to see usage details.
 
 
 Basic Usage
