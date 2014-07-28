@@ -53,7 +53,8 @@ class StripeService
     stripe_invoice = Stripe::Invoice.retrieve(invoice_id)
 
     # Add VAT to the invoice.
-    vat, invoice_item = charge_vat(stripe_invoice.total, invoice_id: invoice_id)
+    vat, invoice_item = charge_vat(stripe_invoice.total,
+      invoice_id: invoice_id, currency: stripe_invoice.currency)
 
     # Snapshot.
     snapshot(stripe_invoice, vat)
@@ -81,7 +82,7 @@ class StripeService
   # invoice_id - optional invoice_id (upcoming invoice by default).
   #
   # Returns a VatCharge object.
-  def charge_vat(amount, currency: 'usd', invoice_id: nil)
+  def charge_vat(amount, currency:, invoice_id: nil)
     # Calculate the amount of VAT to be paid.
     vat = vat_service.calculate \
       amount: amount,
