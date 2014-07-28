@@ -87,24 +87,6 @@ describe Hooks do
     end
   end
 
-  describe 'a standard error occurs' do
-    it 'responds with the error' do
-      invoice_service = stub
-
-      app.any_instance.stubs(:invoice_service)
-        .with(customer_id: '10').returns(invoice_service)
-
-      invoice_service.expects(:apply_vat)
-        .raises(StandardError.new('not good'))
-
-      post '/', json(type: 'invoice.created',
-        data: { object: { id: '1', customer: '10'} })
-
-      last_response.ok?.must_equal false
-      last_response.body.must_equal '{"message":"Something went wrong"}'
-    end
-  end
-
   def json(object)
     MultiJson.dump(object)
   end
