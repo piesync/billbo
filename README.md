@@ -35,7 +35,7 @@ git clone git@github.com:piesync/billbo.git && cd billbo
 ./deploy-heroku [HEROKU_APP_NAME] -s [SECRET_STRIPE_KEY]
 ```
 
-The deploy script takes lots of additional options to customize you Billbo instance. Just run `./deploy-heroku` to see usage details.
+The deploy script takes lots of additional options to customize your Billbo instance. Just run `./deploy-heroku` to see usage details.
 
 
 Basic Usage
