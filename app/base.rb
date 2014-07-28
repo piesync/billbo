@@ -1,6 +1,10 @@
 class Base < Sinatra::Base
   disable :show_exceptions
 
+  before do
+    content_type 'application/json'
+  end
+
   error Stripe::StripeError do |e|
     json(message: e.to_s)
   end
