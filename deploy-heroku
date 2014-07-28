@@ -31,10 +31,10 @@ end
 exists = $?.success?
 
 if exists
-  `git push git@heroku.com:#{app}.git master --force`
+  puts 'App already exists... Try again'
 else
   puts "Deploying for the first time... Creating #{app} on Heroku"
-  `heroku apps:create #{app} --addons heroku-postgresql`
+  `heroku create #{app} --addons heroku-postgresql`
 
   puts "Pushing..."
   `git push git@heroku.com:#{app}.git master --force`
