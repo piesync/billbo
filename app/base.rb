@@ -5,8 +5,16 @@ class Base < Sinatra::Base
     content_type 'application/json'
   end
 
-  error Stripe::StripeError do |e|
-    json(message: e.to_s)
+  error Stripe::APIError do |e|
+    stripe_error(e, type: 'api_error')
+  end
+
+  error Stripe::CardError do |e|
+    stripe_error(e, type: 'card_error', code: e.code, param: e.param)
+  end
+
+  error Stripe::InvalidRequestError do |e|
+    stripe_error(e, type: 'invalid_request_error', param: e.param)
   end
 
   error do |e|
@@ -22,6 +30,10 @@ class Base < Sinatra::Base
   end
 
   protected
+
+  def stripe_error(e, extra = {})
+    json({message: e.to_s}.merge(extra))
+  end
 
   def invoice_service(customer_id:)
     InvoiceService.new(customer_id: customer_id)
