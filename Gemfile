@@ -7,6 +7,8 @@ gem 'valvat'
 gem 'multi_json'
 gem 'oj'
 gem 'sequel'
+gem 'rumor', github: 'piesync/rumor'
+gem 'sucker_punch'
 
 gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]

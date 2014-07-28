@@ -11,6 +11,9 @@ require 'boot'
 # Configure Stripe.
 Stripe.api_key = ENV['STRIPE_SECRET_KEY'] || 'dummy'
 
+# Configure Rumor.
+require 'rumor/async/sucker_punch'
+
 # Environment specific config file.
 require $environment.to_s
 

@@ -1,4 +1,6 @@
 class Base < Sinatra::Base
+  include Rumor::Source
+
   disable :show_exceptions
 
   before do
@@ -21,6 +23,8 @@ class Base < Sinatra::Base
     json(message: 'Something went wrong')
   end
 
+  protected
+
   def json body = nil
     if body
       MultiJson.dump(body)
@@ -28,8 +32,6 @@ class Base < Sinatra::Base
       @json ||= MultiJson.load(request.body.read, symbolize_keys: true)
     end
   end
-
-  protected
 
   def stripe_error(e, extra = {})
     json({message: e.to_s}.merge(extra))
