@@ -26,6 +26,24 @@ module Billbo
     })
   end
 
+  # Creates a new subscription with VAT.
+  #
+  # customer - ID of Stripe customer.
+  # plan     - ID of plan to subscribe on.
+  # any other stripe options.
+  #
+  # Returns the Stripe::Subscription if succesful.
+  def self.create_subscription(options)
+    [:plan, :customer].each do |key|
+      raise ArgumentError, "#{key} not provided" unless options[key]
+    end
+
+    body = post('/subscriptions', MultiJson.dump(options),
+      content_type: 'application/json')
+
+    Stripe::Subscription.construct_from(body)
+  end
+
   class << self
 
     attr_accessor :host
@@ -33,10 +51,10 @@ module Billbo
     private
 
     [:get, :post].each do |verb|
-      define_method(verb) do |path, options = {}|
+      define_method(verb) do |path, *args|
         raise 'Billbo host is not configured' unless Billbo.host
 
-        response = RestClient.send(verb, "#{Billbo.host}#{path}", options)
+        response = RestClient.send(verb, "#{Billbo.host}#{path}", *args)
 
         MultiJson.load(response.body, symbolize_keys: true)
       end
