@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/piesync/billbo"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").select { |f| f.start_with?('client/') }
-  spec.require_paths = ["."]
+  spec.files         = `git ls-files -z`.split("\x0")
+    .select { |f| f.start_with?('client/') } + ['billbo.gemspec']
+  spec.require_paths = ["client"]
 end
