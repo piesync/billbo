@@ -64,6 +64,26 @@ describe App do
     end
   end
 
+  describe 'get /preview' do
+    it 'returns a price breakdown of a plan for a customer' do
+      VCR.use_cassette('preview_success') do
+        plan
+
+        get '/preview/test', {
+          country_code: 'BE',
+          is_company: 'true'
+        }
+
+        last_response.ok?.must_equal true
+        MultiJson.load(last_response.body, symbolize_keys: true).must_equal \
+          subtotal: 1499,
+          currency: 'usd',
+          vat: 314,
+          vat_rate: 21
+      end
+    end
+  end
+
   describe 'get /vat/' do
     before do
       app.any_instance.stubs(:vat_service).returns(vat_service)
