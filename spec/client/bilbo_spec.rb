@@ -17,6 +17,15 @@ describe Billbo do
     status: "active"
   }}
 
+  let(:error) {{
+    error: {
+      message: "not good",
+      type: "card_error",
+      code: 1,
+      param: "test"
+    }
+  }}
+
   describe '#preview' do
     it 'returns a preview price calculation' do
       stub_request(:get, "http://billbo.test/preview/basic")
@@ -41,6 +50,19 @@ describe Billbo do
 
       sub.must_be_kind_of(Stripe::Subscription)
       sub.to_h.must_equal subscription
+    end
+
+    describe 'a Stripe error occurs' do
+      it 'raises the error' do
+        stub_request(:post, "http://billbo.test/subscriptions")
+          .with(body: { plan: 'basic', customer: 'x', other: 'things' })
+          .to_return(body: MultiJson.dump(error), status: 402)
+
+        proc do
+          sub = Billbo.create_subscription(plan: 'basic',
+            customer: 'x', other: 'things')
+        end.must_raise(Stripe::CardError)
+      end
     end
   end
 end

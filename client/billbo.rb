@@ -1,4 +1,7 @@
-require "billbo/version"
+require 'billbo/version'
+require 'stripe'
+require 'uri'
+require 'billbo/stripe_like'
 
 module Billbo
 
@@ -38,8 +41,11 @@ module Billbo
       raise ArgumentError, "#{key} not provided" unless options[key]
     end
 
-    body = post('/subscriptions', MultiJson.dump(options),
-      content_type: 'application/json')
+    body = StripeLike.request \
+      method: :post,
+      url: "#{Billbo.host}/subscriptions",
+      payload: URI.encode_www_form(options),
+      content_type: 'application/x-www-form-urlencoded'
 
     Stripe::Subscription.construct_from(body)
   end
