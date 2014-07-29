@@ -77,13 +77,14 @@ describe Hooks do
         .with(customer_id: '10').returns(invoice_service)
 
       invoice_service.expects(:apply_vat)
-        .raises(Stripe::APIError.new('not good'))
+        .raises(Stripe::CardError.new('not good', :test, 1))
 
       post '/', json(type: 'invoice.created',
         data: { object: { id: '1', customer: '10'} })
 
       last_response.ok?.must_equal false
-      last_response.body.must_equal '{"message":"not good","type":"api_error"}'
+      last_response.status.must_equal 402
+      last_response.body.must_equal '{"error":{"message":"not good","type":"card_error","code":1,"param":"test"}}'
     end
   end
 
