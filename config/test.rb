@@ -4,8 +4,12 @@ CodeClimate::TestReporter.start
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'mocha/mini_test'
+require 'webmock/minitest'
 
 $db = Sequel.connect('sqlite://tmp/invoices_test.db')
+
+# Configure Billbo.
+Billbo.host = 'http://billbo.test'
 
 # Configure VCR.
 VCR.configure do |c|

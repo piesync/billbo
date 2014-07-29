@@ -15,4 +15,6 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0")
     .select { |f| f.start_with?('client/') } + ['billbo.gemspec']
   spec.require_paths = ["client"]
+
+  spec.add_dependency 'stripe'
 end
