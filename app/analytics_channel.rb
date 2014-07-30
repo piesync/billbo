@@ -33,8 +33,8 @@ class AnalyticsChannel < Rumor::Channel
   end
 
   def track user, event, properties = {}
-    AnalyticsRuby.track \
-      user_id: user.email,
+    $analytics.track \
+      user_id: user,
       event: event,
       properties: properties
   end
