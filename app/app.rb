@@ -61,7 +61,8 @@ class App < Base
 
   # Possibility to reserve an empty slot in the invoices
   # (for legacy invoice systems and manual invoicing).
-  # returns 200 and
+  #
+  # Returns 200 and
   # {
   #   year: 2014,
   #   sequence_number: 1,
@@ -70,6 +71,6 @@ class App < Base
   #   reserved_at: '2014-07-30 17:16:35 +0200'
   # }
   post '/reserve' do
-    json( Invoice.reserve! )
+    json(Invoice.reserve!)
   end
 end

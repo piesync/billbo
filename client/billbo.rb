@@ -44,7 +44,8 @@ module Billbo
 
   # Possibility to reserve an empty slot in the invoices
   # (for legacy invoice systems and manual invoicing).
-  # returns 200 and
+  #
+  # Returns something like
   # {
   #   year: 2014,
   #   sequence_number: 1,
