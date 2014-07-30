@@ -71,7 +71,7 @@ module Billbo
 
     private
 
-    [:get, :post].each do |verb|
+    [:get, :post, :put, :patch, :delete].each do |verb|
       define_method(verb) do |path, *args|
         raise 'Billbo host is not configured' unless Billbo.host
 
