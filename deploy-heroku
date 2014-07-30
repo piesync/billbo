@@ -17,6 +17,11 @@ Choice.options do
     long '--stripe=STIPE_SECRET_KEY'
     desc 'Your secret Stripe API key'
   end
+
+  option :segmentio_write_key do
+    long '--segmentio=SEGMENTIO_WRITE_KEY'
+    desc 'Your Segment.io write key'
+  end
 end
 
 app = ARGV[0]
@@ -39,7 +44,13 @@ else
   puts "Pushing..."
   `git push git@heroku.com:#{app}.git master --force`
 
-  heroku_env = [:api_token, :stripe_secret_key].map do |key|
+  variables = [
+    :api_token,
+    :stripe_secret_key,
+    :segmentio_write_key
+  ]
+
+  heroku_env = variables.map do |key|
     [key.to_s.upcase, Choice.choices[key]].join('=') if Choice.choices[key]
   end.join(' ')
 
