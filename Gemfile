@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 ruby '2.1.1'
 
+gemspec
+
 gem 'sinatra', :require => 'sinatra/base'
 gem 'stripe'
 gem 'valvat'

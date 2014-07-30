@@ -8,11 +8,11 @@ class App < Base
   #
   # Returns 200 if succesful
   post '/subscriptions' do
-    customer = json.delete(:customer)
+    customer = params.delete('customer')
 
     # Create subscription.
     subscription = invoice_service(customer_id: customer)
-      .create_subscription(json)
+      .create_subscription(params)
 
     json(subscription)
   end

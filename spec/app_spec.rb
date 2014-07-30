@@ -56,7 +56,7 @@ describe App do
   describe 'post /subscriptions' do
     it 'finalizes the invoice' do
       VCR.use_cassette('app_create_subscription') do
-        post '/subscriptions', json(subscription)
+        post '/subscriptions', subscription
 
         last_response.ok?.must_equal true
         MultiJson.load(last_response.body)['customer'].must_equal customer.id
