@@ -9,6 +9,14 @@ describe Billbo do
     vat_rate: '21'
   }}
 
+  let(:reservation) {{
+    year: 2014,
+    sequence_number: 1,
+    number: '2014.1',
+    finalized_at: '2014-07-30 17:16:35 +0200',
+    reserved_at: '2014-07-30 17:16:35 +0200'
+  }}
+
   let(:subscription) {{
     id: "sub_4UdC1FzfwISacg",
     plan: "basic",
@@ -36,6 +44,17 @@ describe Billbo do
         vat_registered: false)
 
       _preview.must_equal(preview)
+    end
+  end
+
+  describe '#reserve' do
+    it 'reserves an empty invoice slot' do
+      stub_request(:post, "https://X:TOKEN@billbo.test/reserve")
+        .to_return(body: MultiJson.dump(reservation))
+
+      _reservation = Billbo.reserve
+
+      _reservation.must_equal(reservation)
     end
   end
 
