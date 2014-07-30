@@ -58,11 +58,11 @@ describe Billbo do
   describe '#create_subscription' do
     it 'returns the created subscription' do
       stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
-        .with(body: { plan: 'basic', customer: 'x', other: 'things' })
+        .with(body: { plan: 'basic', customer: 'x', other: 'things', metadata: { one: 'two' } })
         .to_return(body: MultiJson.dump(subscription))
 
       sub = Billbo.create_subscription(plan: 'basic',
-        customer: 'x', other: 'things')
+        customer: 'x', other: 'things', metadata: { one: 'two' })
 
       sub.must_be_kind_of(Stripe::Subscription)
       sub.to_h.must_equal subscription

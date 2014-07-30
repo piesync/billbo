@@ -57,7 +57,7 @@ module Billbo
     body = StripeLike.request \
       method: :post,
       url: "https://#{Billbo.host}/subscriptions",
-      payload: URI.encode_www_form(options),
+      payload: options,
       content_type: 'application/x-www-form-urlencoded',
       user: 'X',
       password: Billbo.token
