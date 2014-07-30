@@ -27,6 +27,13 @@ describe VatService do
         service.valid?(vat_number: 'LU21416128').must_equal false
       end
     end
+
+    it 'validates the VAT number using the checksum' do
+        Valvat::Lookup.stubs(:validate).returns(nil)
+        service.valid?(vat_number: 'LU21416127').must_equal true
+        service.valid?(vat_number: 'IE6388047V').must_equal true
+        service.valid?(vat_number: 'LU21416128').must_equal false
+    end
   end
 
   def example amount, country_code, company
