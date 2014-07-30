@@ -25,7 +25,7 @@ module Billbo
 
     get("/preview/#{options[:plan]}", params: {
       country_code: options[:country_code],
-      is_company: options[:vat_registered]
+      vat_registered: options[:vat_registered]
     })
   end
 

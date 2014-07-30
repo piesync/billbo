@@ -37,11 +37,11 @@ class VatService
   #
   # amount       - Base amount that is VAT taxable in cents (or not).
   # country_code - ISO country code.
-  # is_company   - true if customer is a company
+  # vat_registered   - true if a customer is vat registered
   #
   # Returns amount of VAT payable (rounded down).
-  def calculate(amount:, country_code:, is_company:)
-    rate = vat_rate(country_code, is_company)
+  def calculate(amount:, country_code:, vat_registered:)
+    rate = vat_rate(country_code, vat_registered)
     VatCharge.new(amount*rate/100, rate)
   end
 
@@ -60,17 +60,17 @@ class VatService
   # Calculates VAT percentage.
   #
   # country_code - ISO country code.
-  # is_company   - true if customer is a company
+  # vat_registered   - true if customer is vat registered
   #
   # Returns an integer (percentage).
-  def vat_rate(country_code, is_company)
+  def vat_rate(country_code, vat_registered)
     # Both individuals and companies pay VAT
     # in a country where you are VAT registered.
     if configuration_service.registered_countries.include?(country_code)
       VAT_RATES[country_code]
     elsif eu?(country_code)
       # Companies in other EU countries don't need to pay VAT.
-      if is_company
+      if vat_registered
         0
       # Individuals in other EU countries do need to pay VAT.
       else

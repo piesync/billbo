@@ -29,7 +29,7 @@ describe App do
 
   let(:metadata) {{
     country_code: 'NL',
-    is_company: 'false',
+    vat_registered: 'false',
     other: 'random'
   }}
 
@@ -71,7 +71,7 @@ describe App do
 
         get '/preview/test', {
           country_code: 'BE',
-          is_company: 'true'
+          vat_registered: 'true'
         }
 
         last_response.ok?.must_equal true
