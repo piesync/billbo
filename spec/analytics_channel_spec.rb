@@ -4,21 +4,32 @@ describe AnalyticsChannel do
   include Rumor::Source
 
   let(:channel) { AnalyticsChannel.new }
-  let(:customer_id) { '1' }
+
+  let(:customer_id) { 'c1' }
   let(:customer) do
     Stripe::Customer.construct_from \
       email: 'oss@piesync.com',
       metadata: {}
   end
 
+  let(:invoice_id) { 'i1' }
+  let(:invoice) do
+    Stripe::Invoice.construct_from \
+      metadata: { vat_amount: '210' }
+  end
+
   let(:charge) do
-    { amount: 1000, customer: customer_id }
+    { amount: 1210, customer: customer_id, invoice: invoice_id }
   end
 
   before do
     Stripe::Customer.stubs(:retrieve)
       .with(customer_id)
       .returns(customer)
+
+    Stripe::Invoice.stubs(:retrieve)
+      .with(invoice_id)
+      .returns(invoice)
   end
 
   describe 'charge_succeeded' do
