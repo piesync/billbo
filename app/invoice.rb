@@ -14,20 +14,17 @@ class Invoice < Sequel::Model
   def finalize!
     raise AlreadyFinalized if finalized?
 
-    year = Time.now.year
-    sequence_number = next_sequence_number(year)
-
-    # Number is a formatted version of this.
-    number = "#{year}.#{sequence_number}"
-
     # now update the invoice.
-    update \
-      year: year,
-      sequence_number: sequence_number,
-      number: number,
-      finalized_at: Time.now
+    update self.class.next_sequence
 
     self
+  end
+
+  def self.reserve!
+    reserved_info = next_sequence.merge!(reserved_at: Time.now)
+
+    # now create the reserved slot.
+    create reserved_info
   end
 
   def added_vat!
@@ -46,7 +43,21 @@ class Invoice < Sequel::Model
 
   private
 
-  def next_sequence_number(year)
+  def self.next_sequence
+    year = Time.now.year
+    sequence_number = next_sequence_number(year)
+
+    # Number is a formatted version of this.
+    number = "#{year}.#{sequence_number}"
+    {
+      year: year,
+      sequence_number: sequence_number,
+      number: number,
+      finalized_at: Time.now
+    }
+  end
+
+  def self.next_sequence_number(year)
     last_invoice = Invoice
       .where('number IS NOT NULL')
       .where(year: year)
