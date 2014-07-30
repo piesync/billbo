@@ -31,6 +31,9 @@ class InvoiceService
     invoice
   end
 
+  def process_payment
+  end
+
   private
 
   def ensure_invoice(stripe_id)

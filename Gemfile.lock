@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/piesync/rumor.git
+  revision: 7b196c9b586d32edd6164269f1ce843baf79a412
+  specs:
+    rumor (0.2.0)
+
 PATH
   remote: .
   specs:
@@ -11,6 +17,7 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
+    analytics-ruby (2.0.1)
     builder (3.2.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
@@ -106,6 +113,8 @@ GEM
       json (~> 1.8.1)
       mime-types (~> 1.25)
       rest-client (~> 1.4)
+    sucker_punch (1.0.5)
+      celluloid (~> 0.15.2)
     systemu (2.6.4)
     thin (1.6.2)
       daemons (>= 1.0.9)
@@ -131,6 +140,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  analytics-ruby
   billbo!
   choice
   codeclimate-test-reporter
@@ -143,11 +153,13 @@ DEPENDENCIES
   puma
   rack-test
   rake
+  rumor!
   sequel
   shotgun
   sinatra
   sqlite3
   stripe
+  sucker_punch
   thin
   valvat
   vcr

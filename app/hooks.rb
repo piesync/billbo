@@ -7,10 +7,12 @@ class Hooks < Base
     event  = Stripe::Event.construct_from(json)
     object = event.data.object
 
-    case event.type
-    when 'invoice.created'; invoice_created(object)
-    when 'invoice.payment_succeeded'; invoice_payment_succeeded(object)
-    end
+    # Call method based on event type if it exists.
+    method_name = event.type.gsub('.', '_').to_sym
+    send(method_name, object) if respond_to?(method_name, true)
+
+    # Send rumor event.
+    rumor(method_name).on(object).mention(event: event).spread
 
     status 200
   end
