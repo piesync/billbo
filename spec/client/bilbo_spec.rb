@@ -42,7 +42,7 @@ describe Billbo do
   describe '#vat' do
     it 'returns the number itself if it exists' do
       stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123")
-        .to_return(statsu: 200)
+        .to_return(status: 200)
 
       Billbo.vat('BE123').must_equal number: 'BE123'
     end
