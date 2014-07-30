@@ -22,8 +22,9 @@ describe AnalyticsChannel do
       }
   end
 
+  let(:amount) { 1210 }
   let(:charge) do
-    { amount: 1210, customer: customer_id, invoice: invoice_id }
+    { amount: amount, customer: customer_id, invoice: invoice_id }
   end
 
   before do
@@ -50,6 +51,30 @@ describe AnalyticsChannel do
         }
 
       channel.handle rumor(:charge_succeeded).on(charge)
+    end
+
+    describe 'vat amount not available' do
+      let(:amount) { 1000 }
+      let(:invoice) do
+        Stripe::Invoice.construct_from \
+          currency: 'usd',
+          metadata: {}
+      end
+
+      it 'tracks revenue changed' do
+        $analytics.expects(:track).with \
+          user_id: 'oss@piesync.com',
+          event: 'revenue changed',
+          properties: {
+            revenue: 10.0,
+            currency: 'usd',
+            vat_amount: 0.0,
+            vat_rate: '0',
+            total: 10.0
+          }
+
+        channel.handle rumor(:charge_succeeded).on(charge)
+      end
     end
   end
 

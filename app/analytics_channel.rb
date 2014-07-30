@@ -42,7 +42,7 @@ class AnalyticsChannel < Rumor::Channel
       revenue: revenue,
       currency: invoice.currency,
       vat_amount: vat,
-      vat_rate: invoice.metadata[:vat_rate],
+      vat_rate: invoice.metadata[:vat_rate] || '0',
       total: revenue + vat
   end
 
