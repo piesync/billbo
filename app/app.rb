@@ -8,13 +8,42 @@ class App < Base
   #
   # Returns 200 if succesful
   post '/subscriptions' do
-    customer = json.delete(:customer)
+    customer = params.delete('customer')
 
     # Create subscription.
     subscription = invoice_service(customer_id: customer)
-      .create_subscription(json)
+      .create_subscription(params)
 
     json(subscription)
+  end
+
+  # Fetches a preview breakdown of the costs of a subscription.
+  #
+  # plan         - Stripe plan ID.
+  # country_code - Country code of the customer (ISO 3166-1 alpha-2 standard)
+  # is_company   - Whether the customer is a company (default: false).
+  #
+  # Returns 200 and
+  # {
+  #    subtotal: 10,
+  #    currency: 'eur',
+  #    vat: 2.1,
+  #    vat_rate: '21'
+  # }
+  get '/preview/:plan' do
+    plan = Stripe::Plan.retrieve(params[:plan])
+
+    vat = vat_service.calculate \
+      amount: plan.amount,
+      country_code: params[:country_code],
+      is_company: (params[:is_company] == 'true')
+
+    json({
+      subtotal: plan.amount,
+      currency: plan.currency,
+      vat: vat.amount,
+      vat_rate: vat.rate
+    })
   end
 
   get '/vat/:number' do

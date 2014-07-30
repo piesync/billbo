@@ -4,6 +4,12 @@ GIT
   specs:
     rumor (0.2.0)
 
+PATH
+  remote: .
+  specs:
+    billbo (0.0.1)
+      stripe
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -133,6 +139,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  billbo!
   choice
   codeclimate-test-reporter
   guard
