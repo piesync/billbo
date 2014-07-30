@@ -20,7 +20,7 @@ module Billbo
   # }
   def self.preview(options)
     [:plan, :country_code, :vat_registered].each do |key|
-      raise ArgumentError, "#{key} not provided" unless options[key]
+      raise ArgumentError, "#{key} not provided" if options[key].nil?
     end
 
     get("/preview/#{options[:plan]}", params: {
@@ -51,7 +51,7 @@ module Billbo
   # Returns the Stripe::Subscription if succesful.
   def self.create_subscription(options)
     [:plan, :customer].each do |key|
-      raise ArgumentError, "#{key} not provided" unless options[key]
+      raise ArgumentError, "#{key} not provided" if options[key].nil?
     end
 
     body = StripeLike.request \

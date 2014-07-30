@@ -29,11 +29,11 @@ describe Billbo do
   describe '#preview' do
     it 'returns a preview price calculation' do
       stub_request(:get, "https://X:TOKEN@billbo.test/preview/basic")
-        .with(query: { country_code: 'BE', is_company: 'true' })
+        .with(query: { country_code: 'BE', is_company: 'false' })
         .to_return(body: MultiJson.dump(preview))
 
       _preview = Billbo.preview(plan: 'basic', country_code: 'BE',
-        vat_registered: true)
+        vat_registered: false)
 
       _preview.must_equal(preview)
     end
