@@ -17,6 +17,7 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
+    analytics-ruby (2.0.1)
     builder (3.2.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
@@ -139,6 +140,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  analytics-ruby
   billbo!
   choice
   codeclimate-test-reporter

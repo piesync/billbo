@@ -28,6 +28,15 @@ VCR.configure do |c|
   c.ignore_hosts 'codeclimate.com'
 end
 
+# Configure Analytics if enabled.
+$analytics = Segment::Analytics.new({
+  write_key: 'dummy',
+  on_error: Proc.new { |status, msg| puts msg },
+  stub: true
+})
+
+Rumor.register :analytics, AnalyticsChannel.new
+
 # Minitest clear db hook
 module MiniTestHooks
   def setup

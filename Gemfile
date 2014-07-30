@@ -11,6 +11,7 @@ gem 'oj'
 gem 'sequel'
 gem 'rumor', github: 'piesync/rumor'
 gem 'sucker_punch'
+gem 'analytics-ruby', :require => 'segment'
 
 gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]

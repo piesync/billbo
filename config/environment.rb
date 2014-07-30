@@ -8,13 +8,16 @@ end
 # Bundle.
 require 'boot'
 
+# Channels.
+require 'analytics_channel'
+
 # Configure Stripe.
 Stripe.api_key = ENV['STRIPE_SECRET_KEY'] || 'dummy'
 
 # Configure Analytics if enabled.
 if ENV['SEGMENTIO_WRITE_KEY']
-  AnalyticsRuby.init({
-    secret: ENV['SEGMENTIO_WRITE_KEY'],
+  $analytics = Segment::Analytics.new({
+    write_key: ENV['SEGMENTIO_WRITE_KEY'],
     on_error: Proc.new { |status, msg| puts msg }
   })
 
@@ -43,3 +46,4 @@ require 'invoice_service'
 require 'base'
 require 'hooks'
 require 'app'
+
