@@ -15,7 +15,11 @@ describe AnalyticsChannel do
   let(:invoice_id) { 'i1' }
   let(:invoice) do
     Stripe::Invoice.construct_from \
-      metadata: { vat_amount: '210' }
+      currency: 'usd',
+      metadata: {
+        vat_amount: '210',
+        vat_rate: '21'
+      }
   end
 
   let(:charge) do
@@ -37,7 +41,13 @@ describe AnalyticsChannel do
       $analytics.expects(:track).with \
         user_id: 'oss@piesync.com',
         event: 'revenue changed',
-        properties: { revenue: 10.0 }
+        properties: {
+          revenue: 10.0,
+          currency: 'usd',
+          vat_amount: 2.1,
+          vat_rate: '21',
+          total: 12.1
+        }
 
       channel.handle rumor(:charge_succeeded).on(charge)
     end
@@ -48,7 +58,13 @@ describe AnalyticsChannel do
       $analytics.expects(:track).with \
         user_id: 'oss@piesync.com',
         event: 'revenue changed',
-        properties: { revenue: -10.0 }
+        properties: {
+          revenue: -10.0,
+          currency: 'usd',
+          vat_amount: -2.1,
+          vat_rate: '21',
+          total: -12.1
+        }
 
       channel.handle rumor(:charge_refunded).on(charge)
     end

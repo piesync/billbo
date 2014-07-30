@@ -38,7 +38,12 @@ class AnalyticsChannel < Rumor::Channel
     revenue -= vat
 
     # Track.
-    track analytics_id, 'revenue changed', revenue: revenue
+    track analytics_id, 'revenue changed',
+      revenue: revenue,
+      currency: invoice.currency,
+      vat_amount: vat,
+      vat_rate: invoice.metadata[:vat_rate],
+      total: revenue + vat
   end
 
   def get_analytics_id_for_customer(customer_id)
