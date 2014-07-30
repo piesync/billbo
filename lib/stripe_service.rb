@@ -87,7 +87,7 @@ class StripeService
     vat = vat_service.calculate \
       amount: amount,
       country_code: customer.metadata[:country_code],
-      is_company: (customer.metadata[:is_company] == 'true')
+      vat_registered: (customer.metadata[:vat_registered] == 'true')
 
     # Add an invoice item to the invoice with this amount.
     invoice_item = Stripe::InvoiceItem.create(

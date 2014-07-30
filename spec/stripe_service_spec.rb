@@ -4,7 +4,7 @@ describe StripeService do
 
   let(:metadata) {{
     country_code: 'NL',
-    is_company: 'false',
+    vat_registered: 'false',
     other: 'random'
   }}
 
@@ -78,7 +78,7 @@ describe StripeService do
     describe 'customer does not have to pay VAT' do
       let(:metadata) {{
         country_code: 'US',
-        is_company: 'true',
+        vat_registered: 'true',
         other: 'random'
       }}
 

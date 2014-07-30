@@ -21,7 +21,7 @@ class App < Base
   #
   # plan         - Stripe plan ID.
   # country_code - Country code of the customer (ISO 3166-1 alpha-2 standard)
-  # is_company   - Whether the customer is a company (default: false).
+  # vat_registered   - Whether the customer is vat registered (default: false).
   #
   # Returns 200 and
   # {
@@ -36,7 +36,7 @@ class App < Base
     vat = vat_service.calculate \
       amount: plan.amount,
       country_code: params[:country_code],
-      is_company: (params[:is_company] == 'true')
+      vat_registered: (params[:vat_registered] == 'true')
 
     json({
       subtotal: plan.amount,

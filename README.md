@@ -52,7 +52,7 @@ Stripe::Customer.create(
   card: "tok_14JuLq2nHroS7mLXZ5uxDRqs" # obtained with Stripe.js
   metadata: {
     country_code: '', # required - ISO 3166-1 alpha-2 standard
-    is_company: true, # required
+    vat_registered: true, # required
     ... # optional extra metadata
   }
 )
