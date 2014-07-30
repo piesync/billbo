@@ -28,7 +28,7 @@ describe Billbo do
 
   describe '#preview' do
     it 'returns a preview price calculation' do
-      stub_request(:get, "http://billbo.test/preview/basic")
+      stub_request(:get, "https://X:TOKEN@billbo.test/preview/basic")
         .with(query: { country_code: 'BE', is_company: 'true' })
         .to_return(body: MultiJson.dump(preview))
 
@@ -41,7 +41,7 @@ describe Billbo do
 
   describe '#create_subscription' do
     it 'returns the created subscription' do
-      stub_request(:post, "http://billbo.test/subscriptions")
+      stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
         .with(body: { plan: 'basic', customer: 'x', other: 'things' })
         .to_return(body: MultiJson.dump(subscription))
 
@@ -54,7 +54,7 @@ describe Billbo do
 
     describe 'a Stripe error occurs' do
       it 'raises the error' do
-        stub_request(:post, "http://billbo.test/subscriptions")
+        stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
           .with(body: { plan: 'basic', customer: 'x', other: 'things' })
           .to_return(body: MultiJson.dump(error), status: 402)
 

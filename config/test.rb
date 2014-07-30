@@ -9,7 +9,8 @@ require 'webmock/minitest'
 $db = Sequel.connect('sqlite://tmp/invoices_test.db')
 
 # Configure Billbo.
-Billbo.host = 'http://billbo.test'
+Billbo.host = 'billbo.test'
+Billbo.token = 'TOKEN'
 
 # Configure VCR.
 VCR.configure do |c|

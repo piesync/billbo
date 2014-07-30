@@ -43,16 +43,18 @@ module Billbo
 
     body = StripeLike.request \
       method: :post,
-      url: "#{Billbo.host}/subscriptions",
+      url: "https://#{Billbo.host}/subscriptions",
       payload: URI.encode_www_form(options),
-      content_type: 'application/x-www-form-urlencoded'
+      content_type: 'application/x-www-form-urlencoded',
+      user: 'X',
+      password: Billbo.token
 
     Stripe::Subscription.construct_from(body)
   end
 
   class << self
 
-    attr_accessor :host
+    attr_accessor :host, :token
 
     private
 
@@ -60,7 +62,8 @@ module Billbo
       define_method(verb) do |path, *args|
         raise 'Billbo host is not configured' unless Billbo.host
 
-        response = RestClient.send(verb, "#{Billbo.host}#{path}", *args)
+        response = RestClient.send(verb,
+          "https://X:#{Billbo.token}@#{Billbo.host}#{path}", *args)
 
         MultiJson.load(response.body, symbolize_keys: true)
       end
