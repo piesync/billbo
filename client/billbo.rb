@@ -29,6 +29,19 @@ module Billbo
     })
   end
 
+  # Fetches details about a VAT number.
+  #
+  # number - the VAT number.
+  #
+  # Returns nil if the VAT number does not exist.
+  # TK return info about the vat number.
+  def self.vat(number)
+    get("/vat/#{number}")
+    { number: number }
+  rescue RestClient::ResourceNotFound
+    nil
+  end
+
   # Creates a new subscription with VAT.
   #
   # customer - ID of Stripe customer.
@@ -65,7 +78,7 @@ module Billbo
         response = RestClient.send(verb,
           "https://X:#{Billbo.token}@#{Billbo.host}#{path}", *args)
 
-        MultiJson.load(response.body, symbolize_keys: true)
+        MultiJson.load(response.body, symbolize_keys: true) if response.body && !response.body.empty?
       end
     end
   end

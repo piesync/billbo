@@ -39,6 +39,22 @@ describe Billbo do
     end
   end
 
+  describe '#vat' do
+    it 'returns the number itself if it exists' do
+      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123")
+        .to_return(statsu: 200)
+
+      Billbo.vat('BE123').must_equal number: 'BE123'
+    end
+
+    it 'returns nil if the vat number does not exist' do
+      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123")
+        .to_return(status: 404)
+
+      Billbo.vat('BE123').must_be_nil
+    end
+  end
+
   describe '#create_subscription' do
     it 'returns the created subscription' do
       stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
