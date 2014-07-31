@@ -14,17 +14,20 @@ class Invoice < Sequel::Model
   def finalize!
     raise AlreadyFinalized if finalized?
 
-    # now update the invoice.
-    update self.class.next_sequence
+    self.class.safe_transaction do
+      # update the invoice.
+      update self.class.next_sequence
+    end
 
     self
   end
 
   def self.reserve!
-    reserved_info = next_sequence.merge!(reserved_at: Time.now)
-
-    # now create the reserved slot.
-    create reserved_info
+    safe_transaction do
+      reserved_info = next_sequence.merge!(reserved_at: Time.now)
+      # create the reserved slot.
+      create reserved_info
+    end
   end
 
   def added_vat!
@@ -42,6 +45,12 @@ class Invoice < Sequel::Model
   end
 
   private
+
+  def self.safe_transaction
+    yield
+  rescue Sequel::UniqueConstraintViolation
+    retry
+  end
 
   def self.next_sequence
     year = Time.now.year
