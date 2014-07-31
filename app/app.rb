@@ -46,6 +46,7 @@ class App < Base
     })
   end
 
+  # validates (looks up) the given vat_number
   get '/vat/:number' do
     if vat_service.valid?(vat_number: params[:number])
       status 200
@@ -56,5 +57,20 @@ class App < Base
 
   get '/ping' do
     status 200
+  end
+
+  # Possibility to reserve an empty slot in the invoices
+  # (for legacy invoice systems and manual invoicing).
+  #
+  # Returns 200 and
+  # {
+  #   year: 2014,
+  #   sequence_number: 1,
+  #   number: '2014.1'
+  #   finalized_at: '2014-07-30 17:16:35 +0200',
+  #   reserved_at: '2014-07-30 17:16:35 +0200'
+  # }
+  post '/reserve' do
+    json(Invoice.reserve!)
   end
 end

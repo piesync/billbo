@@ -42,6 +42,21 @@ module Billbo
     nil
   end
 
+  # Possibility to reserve an empty slot in the invoices
+  # (for legacy invoice systems and manual invoicing).
+  #
+  # Returns something like
+  # {
+  #   year: 2014,
+  #   sequence_number: 1,
+  #   number: 2014.1,
+  #   finalized_at: '2014-07-30 17:16:35 +0200',
+  #   reserved_at: '2014-07-30 17:16:35 +0200'
+  # }
+  def self.reserve
+    post("/reserve", {})
+  end
+
   # Creates a new subscription with VAT.
   #
   # customer - ID of Stripe customer.

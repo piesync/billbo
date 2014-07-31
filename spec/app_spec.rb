@@ -106,6 +106,22 @@ describe App do
     end
   end
 
+  describe 'post /reserve/' do
+    it 'reserves a slot' do
+      post '/reserve'
+      last_response.ok?.must_equal true
+
+      response = MultiJson.load(last_response.body, symbolize_keys: true)
+
+      response[:year].wont_be_nil
+      response[:sequence_number].wont_be_nil
+      response[:number].wont_be_nil
+      response[:finalized_at].wont_be_nil
+      response[:reserved_at].wont_be_nil
+    end
+
+  end
+
   def json(object)
     MultiJson.dump(object)
   end
