@@ -82,6 +82,10 @@ describe Hooks do
           invoice = Invoice.first
           invoice.sequence_number.must_equal 1
           invoice.finalized_at.wont_be_nil
+
+          invoice.total.wont_be_nil
+          invoice.vat_amount.wont_be_nil
+          invoice.vat_rate.wont_be_nil
         end
       end
     end
