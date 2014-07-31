@@ -83,9 +83,9 @@ describe Hooks do
           invoice.sequence_number.must_equal 1
           invoice.finalized_at.wont_be_nil
 
-          invoice.total.wont_be_nil
-          invoice.vat_amount.wont_be_nil
-          invoice.vat_rate.wont_be_nil
+          invoice.total.must_equal 100
+          invoice.vat_amount.must_equal 0
+          invoice.vat_rate.must_equal 0.to_f
         end
       end
     end
