@@ -1,6 +1,7 @@
 class VatService
   VatCharge = Struct.new(:amount, :rate)
 
+  # http://ec.europa.eu/taxation_customs/resources/documents/taxation/vat/how_vat_works/rates/vat_rates_en.pdf
   VAT_RATES = {
     'BE' => 21,
     'BG' => 20,
