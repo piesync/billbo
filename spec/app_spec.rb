@@ -106,6 +106,37 @@ describe App do
     end
   end
 
+  describe 'get /vat/details' do
+    let(:details) {{
+      country_code: 'IE',
+      vat_number: '1',
+      request_date: 'date',
+      name: 'name',
+      address: 'address'
+    }}
+
+    before do
+      app.any_instance.stubs(:vat_service).returns(vat_service)
+    end
+
+    it 'returns details about a valid vat number' do
+      vat_service.expects(:details).with(vat_number: '1').returns(MultiJson.dump(details))
+
+      get '/vat/1/details'
+      last_response.ok?.must_equal true
+
+      MultiJson.load(last_response.body, symbolize_keys: true).must_equal details
+    end
+
+    it "doesn't find an invalid vat number" do
+      vat_service.expects(:details).with(vat_number: '2').returns(false)
+
+      get '/vat/2/details'
+      last_response.ok?.must_equal false
+      last_response.body.must_be_empty
+    end
+  end
+
   describe 'post /reserve/' do
     it 'reserves a slot' do
       post '/reserve'
