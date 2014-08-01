@@ -29,15 +29,28 @@ module Billbo
     })
   end
 
-  # Fetches details about a VAT number.
+  # validates a VAT number.
   #
   # number - the VAT number.
   #
   # Returns nil if the VAT number does not exist.
-  # TK return info about the vat number.
   def self.vat(number)
     get("/vat/#{number}")
     { number: number }
+  rescue RestClient::ResourceNotFound
+    nil
+  end
+
+  # gets details about a VAT number.
+  #
+  # number - the VAT number.
+  # own_vat - own VAT number (to get a request identifier)
+  #
+  # Returns nil if the VAT number does not exist.
+  def self.vat_details(number, own_vat = nil)
+    get("/vat/#{number}/details", params: {
+      own_vat: own_vat
+    })
   rescue RestClient::ResourceNotFound
     nil
   end
