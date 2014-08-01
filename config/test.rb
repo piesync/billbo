@@ -18,7 +18,7 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.default_cassette_options = {
     record: :once,
-    allow_unused_http_interactions: false
+    allow_unused_http_interactions: true
   }
 
   c.filter_sensitive_data('<AUTH>') do |interaction|
