@@ -78,7 +78,7 @@ describe App do
         MultiJson.load(last_response.body, symbolize_keys: true).must_equal \
           subtotal: 1499,
           currency: 'usd',
-          vat: 314,
+          vat: 315,
           vat_rate: 21
       end
     end

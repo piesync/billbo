@@ -111,10 +111,10 @@ describe StripeService do
         invoices = customer.invoices
         invoices.to_a.size.must_equal 1
         invoice = invoices.first
-        invoice.total.must_equal 1813
+        invoice.total.must_equal 1814
         invoice.lines.to_a.size.must_equal 2
         invoice.metadata.to_h.must_equal metadata.merge(
-          vat_amount: '314', vat_rate: '21'
+          vat_amount: '315', vat_rate: '21'
         )
 
         upcoming = customer.upcoming_invoice

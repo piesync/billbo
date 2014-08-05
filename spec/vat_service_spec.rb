@@ -15,6 +15,10 @@ describe VatService do
 
         example(100, 'BE', false).amount.must_equal(21)
         example(100, 'BE', true).amount.must_equal(21)
+
+        # Rounded.
+        example(2010, 'BE', true).amount.must_equal(422)
+        example(2060, 'BE', true).amount.must_equal(433)
       end
     end
   end

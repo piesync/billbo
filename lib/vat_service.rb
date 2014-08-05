@@ -35,14 +35,14 @@ class VatService
   # Calculates VAT amount based on country and whether the customer
   # is a company or not.
   #
-  # amount       - Base amount that is VAT taxable in cents (or not).
-  # country_code - ISO country code.
+  # amount           - Base amount that is VAT taxable in cents (or not).
+  # country_code     - ISO country code.
   # vat_registered   - true if a customer is vat registered
   #
-  # Returns amount of VAT payable (rounded down).
+  # Returns amount of VAT payable, in cents (rounded down).
   def calculate(amount:, country_code:, vat_registered:)
     rate = vat_rate(country_code, vat_registered)
-    VatCharge.new(amount*rate/100, rate)
+    VatCharge.new((amount*rate/100.0).round, rate)
   end
 
   # Checks if given VAT number is valid.
