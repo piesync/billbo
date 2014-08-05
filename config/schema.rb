@@ -8,4 +8,7 @@ $db.create_table :invoices do
   Boolean :added_vat
   Time    :finalized_at
   Time    :reserved_at
+  Integer :total
+  Integer :vat_amount
+  Decimal :vat_rate
 end unless $db.tables.include?(:invoices)
