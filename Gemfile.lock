@@ -8,6 +8,7 @@ PATH
   remote: .
   specs:
     billbo (0.0.1)
+      multi_json
       stripe
 
 GEM

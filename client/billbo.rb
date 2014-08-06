@@ -1,5 +1,6 @@
 require 'billbo/version'
 require 'stripe'
+require 'multi_json'
 require 'uri'
 require 'billbo/stripe_like'
 
@@ -93,7 +94,7 @@ module Billbo
         response = RestClient.send(verb,
           "https://X:#{Billbo.token}@#{Billbo.host}#{path}", *args)
 
-        MultiJson.load(response.body, symbolize_keys: true) if response.body && !response.body.empty?
+        MultiJson.decode(response.body, symbolize_keys: true) if response.body && !response.body.empty?
       end
     end
   end

@@ -17,4 +17,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["client"]
 
   spec.add_dependency 'stripe'
+  spec.add_dependency 'multi_json'
 end
