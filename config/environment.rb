@@ -48,3 +48,6 @@ require 'hooks'
 require 'app'
 
 Invoice.number_format = ENV['INVOICE_NUMBER_FORMAT'] || '%{year}%<sequence>06d'
+
+# Disconnect before forking.
+$db.disconnect
