@@ -1,6 +1,11 @@
 class Invoice < Sequel::Model
   AlreadyFinalized = Class.new(StandardError)
 
+  class << self
+    # TK Get from config.
+    attr_accessor :number_format
+  end
+
   def self.find_or_create_from_stripe(stripe_id:, **attributes)
     attributes = attributes.merge(stripe_id: stripe_id)
     # Check if an invoice exists already with that stripe id.
@@ -57,7 +62,7 @@ class Invoice < Sequel::Model
     sequence_number = next_sequence_number(year)
 
     # Number is a formatted version of this.
-    number = "#{year}.#{sequence_number}"
+    number = number_format % { year: year, sequence: sequence_number }
     {
       year: year,
       sequence_number: sequence_number,
