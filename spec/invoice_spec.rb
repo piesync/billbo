@@ -56,20 +56,27 @@ describe Invoice do
     let(:invoice) { Invoice.new }
 
     it 'reserves an empty slot for an invoice' do
-      invoice = Invoice.reserve!
+      invoice1 = Invoice.reserve!
       Invoice.count.must_equal 1
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 1
-      invoice.number.must_equal "#{year}000001"
-      invoice.finalized_at.must_be :>, Time.now - 10
-      invoice.reserved_at.must_be :>, Time.now - 10
+      invoice1.year.must_equal year
+      invoice1.sequence_number.must_equal 1
+      invoice1.number.must_equal "#{year}000001"
+      invoice1.finalized_at.must_be :>, Time.now - 10
+      invoice1.reserved_at.must_be :>, Time.now - 10
 
-      invoice = Invoice.reserve!
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 2
-      invoice.number.must_equal "#{year}000002"
-      invoice.finalized_at.must_be :>, Time.now - 10
-      invoice.reserved_at.must_be :>, Time.now - 10
+      invoice2 = Invoice.reserve!
+      invoice2.year.must_equal year
+      invoice2.sequence_number.must_equal 2
+      invoice2.number.must_equal "#{year}000002"
+      invoice2.finalized_at.must_be :>, invoice1.finalized_at
+      invoice2.reserved_at.must_be :>, invoice1.reserved_at
+
+      invoice3 = Invoice.reserve!
+      invoice3.year.must_equal year
+      invoice3.sequence_number.must_equal 3
+      invoice3.number.must_equal "#{year}000003"
+      invoice3.finalized_at.must_be :>, invoice2.finalized_at
+      invoice3.reserved_at.must_be :>, invoice2.reserved_at
     end
 
     it 'does not reserve two invoices with the same number' do
