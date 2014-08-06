@@ -60,11 +60,14 @@ class VatService
 
   # Calculates VAT percentage.
   #
-  # country_code - ISO country code.
+  # country_code     - ISO country code.
   # vat_registered   - true if customer is vat registered
   #
   # Returns an integer (percentage).
   def vat_rate(country_code, vat_registered)
+    # VAT Rate is zero if country code is nil.
+    return 0 if country_code.nil?
+
     # Both individuals and companies pay VAT
     # in a country where you are VAT registered.
     if configuration_service.registered_countries.include?(country_code)

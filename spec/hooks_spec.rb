@@ -108,6 +108,31 @@ describe Hooks do
         last_response.body.must_equal '{"error":{"message":"not good","type":"card_error","code":1,"param":"test"}}'
       end
     end
+
+    describe 'the customer does not have any metadata' do
+      let(:metadata) { { other: 'random' } }
+
+      it 'does nothing' do
+        VCR.use_cassette('hook_invoice_created_no_meta') do
+          post '/', json(type: 'invoice.created',
+              data: { object: stripe_invoice })
+
+          last_response.ok?.must_equal true
+          Invoice.count.must_equal 1
+          Stripe::Invoice.retrieve(stripe_invoice.id).lines.to_a.size.must_equal 1
+
+          post '/', json(type: 'invoice.payment_succeeded',
+            data: { object: Stripe::Invoice.retrieve(stripe_invoice.id) })
+
+          last_response.ok?.must_equal true
+          invoice = Invoice.first
+          invoice.number.wont_be_nil
+          invoice.total.must_equal 100
+          invoice.vat_amount.must_equal 0
+          invoice.vat_rate.must_equal 0
+        end
+      end
+    end
   end
 
   def json(object)
