@@ -22,6 +22,16 @@ Choice.options do
     long '--segmentio=SEGMENTIO_WRITE_KEY'
     desc 'Your Segment.io write key'
   end
+
+  options :invoice_number_format do
+    long '--nrformat=INVOICE_NUMBER_FORMAT'
+    desc 'String format for invoice numbers (printf), default: %{year}%<sequence>06d'
+  end
+
+  options :sentry_dsn do
+    long '--sentry=SENTRY_DSN'
+    desc 'Sentry endpoint to send errors to'
+  end
 end
 
 app = ARGV[0]
@@ -48,6 +58,8 @@ else
     :api_token,
     :stripe_secret_key,
     :segmentio_write_key
+    :invoice_number_format,
+    :sentry_dsn
   ]
 
   heroku_env = variables.map do |key|
