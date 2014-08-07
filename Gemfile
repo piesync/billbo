@@ -35,4 +35,5 @@ end
 group :production do
   gem 'pg'
   gem 'puma'
+  gem 'sentry-raven', :git => "https://github.com/getsentry/raven-ruby.git", :require => 'raven'
 end
