@@ -19,10 +19,12 @@ Features
 -----
 
 * Automatic VAT addition according to legal regulations
-* VAT number validation
-* Automatic and consistent invoice numbering
-* Revenue analytics with [Segment.io](https://segment.io/) ( optional )
-* Automatic pdf invoice generation and emailing ( work in progress )
+* VAT number validation and owner details (company name, address)
+* Automatic and consistent invoice numbering (configurable)
+* Revenue analytics with [Segment.io](https://segment.io/) (optional)
+* Error Tracking with [Getsentry](https://getsentry.com/) (optional)
+* Automatic pdf invoice generation and emailing (work in progress)
+* Battle-tested at [PieSync](http://www.piesync.com)
 
 Deployment
 ------------
@@ -51,7 +53,7 @@ Example using Ruby:
 Stripe::Customer.create(
   card: "tok_14JuLq2nHroS7mLXZ5uxDRqs" # obtained with Stripe.js
   metadata: {
-    country_code: '', # required - ISO 3166-1 alpha-2 standard
+    country_code: 'US', # required - ISO 3166-1 alpha-2 standard
     vat_registered: true, # required
     ... # optional extra metadata
   }
@@ -64,10 +66,17 @@ This way you can make your invoices immutable containing all their needed info t
 ### Creating Subscriptions
 To use Billbo in the correct way, instead of creating subscriptions using the Stripe API, create your subscriptions using Billbo.
 
-Example using Curl:
+Example using the Billbo Ruby Gem:
+```ruby
+Billbo.create_subscription(
+  plan: 'basic',
+  customer: 'cus_4XWKfwBrWLHvf8',
+  ... # other Stripe compatible options
+)
+# => A Stripe::Subscription object
 ```
-to be completed
-```
+
+You can pass all options supported in the Stripe [create subscription](https://stripe.com/docs/api#create_subscription) call. The returned `Stripe::Subscription` or possible raised error are 100% compatible with the [Stripe Ruby Gem](https://github.com/stripe/stripe-ruby).
 
 Help and Discussion
 -------------------
