@@ -125,24 +125,44 @@ describe StripeService do
 
     describe 'the plan has a trial period' do
       it 'creates a subscription but does not add VAT' do
-      VCR.use_cassette('create_subscription_trial_success') do
-        subscription, invoice = service.create_subscription(plan: trial_plan.id)
-        invoice.must_be_kind_of(Stripe::Invoice)
-        invoice.id.wont_be_nil
+        VCR.use_cassette('create_subscription_trial_success') do
+          subscription, invoice = service.create_subscription(plan: trial_plan.id)
+          invoice.must_be_kind_of(Stripe::Invoice)
+          invoice.id.wont_be_nil
 
-        invoices = customer.invoices
-        invoices.to_a.size.must_equal 1
-        invoice = invoices.first
-        invoice.total.must_equal 0
-        invoice.lines.to_a.size.must_equal 1
-        invoice.metadata.to_h.must_equal metadata
+          invoices = customer.invoices
+          invoices.to_a.size.must_equal 1
+          invoice = invoices.first
+          invoice.total.must_equal 0
+          invoice.lines.to_a.size.must_equal 1
+          invoice.metadata.to_h.must_equal metadata
 
-        upcoming = customer.upcoming_invoice
-        # Upcoming does not have VAT yet, waiting to close invoice.
-        upcoming.total.must_equal 1499
+          upcoming = customer.upcoming_invoice
+          # Upcoming does not have VAT yet, waiting to close invoice.
+          upcoming.total.must_equal 1499
+        end
       end
     end
-  end
+
+    describe 'the subscription overrides the trial period' do
+      it 'creates a subscription but does not add VAT' do
+        VCR.use_cassette('create_subscription_trial_sub_success') do
+          subscription, invoice = service.create_subscription(
+            plan: trial_plan.id, trial_end: Time.now.to_i + 1000)
+
+          invoices = customer.invoices
+          invoices.to_a.size.must_equal 1
+          invoice = invoices.first
+          invoice.total.must_equal 0
+          invoice.lines.to_a.size.must_equal 1
+          invoice.metadata.to_h.must_equal metadata
+
+          upcoming = customer.upcoming_invoice
+          # Upcoming does not have VAT yet, waiting to close invoice.
+          upcoming.total.must_equal 1499
+        end
+      end
+    end
 
     describe 'the subscription could not be created' do
       let(:card) { '4000000000000341' }

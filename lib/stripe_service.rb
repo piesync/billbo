@@ -24,8 +24,9 @@ class StripeService
     # Charge VAT in advance because subscription call will create and pay an invoice.
     # TK actually we need to apply VAT for invoiceitems that are pending and scheduled
     # for the next invoice.
-    # Do not charge VAT if the plan is still in trial (invoice will come later).
-    vat, invoice_item = charge_vat_of_plan(plan) unless plan.trial_period_days
+    # Do not charge VAT if the plan or the subscription is still in trial (invoice will come later).
+    vat, invoice_item = charge_vat_of_plan(plan) unless \
+      plan.trial_period_days || (options[:trial_end] && options[:trial_end] != 'now')
 
     # Start subscription.
     # This call automatically creates an invoice, always.
