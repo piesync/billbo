@@ -23,22 +23,17 @@ class Hooks < Base
   #   * Add VAT to the invoice.
   #   * Snapshot customer metadata in the invoice.
   def invoice_created(object)
-    invoice = Stripe::Invoice.construct_from(object)
+    stripe_invoice = Stripe::Invoice.construct_from(object)
 
-    invoice_service(customer_id: invoice.customer)
-      .apply_vat(stripe_invoice_id: invoice.id)
+    invoice_service(customer_id: stripe_invoice.customer)
+      .ensure_vat(stripe_invoice_id: stripe_invoice.id)
   end
 
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
-    invoice = Invoice.find_or_create_from_stripe(stripe_id: object[:id]).finalize!
     stripe_invoice = Stripe::Invoice.construct_from(object)
 
-    invoice.update \
-      total: stripe_invoice.total,
-      vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
-      vat_rate: stripe_invoice.metadata[:vat_rate].to_f
-
-  rescue Invoice::AlreadyFinalized
+    invoice_service(customer_id: stripe_invoice.customer)
+      .process_payment(stripe_invoice_id: stripe_invoice.id)
   end
 end

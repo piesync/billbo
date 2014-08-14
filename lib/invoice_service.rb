@@ -9,7 +9,8 @@ class InvoiceService
     subscription, stripe_invoice = stripe_service.create_subscription(options)
 
     # If this method was succesful, we created a paid invoice with VAT already applied.
-    ensure_invoice(stripe_invoice.id).added_vat!.finalize!
+    invoice = ensure_invoice(stripe_invoice.id).added_vat!.finalize!
+    snapshot(stripe_invoice, invoice)
 
     subscription
   rescue Invoice::AlreadyFinalized
@@ -18,23 +19,39 @@ class InvoiceService
     subscription
   end
 
-  def apply_vat(stripe_invoice_id:)
+  def ensure_vat(stripe_invoice_id:)
     # Get/create an internal invoice.
     invoice = ensure_invoice(stripe_invoice_id)
 
     # Only apply VAT if not applied yet.
     if !invoice.added_vat?
-      stripe_service.apply_vat(invoice_id: stripe_invoice_id)
+      stripe_invoice = stripe_service.apply_vat(invoice_id: stripe_invoice_id)
       invoice.added_vat!
+      snapshot(stripe_invoice, invoice)
     end
 
     invoice
   end
 
-  def process_payment
+  def process_payment(stripe_invoice_id:)
+    # Get/create an internal invoice and a Stripe invoice.
+    invoice = ensure_invoice(stripe_invoice_id)
+
+    # Finalize the invoice.
+    invoice.finalize!
+
+  rescue Invoice::AlreadyFinalized
   end
 
   private
+
+  # Take a snapshot from a Stripe invoice to an internal invoice.
+  def snapshot(stripe_invoice, invoice)
+    invoice.update \
+      total: stripe_invoice.total,
+      vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
+      vat_rate: stripe_invoice.metadata[:vat_rate].to_f
+  end
 
   def ensure_invoice(stripe_id)
     Invoice.find_or_create_from_stripe(stripe_id: stripe_id)
