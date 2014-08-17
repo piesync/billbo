@@ -13,10 +13,6 @@ class InvoiceService
     snapshot(stripe_invoice, invoice)
 
     subscription
-  rescue Invoice::AlreadyFinalized
-    # Should not happen, except if the invoice.payment_succeeded webhook
-    # gets executed before the finalize here. But that's no issue.
-    subscription
   end
 
   def ensure_vat(stripe_invoice_id:)
