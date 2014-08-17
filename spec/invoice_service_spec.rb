@@ -35,15 +35,15 @@ describe InvoiceService do
   let(:service) { InvoiceService.new(customer_id: customer.id) }
 
   describe '#create_subscription' do
-    it 'creates a subscription and an internal invoice' do
+    it 'creates a subscription and an internal invoice, but does not finalize it yet' do
       VCR.use_cassette('create_subscription_and_invoice') do
         service.create_subscription(plan: plan.id)
 
         Invoice.count.must_equal 1
         invoice = Invoice.first
         invoice.added_vat?.must_equal true
-        invoice.finalized?.must_equal true
-        invoice.sequence_number.wont_be_nil
+        invoice.finalized?.must_equal false
+        invoice.sequence_number.must_be_nil
 
         invoice.total.must_equal 1813
         invoice.vat_amount.must_equal 314
