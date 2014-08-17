@@ -1,3 +1,14 @@
+# There are 2 ways invoices get created in Stripe:
+#   1. Creating a subscription which immediately issues a new invoice. This still fires
+#      an invoice.created event, but the invoice is not editable anymore. So we need to apply VAT
+#      before creating the subscription.
+#      It is possible that the invoice.created hook is called before the create_subscription method
+#      ends. It this case it is possible that we try to add VAT again, because the added_vat
+#      flag is not yet set on the invoice. In this case Stripe::InvalidRequestError will be raised.
+#
+#   2. At the end of a subscription cycle. This will trigger an invoice.created hook which
+#      call the #ensure_vat method. This adds VAT to the invoice.
+#
 class InvoiceService
 
   # customer_id - Stripe customer id.
@@ -26,6 +37,11 @@ class InvoiceService
       snapshot(stripe_invoice, invoice)
     end
 
+    invoice
+  rescue Stripe::InvalidRequestError
+    # This means we could not add VAT because the invoice is not editable anymore.
+    # The invoice was probably created through #create_subscription so VAT and snapshotting
+    # will be handled there. Nothing to do anymore here.
     invoice
   end
 
