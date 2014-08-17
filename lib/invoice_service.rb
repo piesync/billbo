@@ -9,7 +9,7 @@ class InvoiceService
     subscription, stripe_invoice = stripe_service.create_subscription(options)
 
     # If this method was succesful, we created a paid invoice with VAT already applied.
-    invoice = ensure_invoice(stripe_invoice.id).added_vat!.finalize!
+    invoice = ensure_invoice(stripe_invoice.id).added_vat!
     snapshot(stripe_invoice, invoice)
 
     subscription
