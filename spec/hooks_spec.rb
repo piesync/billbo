@@ -65,6 +65,10 @@ describe Hooks do
           invoice.sequence_number.must_be_nil
           invoice.added_vat?.must_equal true
           invoice.finalized_at.must_be_nil
+
+          invoice.total.must_equal 121
+          invoice.vat_amount.must_equal 21
+          invoice.vat_rate.must_equal 21.to_f
         end
       end
     end
@@ -82,10 +86,6 @@ describe Hooks do
           invoice = Invoice.first
           invoice.sequence_number.must_equal 1
           invoice.finalized_at.wont_be_nil
-
-          invoice.total.must_equal 100
-          invoice.vat_amount.must_equal 0
-          invoice.vat_rate.must_equal 0.to_f
         end
       end
     end
@@ -97,7 +97,7 @@ describe Hooks do
         app.any_instance.stubs(:invoice_service)
           .with(customer_id: '10').returns(invoice_service)
 
-        invoice_service.expects(:apply_vat)
+        invoice_service.expects(:ensure_vat)
           .raises(Stripe::CardError.new('not good', :test, 1))
 
         post '/', json(type: 'invoice.created',

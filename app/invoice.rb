@@ -7,11 +7,15 @@ class Invoice < Sequel::Model
   end
 
   def self.find_or_create_from_stripe(stripe_id:, **attributes)
-    attributes = attributes.merge(stripe_id: stripe_id)
-    # Check if an invoice exists already with that stripe id.
-    invoice = Invoice.first(stripe_id: stripe_id)
+    # Wrapped in a safe transaction so we do not generate multiple invoices
+    # associated with the same Stripe invoice.
+    safe_transaction do
+      attributes = attributes.merge(stripe_id: stripe_id)
+      # Check if an invoice exists already with that stripe id.
+      invoice = Invoice.first(stripe_id: stripe_id)
 
-    invoice || create(attributes)
+      invoice || create(attributes)
+    end
   end
 
   # TK what about finalizing 2 invoices at the same time?
@@ -19,6 +23,7 @@ class Invoice < Sequel::Model
   def finalize!
     raise AlreadyFinalized if finalized?
 
+    # Wrapped in a safe transaction so we do not generate the same invoice number twice.
     self.class.safe_transaction do
       # update the invoice.
       update self.class.next_sequence

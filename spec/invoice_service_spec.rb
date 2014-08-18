@@ -35,20 +35,24 @@ describe InvoiceService do
   let(:service) { InvoiceService.new(customer_id: customer.id) }
 
   describe '#create_subscription' do
-    it 'creates a subscription and an internal invoice' do
+    it 'creates a subscription and an internal invoice, but does not finalize it yet' do
       VCR.use_cassette('create_subscription_and_invoice') do
         service.create_subscription(plan: plan.id)
 
         Invoice.count.must_equal 1
         invoice = Invoice.first
         invoice.added_vat?.must_equal true
-        invoice.finalized?.must_equal true
-        invoice.sequence_number.wont_be_nil
+        invoice.finalized?.must_equal false
+        invoice.sequence_number.must_be_nil
+
+        invoice.total.must_equal 1813
+        invoice.vat_amount.must_equal 314
+        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end
 
-  describe '#apply_vat' do
+  describe '#ensure_vat' do
     it 'is idempotent' do
       VCR.use_cassette('apply_vat_idempotent') do
         Stripe::InvoiceItem.create \
@@ -58,12 +62,12 @@ describe InvoiceService do
 
         # Apply VAT on the upcoming invoice.
         stripe_invoice = Stripe::Invoice.create(customer: customer.id)
-        invoice = service.apply_vat(stripe_invoice_id: stripe_invoice.id)
+        invoice = service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
         invoice.must_be_kind_of(Invoice)
         invoice.added_vat?.must_equal true
 
         # Apply again.
-        service.apply_vat(stripe_invoice_id: stripe_invoice.id)
+        service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
 
         invoice = customer.invoices.first
         invoice.total.must_equal 121
@@ -72,7 +76,11 @@ describe InvoiceService do
         )
 
         Invoice.count.must_equal 1
-        Invoice.first.added_vat?.must_equal true
+        invoice = Invoice.first
+        invoice.added_vat?.must_equal true
+        invoice.total.must_equal 121
+        invoice.vat_amount.must_equal 21
+        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end
