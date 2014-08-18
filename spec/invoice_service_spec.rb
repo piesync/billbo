@@ -84,4 +84,31 @@ describe InvoiceService do
       end
     end
   end
+
+  describe '#process_payment' do
+
+    it 'finalizes the invoice' do
+      VCR.use_cassette('process_payment') do
+        Stripe::InvoiceItem.create \
+            customer: customer.id,
+            amount: 100,
+            currency: 'usd'
+
+        stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+        invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+        invoice.finalized?.must_equal true
+      end
+    end
+
+    describe 'when the total amount is zero' do
+      it 'does not finalize the invoice' do
+        VCR.use_cassette('process_payment_zero') do
+          customer.subscriptions.create(plan: plan.id, trial_end: (Time.now.to_i + 1000))
+          stripe_invoice = customer.invoices.first
+          invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+          invoice.finalized?.must_equal false
+        end
+      end
+    end
+  end
 end

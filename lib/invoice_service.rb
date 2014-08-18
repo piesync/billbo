@@ -48,10 +48,14 @@ class InvoiceService
   def process_payment(stripe_invoice_id:)
     # Get/create an internal invoice and a Stripe invoice.
     invoice = ensure_invoice(stripe_invoice_id)
+    stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
     # Finalize the invoice.
-    invoice.finalize!
+    # Unless if the invoice's total amount is 0, then we don't
+    # need to make an invoice for it.
+    invoice.finalize! unless stripe_invoice.total.zero?
 
+    invoice
   rescue Invoice::AlreadyFinalized
   end
 
