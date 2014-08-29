@@ -1,4 +1,5 @@
 class App < Base
+  TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.erb', __FILE__))
 
   # Creates a new subscription with VAT.
   #
@@ -15,6 +16,14 @@ class App < Base
       .create_subscription(params)
 
     json(subscription)
+  end
+
+  get '/invoices/:id' do
+    content_type 'text/html'
+
+    invoice = Invoice[params[:id]]
+
+    TEMPLATE.render(nil, invoice: invoice)
   end
 
   # Fetches a preview breakdown of the costs of a subscription.

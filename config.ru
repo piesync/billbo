@@ -7,6 +7,8 @@ end
 
 use Raven::Rack if ENV['SENTRY_DSN']
 
+use Rack::Static, :urls => ['/assets']
+
 run Rack::URLMap.new(
   '/' => App,
   '/hook' => Hooks
