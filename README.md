@@ -16,7 +16,7 @@ It's currently designed to support billing from EU based countries.
 [Stripe]: https://stripe.com/
 
 Features
------
+--------
 
 * Automatic VAT addition according to legal regulations
 * VAT number validation and owner details (company name, address)
@@ -27,11 +27,13 @@ Features
 * Battle-tested at [PieSync](http://www.piesync.com)
 
 Deployment
-------------
+----------
 
 The easiest way to get Billbo online to use it for production is Heroku. The `deploy-heroku` script in the root directory helps you with that. It provisions a Heroku instance with a Postgres database and all the right settings.
 
 The fastest path we can offer you:
+
+### Deploy to Heroku
 
 ```
 git clone git@github.com:piesync/billbo.git && cd billbo
@@ -39,6 +41,10 @@ git clone git@github.com:piesync/billbo.git && cd billbo
 ```
 
 The deploy script takes lots of additional options to customize your Billbo instance. Just run `./deploy-heroku` to see usage details.
+
+### Configure Stripe Webhook
+
+Add a Webhook to Stripe that points to `https://HEROKU_APP_NAME.herokuapp.com/hook`
 
 
 Basic Usage
@@ -48,7 +54,7 @@ Billbo works with all different types of Stripe invoicing workflows, the only sp
 ### Creating Stripe Customers
 Create Stripe customers with the following required metadata.
 
-Example using Ruby:
+Example using Ruby ([or using Curl](https://stripe.com/docs/api/curl#create_customer)):
 ```ruby
 Stripe::Customer.create(
   card: "tok_14JuLq2nHroS7mLXZ5uxDRqs" # obtained with Stripe.js
@@ -66,7 +72,7 @@ This way you can make your invoices immutable containing all their needed info t
 ### Creating Subscriptions
 To use Billbo in the correct way, instead of creating subscriptions using the Stripe API, create your subscriptions using Billbo.
 
-Example using the Billbo Ruby Gem:
+Example using the `billbo` Ruby Gem:
 ```ruby
 Billbo.create_subscription(
   plan: 'basic',
@@ -76,7 +82,21 @@ Billbo.create_subscription(
 # => A Stripe::Subscription object
 ```
 
+Or using Curl:
+```
+curl https://HOST/subscriptions \
+   -u X:BILLBO_TOKEN \
+   -d plan=large
+```
+
 You can pass all options supported in the Stripe [create subscription](https://stripe.com/docs/api#create_subscription) call. The returned `Stripe::Subscription` or possible raised error are 100% compatible with the [Stripe Ruby Gem](https://github.com/stripe/stripe-ruby).
+
+How it Works with Stripe
+------------------------
+
+Basically, whenever we receive an `invoice.created` event from Stripe, VAT is calculated on the amount and is added as an invoice item to the invoice. However, this does not work when creating a subscription for the first time, because Stripe charges the first invoice immediately, so we don't get a chance to add items via a webhook first. This is what the Billbo create subscription call is for. It calculates VAT in advance and attaches an invoice item to the customer.
+
+When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
 
 Help and Discussion
 -------------------
@@ -91,7 +111,7 @@ https://github.com/piesync/billbo/issues
 
 
 Contributing to Billbo
-----------------------------
+----------------------
 
 * Please fork Billbo on github
 * Make your changes and send us a pull request with a brief description of your addition
