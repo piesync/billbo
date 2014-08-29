@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://ec.europa.eu/taxation_customs/vies/services/checkVatService
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="urn:ec.europa.eu:taxud:vies:services:checkVat"
+        xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins0="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><env:Body><ins0:checkVat><ins0:countryCode>LU</ins0:countryCode><ins0:vatNumber>21416128</ins0:vatNumber></ins0:checkVat></env:Body></env:Envelope>
+    headers:
+      Soapaction:
+      - '"checkVat"'
+      Content-Type:
+      - text/xml;charset=UTF-8
+      Content-Length:
+      - '476'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 01 Aug 2014 14:34:51 GMT
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Server:
+      - Europa
+      Proxy-Connection:
+      - Keep-Alive
+      Connection:
+      - Keep-Alive
+    body:
+      encoding: UTF-8
+      string: <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatResponse
+        xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416128</vatNumber><requestDate>2014-08-01+02:00</requestDate><valid>false</valid><name>---</name><address>---</address></checkVatResponse></soap:Body></soap:Envelope>
+    http_version: 
+  recorded_at: Fri, 01 Aug 2014 14:34:51 GMT
+recorded_with: VCR 2.9.2

@@ -47,12 +47,30 @@ class VatService
   end
 
   # Checks if given VAT number is valid.
+  #
+  # vat_number  - VAT number to be validated
+  #
+  # Returns true or false
   def valid?(vat_number:)
     vies_valid = Valvat::Lookup.validate(vat_number)
     if vies_valid.nil?
       Valvat.new(vat_number).valid_checksum?
     else
       vies_valid
+    end
+  end
+
+  # returns extra info about the given vat_number
+  #
+  # vat_number  - VAT number to be validated
+  # own_vat     - own VAT number to additionally get a request identifier
+  #
+  # Returns details or false/nil
+  def details(vat_number:, own_vat: nil)
+    if own_vat
+      Valvat.new(vat_number).exists?(requester_vat: own_vat)
+    else
+      Valvat.new(vat_number).exists?(detail: true)
     end
   end
 

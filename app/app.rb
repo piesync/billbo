@@ -46,13 +46,30 @@ class App < Base
     })
   end
 
-  # validates (looks up) the given vat_number
+  # Checks if given VAT number is valid.
+  #
+  # vat_number  - VAT number to be validated
+  #
+  # Returns true or false
   get '/vat/:number' do
     if vat_service.valid?(vat_number: params[:number])
       status 200
     else
       status 404
     end
+  end
+
+  # returns extra info about the given vat_number
+  #
+  # vat_number  - VAT number to be validated
+  # own_vat     - own VAT number to additionally get a request identifier
+  #
+  # Returns details or false/nil
+  get '/vat/:number/details' do
+    request = { vat_number: params[:number] }
+    request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
+
+    vat_service.details(request) || status(404)
   end
 
   get '/ping' do
