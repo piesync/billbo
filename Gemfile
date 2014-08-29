@@ -16,6 +16,8 @@ gem 'analytics-ruby', :require => 'segment'
 gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]
 
+gem 'shrimp'
+
 group :test do
   gem 'webmock'
   gem 'vcr'

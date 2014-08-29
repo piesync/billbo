@@ -8,6 +8,12 @@ end
 # Bundle.
 require 'boot'
 
+Shrimp.configure do |config|
+  config.format           = 'A4'
+  config.zoom             = 1
+  config.orientation      = 'portrait'
+end
+
 # Channels.
 require 'analytics_channel'
 
