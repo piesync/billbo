@@ -89,7 +89,7 @@ curl https://HOST/subscriptions \
    -d plan=large
 ```
 
-You can pass all options supported in the Stripe [create subscription](https://stripe.com/docs/api#create_subscription) call. The returned `Stripe::Subscription` or possible raised error are 100% compatible with the [Stripe Ruby Gem](https://github.com/stripe/stripe-ruby).
+You can pass all options supported in the Stripe [create subscription](https://stripe.com/docs/api#create_subscription) call. The returned `Stripe::Subscription` or raised errors are 100% compatible with the [Stripe Ruby Gem](https://github.com/stripe/stripe-ruby).
 
 How it Works with Stripe
 ------------------------
