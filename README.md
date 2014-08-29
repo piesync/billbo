@@ -26,6 +26,13 @@ Features
 * Automatic pdf invoice generation and emailing (work in progress)
 * Battle-tested at [PieSync](http://www.piesync.com)
 
+How it Works with Stripe
+------------------------
+
+Basically, whenever we receive an `invoice.created` event from Stripe, VAT is calculated on the amount and is added as an invoice item to the invoice. However, this does not work when creating a subscription for the first time, because Stripe charges the first invoice immediately, so we don't get a chance to add items via a webhook first. This is what the Billbo create subscription call is for. It calculates VAT in advance and attaches an invoice item to the customer.
+
+When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
+
 Deployment
 ----------
 
@@ -90,13 +97,6 @@ curl https://HOST/subscriptions \
 ```
 
 You can pass all options supported in the Stripe [create subscription](https://stripe.com/docs/api#create_subscription) call. The returned `Stripe::Subscription` or raised errors are 100% compatible with the [Stripe Ruby Gem](https://github.com/stripe/stripe-ruby).
-
-How it Works with Stripe
-------------------------
-
-Basically, whenever we receive an `invoice.created` event from Stripe, VAT is calculated on the amount and is added as an invoice item to the invoice. However, this does not work when creating a subscription for the first time, because Stripe charges the first invoice immediately, so we don't get a chance to add items via a webhook first. This is what the Billbo create subscription call is for. It calculates VAT in advance and attaches an invoice item to the customer.
-
-When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
 
 Help and Discussion
 -------------------
