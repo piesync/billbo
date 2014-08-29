@@ -40,7 +40,7 @@ The easiest way to get Billbo online to use it for production is Heroku. The `de
 
 The fastest path we can offer you:
 
-### Deploy to Heroku
+**Deploy to Heroku**
 
 ```
 git clone git@github.com:piesync/billbo.git && cd billbo
@@ -49,7 +49,7 @@ git clone git@github.com:piesync/billbo.git && cd billbo
 
 The deploy script takes lots of additional options to customize your Billbo instance. Just run `./deploy-heroku` to see usage details.
 
-### Configure Stripe Webhook
+**Configure Stripe Webhook**
 
 Add a Webhook to Stripe that points to `https://HEROKU_APP_NAME.herokuapp.com/hook`
 
@@ -58,7 +58,8 @@ Basic Usage
 -----------
 Billbo works with all different types of Stripe invoicing workflows, the only specifics you need are customer related.
 
-### Creating Stripe Customers
+**Creating Stripe Customers**
+
 Create Stripe customers with the following required metadata.
 
 Example using Ruby ([or using Curl](https://stripe.com/docs/api/curl#create_customer)):
@@ -76,7 +77,8 @@ This data and any extra metadata of your customers will be copied into the metad
 This way you can make your invoices immutable containing all their needed info taken at a certain point in time.
 
 
-### Creating Subscriptions
+**Creating Subscriptions**
+
 To use Billbo in the correct way, instead of creating subscriptions using the Stripe API, create your subscriptions using Billbo.
 
 Example using the `billbo` Ruby Gem:
