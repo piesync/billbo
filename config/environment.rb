@@ -1,4 +1,5 @@
 $environment ||= (ENV['RACK_ENV'] || :development).to_sym
+$token = ENV['API_TOKEN'] || 'billbo'
 
 # Include lib.
 %w{app lib config}.each do |dir|
@@ -41,6 +42,9 @@ require 'schema'
 
 # Models.
 require 'invoice'
+
+# Invoice generation.
+require 'invoice_uploader'
 
 # Services.
 require 'configuration_service'

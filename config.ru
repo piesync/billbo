@@ -2,7 +2,7 @@
 require './config/environment'
 
 use Rack::Auth::Basic, 'Billbo' do |_, token|
-  token == (ENV['API_TOKEN'] || 'billbo')
+  token == $token
 end
 
 use Raven::Rack if ENV['SENTRY_DSN']

@@ -17,6 +17,8 @@ gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]
 
 gem 'shrimp'
+gem 'carrierwave'
+gem 'fog'
 
 group :test do
   gem 'webmock'
