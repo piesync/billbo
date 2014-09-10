@@ -36,4 +36,16 @@ class Hooks < Base
     invoice_service(customer_id: stripe_invoice.customer)
       .process_payment(stripe_invoice_id: stripe_invoice.id)
   end
+
+  # Used to handle refunds and create credit notes.
+  def charge_refunded(object)
+    stripe_charge = Stripe::Charge.construct_from(object)
+
+    # we only handle full refunds for now
+    if stripe_charge.refunded
+      invoice_service(customer_id: stripe_charge.customer)
+        .process_refund(stripe_invoice_id: stripe_charge.invoice)
+    end
+
+  end
 end

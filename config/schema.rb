@@ -11,4 +11,6 @@ $db.create_table :invoices do
   Integer :total
   Integer :vat_amount
   Decimal :vat_rate
+  Boolean :credit_note, default: false
+  String  :reference_number
 end unless $db.tables.include?(:invoices)

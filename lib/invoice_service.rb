@@ -10,6 +10,7 @@
 #      call the #ensure_vat method. This adds VAT to the invoice.
 #
 class InvoiceService
+  OrphanRefund = Class.new(StandardError)
 
   # customer_id - Stripe customer id.
   def initialize(customer_id:)
@@ -57,6 +58,22 @@ class InvoiceService
 
     invoice
   rescue Invoice::AlreadyFinalized
+  end
+
+  def process_refund(stripe_invoice_id:)
+    invoice = Invoice.first(stripe_id: stripe_invoice_id)
+
+    if invoice
+      credit_info = {
+        credit_note: true,
+        reference_number: invoice.number,
+      }
+
+      credit_note = Invoice.create credit_info
+      credit_note.finalize!
+    else
+      raise OrphanRefund
+    end
   end
 
   private
