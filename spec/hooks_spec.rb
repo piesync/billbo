@@ -33,6 +33,19 @@ describe Hooks do
     Stripe::Invoice.create(customer: customer.id)
   end
 
+  let(:plan) do
+    begin
+      Stripe::Plan.retrieve('test')
+    rescue
+      Stripe::Plan.create \
+        id: 'test',
+        name: 'Test Plan',
+        amount: 1499,
+        currency: 'usd',
+        interval: 'month'
+    end
+  end
+
   describe 'any hook' do
     it 'spreads a rumor' do
       Rumor.expects(:spread).with do |rumor|
@@ -86,6 +99,67 @@ describe Hooks do
           invoice = Invoice.first
           invoice.sequence_number.must_equal 1
           invoice.finalized_at.wont_be_nil
+          invoice.credit_note.must_equal false
+        end
+      end
+    end
+
+    describe 'post charge refunded' do
+      it 'creates a credit note' do
+        VCR.use_cassette('hook_charge_refunded') do
+          customer.subscriptions.create(plan: plan.id)
+          stripe_invoice = customer.invoices.first
+          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+
+          post '/', json(type: 'invoice.payment_succeeded',
+            data: { object: stripe_invoice})
+
+          refund = stripe_charge.refund
+
+          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+
+          post '/', json(type: 'charge.refunded',
+            data: { object: stripe_charge})
+
+          last_response.ok?.must_equal true
+          last_response.body.must_be_empty
+
+          Invoice.count.must_equal 2
+
+          invoice = Invoice.first
+          invoice.sequence_number.must_equal 1
+          invoice.finalized_at.wont_be_nil
+          invoice.credit_note.must_equal false
+
+          credit_note = Invoice.last
+          credit_note.sequence_number.must_equal 2
+          credit_note.finalized_at.wont_be_nil
+          credit_note.credit_note.must_equal true
+          credit_note.reference_number.must_equal invoice.number
+        end
+      end
+    end
+
+    describe 'post charge refunded partial' do
+      it 'does not create a credit note' do
+        VCR.use_cassette('hook_charge_refunded_partial') do
+          customer.subscriptions.create(plan: plan.id)
+          stripe_invoice = customer.invoices.first
+          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+
+          post '/', json(type: 'invoice.payment_succeeded',
+            data: { object: stripe_invoice})
+
+          refund = stripe_charge.refund amount: 100
+
+          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+          before_count = Invoice.count
+
+          post '/', json(type: 'charge.refunded',
+            data: { object: stripe_charge})
+
+          last_response.ok?.must_equal true
+          Invoice.count.must_equal before_count
         end
       end
     end
