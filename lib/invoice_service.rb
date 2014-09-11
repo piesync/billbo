@@ -64,12 +64,10 @@ class InvoiceService
     invoice = Invoice.first(stripe_id: stripe_invoice_id)
 
     if invoice
-      credit_info = {
+      credit_note = Invoice.create \
         credit_note: true,
-        reference_number: invoice.number,
-      }
+        reference_number: invoice.number
 
-      credit_note = Invoice.create credit_info
       credit_note.finalize!
     else
       raise OrphanRefund

@@ -123,7 +123,7 @@ describe InvoiceService do
     describe 'when it is a real refund' do
       it 'creates a credit note' do
         VCR.use_cassette('process_refund') do
-        Stripe::InvoiceItem.create \
+          Stripe::InvoiceItem.create \
             customer: customer.id,
             amount: 100,
             currency: 'usd'
