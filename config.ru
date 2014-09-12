@@ -15,6 +15,6 @@ secure = Rack::Builder.app do
 end
 
 run Rack::URLMap.new(
-  '/' => secure
+  '/' => secure,
   '/ping' => lambda { |env| [200, {}, ''] }
 )
