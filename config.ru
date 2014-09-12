@@ -16,5 +16,5 @@ end
 
 run Rack::URLMap.new(
   '/' => secure,
-  '/ping' => lambda { |env| [200, {}, ''] }
+  '/ping' => lambda { |env| [200, {}, ['OK']] }
 )
