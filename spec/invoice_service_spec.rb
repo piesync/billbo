@@ -111,4 +111,30 @@ describe InvoiceService do
       end
     end
   end
+
+  describe '#process_refund' do
+
+    it 'is an orphan refund' do
+      VCR.use_cassette('process_refund_orphan') do
+        proc { service.process_refund(stripe_invoice_id: 'xyz') }.must_raise InvoiceService::OrphanRefund
+      end
+    end
+
+    describe 'when it is a real refund' do
+      it 'creates a credit note' do
+        VCR.use_cassette('process_refund') do
+          Stripe::InvoiceItem.create \
+            customer: customer.id,
+            amount: 100,
+            currency: 'usd'
+
+        stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+        invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+
+        credit_note = service.process_refund(stripe_invoice_id: stripe_invoice.id)
+        credit_note.finalized?.must_equal true
+        end
+      end
+    end
+  end
 end
