@@ -57,7 +57,7 @@ class StripeService
     stripe_invoice = Stripe::Invoice.retrieve(invoice_id)
 
     # Add VAT to the invoice.
-    vat, invoice_item = charge_vat(stripe_invoice.total,
+    vat, invoice_item = charge_vat(stripe_invoice.subtotal,
       invoice_id: invoice_id, currency: stripe_invoice.currency)
 
     # Snapshot.
