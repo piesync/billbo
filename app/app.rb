@@ -23,6 +23,8 @@ class App < Base
 
     invoice = Invoice[params[:id]]
 
+    halt 404 unless invoice
+
     TEMPLATE.render(nil, invoice: invoice)
   end
 
