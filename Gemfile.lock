@@ -117,6 +117,8 @@ GEM
     minitest (5.4.0)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
+    money (6.1.1)
+      i18n (~> 0.6.4)
     multi_json (1.10.1)
     multipart-post (2.0.0)
     net-scp (1.2.1)
@@ -211,6 +213,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   analytics-ruby
   billbo!
   carrierwave
@@ -221,6 +224,7 @@ DEPENDENCIES
   guard
   guard-minitest
   mocha
+  money
   multi_json
   oj
   pg

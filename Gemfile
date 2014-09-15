@@ -3,6 +3,7 @@ ruby '2.1.1'
 
 gemspec
 
+gem 'activesupport', :require => 'active_support/all'
 gem 'sinatra', :require => 'sinatra/base'
 gem 'stripe'
 gem 'valvat'
@@ -21,6 +22,7 @@ gem 'shrimp'
 gem 'carrierwave'
 gem 'fog'
 gem 'slim'
+gem 'money'
 
 group :test do
   gem 'webmock'
