@@ -1,0 +1,123 @@
+doctype Strict
+html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  head
+    title Invoice #{invoice.number}
+    meta content=("text/html; charset=iso-8859-1") http-equiv="Content-Type" /
+    link href="/assets/default.css" rel="stylesheet" type="text/css"
+  body
+    #invoice
+      #invoice-header
+        img.logo.screen alt="Mainlogo_large" src="/assets/logo.png" /
+
+        #company-address.vcard
+          .fn.org
+            strong Company Name
+          .adr
+            .street-address
+              | Street Address line
+
+            .locality Locality
+
+            #company-postcode
+              span.region Region
+              span.postal-code EX12 8PZ
+
+          .email email@company.com
+
+
+      #invoice-info
+        h2
+          | Invoice
+          strong= invoice.number
+        h3 21 February 2014
+        p#payment-terms Payment Terms: 30 days
+        p#payment-due Payment due by 21 March 2014
+        p#payment-total $1234.56
+
+
+      #client-details.vcard
+        .fn John Doe
+        .org Client Company
+        .adr
+          .street-address
+            | Client Street Address
+
+          .locality LOCALITY
+
+          #client-postcode
+            span.region Region
+            span.postal-code MV2 8SX
+
+
+      table#invoice-amount
+        thead
+          tr#header_row
+            th.quantity_th Quantity
+            th.left.details_th Details
+            th.unitprice_th Unit Price ($)
+            th.salestax_th VAT
+            th.subtotal_th Net Subtotal ($)
+        tfoot
+          tr#discount_tr
+            td colspan="2"  &nbsp;
+            td.item_r colspan="2"  10% Discount
+            td.item_r $123.00
+          tr#net_total_tr
+            td colspan="2"  &nbsp;
+            td.item_r colspan="2"  Net Total
+            td.item_r $1234.00
+          tr#vat_tr
+            td colspan="2"  &nbsp;
+            td.item_r colspan="2"  VAT
+            td.item_r $123.45
+          tr#total_tr
+            td colspan="2"  &nbsp;
+            td#total_currency.total colspan="2"
+              span.currency GBP
+              | Total
+            td.total $678.90
+        tbody
+          tr.item.odd
+            td.item_l 1 day
+            td.item_l Details of project activity to be billed
+            td.item_r 500.00
+            td.item_r 20%
+            td.item_r 500.00
+          tr.item
+            td.item_l 2 days
+            td.item_l Other Details of project activity to be billed
+            td.item_r 1000.00
+            td.item_r 20%
+            td.item_r 1000.00
+          tr.item.odd
+            td.item_l 2 days
+            td.item_l More details of project activity to be billed
+            td.item_r 1500.00
+            td.item_r 20%
+            td.item_r 1500.00
+
+      #invoice-other
+        h2 Other Information
+        #company-reg-number
+          strong Company Registration Number:
+          | 9273109
+        #contract-number
+          strong Contract/PO:
+          | PO 87227643
+
+      #payment-details
+        h2 Payment Details
+        #bank_name Bank Name
+        #sort-code
+          strong Bank/Sort Code:
+          | 01-01-01
+        #account-number
+          strong Account Number:
+          | 123456
+        #payment-reference
+          strong Payment Reference:
+          | INV001
+
+      #comments
+        p
+          | Notes

@@ -20,6 +20,7 @@ gem 'dotenv', group: [:test, :development]
 gem 'shrimp'
 gem 'carrierwave'
 gem 'fog'
+gem 'slim'
 
 group :test do
   gem 'webmock'
