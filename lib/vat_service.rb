@@ -88,7 +88,7 @@ class VatService
 
     # Both individuals and companies pay VAT
     # in a country where you are VAT registered.
-    if configuration_service.registered_countries.include?(country_code)
+    if Configuration.registered_countries.include?(country_code)
       VAT_RATES[country_code]
     elsif eu?(country_code)
       # Companies in other EU countries don't need to pay VAT.
@@ -96,7 +96,7 @@ class VatService
         0
       # Individuals in other EU countries do need to pay VAT.
       else
-        VAT_RATES[configuration_service.primary_country]
+        VAT_RATES[Configuration.primary_country]
       end
     # All non-EU customers don't need to pay VAT.
     else
@@ -106,9 +106,5 @@ class VatService
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
-  end
-
-  def configuration_service
-    @configuration_service ||= ConfigurationService.new
   end
 end

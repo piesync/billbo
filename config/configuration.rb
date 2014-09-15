@@ -32,6 +32,9 @@ class Configuration
     # Primary selling country
     attr_accessor :primary_country
 
+    # Default currency of the seller
+    attr_accessor :default_currency
+
     # Segment.io analytics handle
     attr_accessor :segmentio
 
@@ -55,7 +58,16 @@ class Configuration
     end
 
     def primary_country
-      @primary_country ||= SERVICE.primary_country
+      @primary_country ||= account.country
+    end
+
+    # TK extend to additional countries next to primary
+    def registered_countries
+      [primary_country]
+    end
+
+    def default_currency
+      @default_currency ||= account.default_currency
     end
 
     def preload
@@ -74,6 +86,12 @@ class Configuration
 
     def segmentio?
       !segmentio_write_key.nil?
+    end
+
+    private
+
+    def account
+      @_account ||= SERVICE.account
     end
   end
 end

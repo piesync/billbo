@@ -4,18 +4,10 @@ describe ConfigurationService do
 
   let(:service) { ConfigurationService.new }
 
-  describe '#primary country' do
-    it 'returns the primary country code' do
-      VCR.use_cassette('primary_country') do
-        service.primary_country.must_equal 'BE'
-      end
-    end
-  end
-
-  describe '#registered countries' do
-    it 'returns an array of registered countries' do
-      VCR.use_cassette('registered_countries') do
-        service.registered_countries.must_equal(['BE'])
+  describe '#account' do
+    it 'returns the Stripe account' do
+      VCR.use_cassette('account') do
+        service.account.must_be_kind_of Stripe::Account
       end
     end
   end
