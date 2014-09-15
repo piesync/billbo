@@ -49,6 +49,10 @@ class Invoice < Sequel::Model
     !finalized_at.nil?
   end
 
+  def due_at
+    finalized_at + Configuration.due_days.days
+  end
+
   private
 
   def self.safe_transaction

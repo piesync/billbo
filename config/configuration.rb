@@ -4,7 +4,8 @@ class Configuration
     :stripe_secret_key,
     :invoice_number_format,
     :database_url,
-    :primary_country
+    :primary_country,
+    :due_days
   ]
 
   SERVICE = ConfigurationService.new
@@ -36,6 +37,13 @@ class Configuration
 
     # Database handle
     attr_accessor :db
+
+    # Amount of days until invoice is due
+    attr_accessor :due_days
+
+    def due_days
+      @due_days.to_i
+    end
 
     def from_env(env = ENV)
       env.each do |key, value|
