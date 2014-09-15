@@ -27,12 +27,11 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
       #invoice-info
         h2
-          | Invoice
+          ' Invoice
           strong= invoice.number
-        h3 21 February 2014
-        p#payment-terms Payment Terms: 30 days
-        p#payment-due Payment due by 21 March 2014
-        p#payment-total $1234.56
+        p = format_date(invoice.finalized_at)
+        p#payment-due Payment due by #{format_date(invoice.due_at)}
+        p#payment-total = format_money(stripe.total, stripe.currency)
 
 
       #client-details.vcard
@@ -52,49 +51,29 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
       table#invoice-amount
         thead
           tr#header_row
-            th.quantity_th Quantity
             th.left.details_th Details
-            th.unitprice_th Unit Price ($)
-            th.salestax_th VAT
-            th.subtotal_th Net Subtotal ($)
+            th.subtotal_th Price (#{currency_symbol(stripe.currency)})
         tfoot
           tr#discount_tr
-            td colspan="2"  &nbsp;
-            td.item_r colspan="2"  10% Discount
+            td.item_r 10% Discount
             td.item_r $123.00
           tr#net_total_tr
-            td colspan="2"  &nbsp;
-            td.item_r colspan="2"  Net Total
+            td.item_r Net Total
             td.item_r $1234.00
           tr#vat_tr
-            td colspan="2"  &nbsp;
-            td.item_r colspan="2"  VAT
+            td.item_r VAT
             td.item_r $123.45
           tr#total_tr
-            td colspan="2"  &nbsp;
-            td#total_currency.total colspan="2"
-              span.currency GBP
-              | Total
-            td.total $678.90
+            td#total_currency.total
+              span.currency = stripe.currency.upcase
+              |  Total
+            td.total #{format_money(stripe.total, stripe.currency)}
         tbody
-          tr.item.odd
-            td.item_l 1 day
-            td.item_l Details of project activity to be billed
-            td.item_r 500.00
-            td.item_r 20%
-            td.item_r 500.00
-          tr.item
-            td.item_l 2 days
-            td.item_l Other Details of project activity to be billed
-            td.item_r 1000.00
-            td.item_r 20%
-            td.item_r 1000.00
-          tr.item.odd
-            td.item_l 2 days
-            td.item_l More details of project activity to be billed
-            td.item_r 1500.00
-            td.item_r 20%
-            td.item_r 1500.00
+          - stripe.lines.each_with_index do |line, i|
+            tr.item class=('odd' if i % 2 == 0)
+              - if line.type == 'subscription'
+                td.item_l Subscription: #{line.plan.name} (from #{format_date(line.period.start)} to #{format_date(line.period.end)})
+                td.item_r = format_money(line.amount, line.currency)
 
       #invoice-other
         h2 Other Information
