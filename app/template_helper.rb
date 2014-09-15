@@ -12,4 +12,8 @@ class TemplateHelper
     at = Time.at(timestamp)
     at.strftime("%B #{at.day.ordinalize}, %Y")
   end
+
+  def country_name(code)
+    Country.new(code).name
+  end
 end

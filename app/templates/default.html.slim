@@ -31,21 +31,20 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           strong= invoice.number
         p = format_date(invoice.finalized_at)
         p#payment-due Payment due by #{format_date(invoice.due_at)}
+        - if stripe.paid
+          p
+            b Paid with #{card.brand} #{card.last4}
         p#payment-total = format_money(stripe.total, stripe.currency)
 
 
       #client-details.vcard
-        .fn John Doe
-        .org Client Company
+        .fn = card.name
+        .org COMPANY
         .adr
           .street-address
-            | Client Street Address
+            = stripe.metadata.address
 
-          .locality LOCALITY
-
-          #client-postcode
-            span.region Region
-            span.postal-code MV2 8SX
+          .locality = country_name(stripe.metadata.country_code)
 
 
       table#invoice-amount

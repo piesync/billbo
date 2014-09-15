@@ -49,8 +49,11 @@ GEM
     codeclimate-test-reporter (0.3.0)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.0)
+    countries (0.9.3)
+      currencies (~> 0.4.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
+    currencies (0.4.2)
     daemons (1.1.9)
     docile (1.1.5)
     dotenv (0.11.1)
@@ -219,6 +222,7 @@ DEPENDENCIES
   carrierwave
   choice
   codeclimate-test-reporter
+  countries
   dotenv
   fog
   guard

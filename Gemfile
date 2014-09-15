@@ -23,6 +23,7 @@ gem 'carrierwave'
 gem 'fog'
 gem 'slim'
 gem 'money'
+gem 'countries'
 
 group :test do
   gem 'webmock'
