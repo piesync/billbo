@@ -1,13 +1,13 @@
 # Environment.
 require './config/environment'
 
-use Raven::Rack if ENV['SENTRY_DSN']
+use Raven::Rack if Configuration.sentry?
 
 use Rack::Static, :urls => ['/assets']
 
 secure = Rack::Builder.app do
   use Rack::Auth::Basic, 'Billbo' do |_, token|
-    token == (ENV['API_TOKEN'] || 'billbo')
+    token == Configuration.api_token
   end
 
   run Rack::URLMap.new(

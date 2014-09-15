@@ -8,5 +8,4 @@ class ConfigurationService
   def registered_countries
     [ primary_country ]
   end
-
 end
