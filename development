@@ -1,1 +1,0 @@
-foreman start --procfile Procfile.dev

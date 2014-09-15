@@ -1,4 +1,4 @@
-$db.create_table :invoices do
+Configuration.db.create_table :invoices do
   primary_key :id
 
   Integer :year
@@ -13,4 +13,4 @@ $db.create_table :invoices do
   Decimal :vat_rate
   Boolean :credit_note, default: false
   String  :reference_number
-end unless $db.tables.include?(:invoices)
+end unless Configuration.db.tables.include?(:invoices)

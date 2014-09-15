@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'analytics_channel'
 
 describe AnalyticsChannel do
   include Rumor::Source
 
-  let(:channel) { AnalyticsChannel.new }
+  let(:analytics) { mock }
+  let(:channel) { AnalyticsChannel.new(analytics) }
 
   let(:customer_id) { 'c1' }
   let(:customer) do
@@ -39,7 +41,7 @@ describe AnalyticsChannel do
 
   describe 'charge_succeeded' do
     it 'tracks revenue changed' do
-      $analytics.expects(:track).with \
+      analytics.expects(:track).with \
         user_id: 'oss@piesync.com',
         event: 'revenue changed',
         properties: {
@@ -62,7 +64,7 @@ describe AnalyticsChannel do
       end
 
       it 'tracks revenue changed' do
-        $analytics.expects(:track).with \
+        analytics.expects(:track).with \
           user_id: 'oss@piesync.com',
           event: 'revenue changed',
           properties: {
@@ -80,7 +82,7 @@ describe AnalyticsChannel do
 
   describe 'charge_refunded' do
     it 'tracks revenue changed' do
-      $analytics.expects(:track).with \
+      analytics.expects(:track).with \
         user_id: 'oss@piesync.com',
         event: 'revenue changed',
         properties: {
