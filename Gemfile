@@ -3,7 +3,7 @@ ruby '2.1.1'
 
 gemspec
 
-gem 'activesupport', :require => 'active_support/all'
+gem 'activesupport'
 gem 'sinatra', :require => 'sinatra/base'
 gem 'stripe'
 gem 'valvat'
