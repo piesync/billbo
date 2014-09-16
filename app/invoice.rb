@@ -41,7 +41,7 @@ class Invoice < Sequel::Model
     self
   end
 
-  def pdf_generated
+  def pdf_generated!
     update pdf_generated_at: Time.now
 
     self

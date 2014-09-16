@@ -44,9 +44,9 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         .org COMPANY
         .adr
           .street-address
-            = stripe.metadata.address
+            = stripe.metadata.try(:address)
 
-          .locality = country_name(stripe.metadata.country_code)
+          .locality = country_name(stripe.metadata.try(:country_code))
 
 
       table#invoice-amount

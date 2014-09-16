@@ -14,6 +14,6 @@ class TemplateHelper
   end
 
   def country_name(code)
-    Country.new(code).name
+    code && Country.new(code).name
   end
 end

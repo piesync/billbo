@@ -1,6 +1,6 @@
 class PdfService
 
-  def initalize(uploader: Configuration.uploader)
+  def initialize(uploader: Configuration.uploader)
     @uploader = uploader
   end
 
@@ -9,7 +9,7 @@ class PdfService
       "http://X:#{Configuration.api_token}@#{Configuration.host}/invoices/#{invoice.id}")
     phantom.to_pdf("#{invoice.id}.pdf")
 
-    Invoice.pdf_generated! if uploader.store!(File.open("#{invoice.id}.pdf"))
+    invoice.pdf_generated! if uploader.store!(File.open("#{invoice.id}.pdf"))
   end
 
   def generate_missing
