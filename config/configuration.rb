@@ -11,6 +11,9 @@ class Configuration
   SERVICE = ConfigurationService.new
 
   class << self
+    # Billbo host
+    attr_accessor :host
+
     # Security token used to access the API of the Billbo instance
     attr_accessor :api_token
 
