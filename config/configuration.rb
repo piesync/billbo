@@ -75,6 +75,12 @@ class Configuration
     # Amount of days until invoice is due
     attr_accessor :due_days
 
+    # S3 invoice storage
+    attr_accessor :s3_key_id
+    attr_accessor :s3_secret_key
+    attr_accessor :s3_bucket
+    attr_accessor :s3_region
+
     def due_days
       @due_days.to_i
     end
@@ -117,6 +123,18 @@ class Configuration
 
     def segmentio?
       !segmentio_write_key.nil?
+    end
+
+    def s3?
+      !s3_key_id.nil?
+    end
+
+    def uploader
+      if s3?
+        InvoiceCloudUploader.new
+      else
+        InvoiceFileUploader.new
+      end
     end
 
     private

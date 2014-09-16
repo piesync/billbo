@@ -1,6 +1,6 @@
 class PdfService
 
-  def initalize(uploader: InvoiceUploader.new)
+  def initalize(uploader: Configuration.uploader)
     @uploader = uploader
   end
 

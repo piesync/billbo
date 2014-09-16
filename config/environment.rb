@@ -63,6 +63,7 @@ require 'app'
 # Load plugins
 require 'plugins/sentry' if Configuration.sentry?
 require 'plugins/segmentio' if Configuration.segmentio?
+require 'plugins/s3' if Configuration.s3?
 
 # Preload and validate configuration
 Configuration.preload
