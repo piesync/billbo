@@ -41,6 +41,12 @@ class Invoice < Sequel::Model
     self
   end
 
+  def pdf_generated
+    update pdf_generated_at: Time.now
+
+    self
+  end
+
   def added_vat?
     !!added_vat
   end

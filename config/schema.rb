@@ -13,4 +13,5 @@ Configuration.db.create_table :invoices do
   Decimal :vat_rate
   Boolean :credit_note, default: false
   String  :reference_number
+  Time    :pdf_generated_at
 end unless Configuration.db.tables.include?(:invoices)
