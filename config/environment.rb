@@ -66,6 +66,9 @@ require 'plugins/sentry' if Configuration.sentry?
 require 'plugins/segmentio' if Configuration.segmentio?
 require 'plugins/s3' if Configuration.s3?
 
+# The Rack app
+require 'rack_app'
+
 # Preload and validate configuration
 Configuration.preload
 raise 'configuration not valid' unless Configuration.valid?

@@ -11,6 +11,9 @@ class Configuration
   SERVICE = ConfigurationService.new
 
   class << self
+    # Handle to the Rack app
+    attr_accessor :app
+
     # Billbo host
     attr_accessor :host
 
