@@ -1,5 +1,7 @@
+require 'template_helper'
+
 class App < Base
-  TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.erb', __FILE__))
+  TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.slim', __FILE__))
 
   # Creates a new subscription with VAT.
   #
@@ -25,7 +27,15 @@ class App < Base
 
     halt 404 unless invoice
 
-    TEMPLATE.render(nil, invoice: invoice)
+    stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+    charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+
+    TEMPLATE.render(TemplateHelper.new,
+      invoice: invoice,
+      stripe: stripe_invoice,
+      customer: stripe_invoice.customer,
+      card: charge.card
+    )
   end
 
   # Fetches a preview breakdown of the costs of a subscription.
