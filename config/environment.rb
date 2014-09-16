@@ -53,6 +53,7 @@ require 'invoice_uploader'
 require 'vat_service'
 require 'stripe_service'
 require 'invoice_service'
+require 'pdf_service'
 
 # The Apis
 require 'base'

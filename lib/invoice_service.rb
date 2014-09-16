@@ -60,13 +60,6 @@ class InvoiceService
   rescue Invoice::AlreadyFinalized
   end
 
-  def generate_odf(invoice_id)
-    phantom = Shrimp::Phantom.new("http://X:#{$token}@localhost:9292/invoices/#{invoice_id}")
-    phantom.to_pdf("#{invoice_id}.pdf")
-
-    InvoiceUploader.new.store!(File.open("#{invoice_id}.pdf"))
-  end
-
   def process_refund(stripe_invoice_id:)
     invoice = Invoice.first(stripe_id: stripe_invoice_id)
 
