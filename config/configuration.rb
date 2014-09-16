@@ -35,6 +35,34 @@ class Configuration
     # Default currency of the seller
     attr_accessor :default_currency
 
+    # Address of the seller
+    attr_accessor :seller_address_line1
+    attr_accessor :seller_address_line2
+
+    # VAT number of the seller
+    attr_accessor :seller_vat
+
+    # Other information of the seller that the invoice must contain
+    attr_accessor :seller_other_info
+
+    # Bank name of the seller
+    attr_accessor :seller_bank_name
+
+    # BIC code of the seller's bank
+    attr_accessor :seller_bic
+
+    # IBAN number of the seller's bank account
+    attr_accessor :seller_iban
+
+    # Seller company name
+    attr_accessor :seller_company_name
+
+    # Seller logo
+    attr_accessor :seller_logo_url
+
+    # Seller email
+    attr_accessor :seller_email
+
     # Segment.io analytics handle
     attr_accessor :segmentio
 

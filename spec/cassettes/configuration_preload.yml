@@ -50,10 +50,10 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "acct_102w3g2nHroS7mLX",
-          "email": "admin@piesync.com",
-          "statement_descriptor": "PIESYNC.COM",
-          "display_name": "Piesync",
+          "id": "acct_142w3g2n3roS7mLX",
+          "email": "info@acme.com",
+          "statement_descriptor": "ACME.COM",
+          "display_name": "ACME",
           "timezone": "Etc/UTC",
           "details_submitted": true,
           "charge_enabled": true,
@@ -199,10 +199,10 @@ http_interactions:
             "zar",
             "zmw"
           ],
-          "default_currency": "eur",
+          "default_currency": "usd",
           "country": "BE",
           "object": "account"
         }
-    http_version: 
+    http_version:
   recorded_at: Mon, 15 Sep 2014 19:27:07 GMT
 recorded_with: VCR 2.9.2

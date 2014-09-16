@@ -7,38 +7,40 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
   body
     #invoice
       #invoice-header
-        img.logo.screen alt="Mainlogo_large" src="/assets/logo.png" /
+        img.logo.screen alt="Mainlogo_large" src=(Configuration.seller_logo_url || "/assets/logo.png") /
 
         #company-address.vcard
           .fn.org
-            strong Company Name
+            strong = Configuration.seller_company_name
           .adr
             .street-address
-              | Street Address line
-
-            .locality Locality
-
-            #company-postcode
-              span.region Region
-              span.postal-code EX12 8PZ
-
-          .email email@company.com
-
+              = Configuration.seller_address_line1
+              br /
+              = Configuration.seller_address_line2
+            .locality = country_name(Configuration.primary_country)
+          .email = Configuration.seller_email
+          p
+            br /
+            strong
+              ' VAT
+              = Configuration.seller_vat
+            = Configuration.seller_other_info
 
       #invoice-info
         h2
           ' Invoice
           strong= invoice.number
         p = format_date(invoice.finalized_at)
-        p#payment-due Payment due by #{format_date(invoice.due_at)}
         - if stripe.paid
           p
-            b Paid with #{card.brand} #{card.last4}
+            b Paid with #{card.brand} #{card.last4} registered to #{card.name}
+        - else
+          p#payment-due Payment due by #{format_date(invoice.due_at)}
         p#payment-total = format_money(stripe.total, stripe.currency)
 
 
       #client-details.vcard
-        .fn = card.name
+        .fn NAME
         .org COMPANY
         .adr
           .street-address
@@ -74,27 +76,21 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
                 td.item_l Subscription: #{line.plan.name} (from #{format_date(line.period.start)} to #{format_date(line.period.end)})
                 td.item_r = format_money(line.amount, line.currency)
 
-      #invoice-other
-        h2 Other Information
-        #company-reg-number
-          strong Company Registration Number:
-          | 9273109
-        #contract-number
-          strong Contract/PO:
-          | PO 87227643
-
       #payment-details
         h2 Payment Details
-        #bank_name Bank Name
+        #bank_name = Configuration.seller_bank_name
         #sort-code
-          strong Bank/Sort Code:
-          | 01-01-01
+          strong
+            ' BIC Code:
+          = Configuration.seller_bic
         #account-number
-          strong Account Number:
-          | 123456
+          strong
+            ' IBAN Number:
+          = Configuration.seller_iban
         #payment-reference
-          strong Payment Reference:
-          | INV001
+          strong
+            ' Payment Reference:
+          = invoice.number
 
       #comments
         p
