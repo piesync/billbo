@@ -9,6 +9,9 @@ end
 # Bundle (gems)
 require 'boot'
 
+# Require needed active support bits
+require 'active_support/core_ext/integer'
+
 # Load Environment variables from env files
 Dotenv.load(
   File.expand_path("../../.env.#{$environment}", __FILE__),
