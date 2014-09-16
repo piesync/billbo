@@ -47,7 +47,8 @@ require 'schema'
 require 'invoice'
 
 # Invoice generation.
-require 'invoice_uploader'
+require 'invoice_file_uploader'
+require 'invoice_cloud_uploader'
 
 # Services
 require 'vat_service'
