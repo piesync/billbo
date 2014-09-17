@@ -85,10 +85,7 @@ class StripeService
   # Returns a VatCharge object.
   def charge_vat(amount, currency:, invoice_id: nil)
     # Calculate the amount of VAT to be paid.
-    vat = vat_service.calculate \
-      amount: amount,
-      country_code: customer.metadata[:country_code],
-      vat_registered: (customer.metadata[:vat_registered] == 'true')
+    vat = calculate_vat(amount)
 
     # Add an invoice item to the invoice with this amount.
     invoice_item = Stripe::InvoiceItem.create(
@@ -102,17 +99,35 @@ class StripeService
     [vat, invoice_item]
   end
 
+  def calculate_vat(amount)
+    vat_service.calculate \
+      amount: amount,
+      country_code: customer.metadata[:country_code],
+      vat_registered: (customer.metadata[:vat_registered] == 'true')
+  end
+
   # Adds a snapshot of the customer metadata to the invoice.
   #
   # invoice - A Stripe invoice object.
   #
   # Returns the Stripe invoice
   def snapshot(invoice, vat, extra = {})
+    # CALCULATE REAL VAT AMOUNT HERE
     invoice.metadata = customer.metadata.to_h.merge(
       vat_amount: vat && vat.amount,
       vat_rate: vat && vat.rate
     ).merge(extra)
     invoice.save
+  end
+
+  # Calculates the amount of discount given on an amount
+  # with a certain Stripe coupon.
+  def calculate_discount(amount, coupon)
+    if coupon.percent_off
+      (amount*coupon.percent_off)/100
+    else
+      amount - coupon.amount_off
+    end
   end
 
   def customer
