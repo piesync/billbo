@@ -22,7 +22,6 @@ class InvoiceService
 
     # If this method was succesful, we created a paid invoice with VAT already applied.
     invoice = ensure_invoice(stripe_invoice.id).added_vat!
-    snapshot(stripe_invoice, invoice)
 
     subscription
   end
@@ -35,7 +34,6 @@ class InvoiceService
     if !invoice.added_vat?
       stripe_invoice = stripe_service.apply_vat(invoice_id: stripe_invoice_id)
       invoice.added_vat!
-      snapshot(stripe_invoice, invoice)
     end
 
     invoice

@@ -79,9 +79,7 @@ describe StripeService do
 
         invoice = customer.invoices.first
         invoice.total.must_equal 121
-        invoice.metadata.to_h.must_equal metadata.merge(
-          vat_amount: '21', vat_rate: '21'
-        )
+
         invoice.lines.to_a.find { |l| l.description =~ /VAT/ }
           .description.must_equal 'VAT (21%)'
       end
@@ -149,9 +147,6 @@ describe StripeService do
         invoice = invoices.first
         invoice.total.must_equal 1814
         invoice.lines.to_a.size.must_equal 2
-        invoice.metadata.to_h.must_equal metadata.merge(
-          vat_amount: '315', vat_rate: '21'
-        )
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.
@@ -171,7 +166,6 @@ describe StripeService do
           invoice = invoices.first
           invoice.total.must_equal 0
           invoice.lines.to_a.size.must_equal 1
-          invoice.metadata.to_h.must_equal metadata
 
           upcoming = customer.upcoming_invoice
           # Upcoming does not have VAT yet, waiting to close invoice.
@@ -191,7 +185,6 @@ describe StripeService do
           invoice = invoices.first
           invoice.total.must_equal 0
           invoice.lines.to_a.size.must_equal 1
-          invoice.metadata.to_h.must_equal metadata
 
           upcoming = customer.upcoming_invoice
           # Upcoming does not have VAT yet, waiting to close invoice.

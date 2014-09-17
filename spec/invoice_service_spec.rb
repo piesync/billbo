@@ -44,10 +44,6 @@ describe InvoiceService do
         invoice.added_vat?.must_equal true
         invoice.finalized?.must_equal false
         invoice.sequence_number.must_be_nil
-
-        invoice.total.must_equal 1813
-        invoice.vat_amount.must_equal 314
-        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end
@@ -71,16 +67,10 @@ describe InvoiceService do
 
         invoice = customer.invoices.first
         invoice.total.must_equal 121
-        invoice.metadata.to_h.must_equal metadata.merge(
-          vat_amount: '21', vat_rate: '21'
-        )
 
         Invoice.count.must_equal 1
         invoice = Invoice.first
         invoice.added_vat?.must_equal true
-        invoice.total.must_equal 121
-        invoice.vat_amount.must_equal 21
-        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end

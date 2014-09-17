@@ -32,13 +32,7 @@ class StripeService
     # This call automatically creates an invoice, always.
     subscription = customer.subscriptions.create(options)
 
-    # The subscription creation has immediately created an invoice as well (only
-    #   if this was the first invoice).
-    # Get the last invoice to add metadata snapshot.
-    _last_invoice = last_invoice
-    snapshot(_last_invoice, vat)
-
-    [subscription, _last_invoice]
+    [subscription, last_invoice]
   rescue Stripe::StripeError => e
     # Something failed in Stripe, if we already charged for VAT,
     # we need to rollback this. As we may charge twice later otherwise.
@@ -60,10 +54,7 @@ class StripeService
     vat, invoice_item = charge_vat(stripe_invoice.subtotal,
       invoice_id: invoice_id, currency: stripe_invoice.currency)
 
-    # Snapshot.
-    snapshot(stripe_invoice, vat)
-
-    stripe_invoice
+    Stripe::Invoice.retrieve(invoice_id)
   end
 
   private
