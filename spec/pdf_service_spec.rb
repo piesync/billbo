@@ -28,12 +28,25 @@ describe PdfService do
     end
   end
 
-  it 'works' do
-    VCR.use_cassette('pdf_test') do
-      invoice_service.create_subscription(plan: plan.id)
-      invoice = Invoice.first.finalize!
+  describe '#generate_pdf' do
+    it 'generates a pdf representiation of an invoice and stores it' do
+      VCR.use_cassette('pdf_generation') do
+        invoice_service.create_subscription(plan: plan.id)
+        invoice = Invoice.first.finalize!
 
-      p service.generate_pdf(invoice)
+        service.generate_pdf(invoice)
+
+        invoice = invoice.reload
+        invoice.pdf_generated_at.wont_be_nil
+
+        uploader = Configuration.uploader
+        uploader.retrieve_from_store!("#{invoice.number}.pdf")
+
+        exists = File.exists?(
+          File.expand_path("../../#{uploader.store_path}/#{uploader.filename}", __FILE__))
+
+        exists.must_equal true
+      end
     end
   end
 end

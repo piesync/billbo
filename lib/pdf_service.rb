@@ -6,10 +6,10 @@ class PdfService
 
   def generate_pdf(invoice)
     phantom = Shrimp::Phantom.new(
-      "http://X:#{Configuration.api_token}@#{Configuration.host}/invoices/#{invoice.id}")
-    phantom.to_pdf("tmp/#{invoice.id}.pdf")
+      "http://X:#{Configuration.api_token}@#{Configuration.host}/invoices/#{invoice.number}")
+    phantom.to_pdf("tmp/#{invoice.number}.pdf")
 
-    invoice.pdf_generated! if uploader.store!(File.open("tmp/#{invoice.id}.pdf"))
+    invoice.pdf_generated! if uploader.store!(File.open("tmp/#{invoice.number}.pdf"))
   end
 
   def generate_missing

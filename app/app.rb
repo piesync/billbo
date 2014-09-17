@@ -20,10 +20,10 @@ class App < Base
     json(subscription)
   end
 
-  get '/invoices/:id' do
+  get '/invoices/:number' do
     content_type 'text/html'
 
-    invoice = Invoice[params[:id]]
+    invoice = Invoice.where(number: params[:number]).first
 
     halt 404 unless invoice
 
