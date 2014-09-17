@@ -20,6 +20,14 @@ class App < Base
     json(subscription)
   end
 
+  # Populates a template with all invoice data.
+  # This should never be used to show to customers, it should
+  # only be used to generate PDF's, as information on the invoice
+  # could change between different calls.
+  #
+  # number - The invoice number.
+  #
+  # Returns the html and status 200 if successful
   get '/invoices/:number' do
     content_type 'text/html'
 
@@ -36,6 +44,9 @@ class App < Base
       customer: stripe_invoice.customer,
       card: charge.card
     )
+  end
+
+  get 'invoices/:number.pdf' do
   end
 
   # Fetches a preview breakdown of the costs of a subscription.

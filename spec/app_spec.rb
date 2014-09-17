@@ -64,6 +64,43 @@ describe App do
     end
   end
 
+  describe 'get /invoices/:number' do
+    include Capybara::DSL
+
+    before do
+      page.driver.basic_authorize('', Configuration.api_token)
+    end
+
+    after do
+      Capybara.reset_sessions!
+    end
+
+    let(:metadata) {{
+      country_code: country_code,
+      vat_registered: vat_registered,
+      name: 'John Doe',
+      address: 'Doestreet'
+    }}
+
+    let(:invoice_service) { InvoiceService.new(customer_id: customer.id) }
+
+    describe 'subscription without VAT' do
+      let(:country_code) { 'US' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice without VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat') do
+          invoice_service.create_subscription(plan: plan.id)
+
+          number = Invoice.first.finalize!.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat.png', :full => true)
+        end
+      end
+    end
+  end
+
   describe 'get /preview' do
     it 'returns a price breakdown of a plan for a customer' do
       VCR.use_cassette('preview_success') do
