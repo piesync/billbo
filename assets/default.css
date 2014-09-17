@@ -64,7 +64,7 @@
 #invoice-amount td.action{border-bottom:0;}
 #invoice-amount tr.odd td{background:#fff;}
 
-#invoice-amount .quantity_th{
+#invoice-amount .details_th{
     -webkit-border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
     border-radius: 5px 0 0 5px;
