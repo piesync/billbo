@@ -17,3 +17,9 @@ task :console => :environment do
 end
 
 task :default => :spec
+
+# Task that generates PDF's for all invoices that were not
+# generated already.
+task :generate_pdfs => :environment do
+  PdfService.new.generate_missing
+end
