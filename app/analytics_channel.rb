@@ -1,5 +1,9 @@
 class AnalyticsChannel < Rumor::Channel
 
+  def initialize(segmentio)
+    @segmentio = segmentio
+  end
+
   on(:charge_succeeded) do |rumor|
     track_revenue(charge: rumor.subject)
   end
@@ -52,7 +56,7 @@ class AnalyticsChannel < Rumor::Channel
   end
 
   def track user, event, properties = {}
-    $analytics.track \
+    @segmentio.track \
       user_id: user,
       event: event,
       properties: properties

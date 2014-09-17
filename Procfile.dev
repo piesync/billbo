@@ -1,1 +1,0 @@
-web: shotgun config.ru

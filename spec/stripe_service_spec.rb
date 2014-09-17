@@ -49,16 +49,16 @@ describe StripeService do
   end
 
   let(:coupon) do
-  	begin
-  		Stripe::Coupon.retrieve('25OFF')
-  	rescue
-  		Stripe::Coupon.create(
-			  percent_off: 25,
-			  duration: 'repeating',
-			  duration_in_months: 3,
-			  id: '25OFF'
-			)
-  	end
+    begin
+      Stripe::Coupon.retrieve('25OFF')
+    rescue
+      Stripe::Coupon.create(
+        percent_off: 25,
+        duration: 'repeating',
+        duration_in_months: 3,
+        id: '25OFF'
+      )
+    end
   end
 
   let(:stripe_invoice) { Stripe::Invoice.create(customer: customer.id) }
@@ -88,27 +88,27 @@ describe StripeService do
     end
 
     describe 'the customer has a coupon' do
-    	it 'still calculates the total amount correctly' do
-    		VCR.use_cassette('apply_vat_coupon_success') do
-    			subscription, _ = service.create_subscription(
-    				plan: 'test', coupon: coupon.id)
+      it 'still calculates the total amount correctly' do
+        VCR.use_cassette('apply_vat_coupon_success') do
+          subscription, _ = service.create_subscription(
+            plan: 'test', coupon: coupon.id)
 
-    			invoice = customer.invoices.first
-    			invoice.total.must_equal 1360
+          invoice = customer.invoices.first
+          invoice.total.must_equal 1360
 
-    			Stripe::InvoiceItem.create \
-	          customer: customer.id,
-	          amount: 100,
-	          currency: 'usd'
+          Stripe::InvoiceItem.create \
+            customer: customer.id,
+            amount: 100,
+            currency: 'usd'
 
-	        invoice = Stripe::Invoice.create(
-	        	customer: customer.id, subscription: subscription.id)
+          invoice = Stripe::Invoice.create(
+            customer: customer.id, subscription: subscription.id)
 
-	        service.apply_vat(invoice_id: invoice.id)
+          service.apply_vat(invoice_id: invoice.id)
 
-	        Stripe::Invoice.retrieve(invoice.id).total.must_equal 91
-    		end
-    	end
+          Stripe::Invoice.retrieve(invoice.id).total.must_equal 91
+        end
+      end
     end
 
     describe 'customer does not have to pay VAT' do
