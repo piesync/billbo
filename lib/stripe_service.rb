@@ -57,6 +57,57 @@ class StripeService
     Stripe::Invoice.retrieve(invoice_id)
   end
 
+  # Snapshots the final correct state of an invoice. It copies
+  # customer metadata to invoice metadata and figures out the right
+  # amount of VAT and discount.
+  #
+  # stripe_invoice - The Stripe invoice to snapshot.
+  #
+  # Returns a hash that contains all snapshotted data.
+  def snapshot_final(stripe_invoice:)
+    # Start off with the customer metadata.
+    metadata = customer.metadata.to_h
+
+    # Find the VAT invoice item.
+    vat_line = stripe_invoice.lines.find { |line| line.metadata[:type] == 'vat' }
+    other_lines = stripe_invoice.lines.to_a - [vat_line]
+    subtotal = other_lines.map(&:amount).inject(:+)
+
+    metadata.merge! \
+      subtotal: subtotal,
+      total: stripe_invoice.total
+
+    # If there is vat and a discount, we need to recalculate VAT and the discount.
+    more = if vat_line && stripe_invoice.discount
+      p subtotal
+      # Recalculate discount based on the sum of all lines besides the vat line.
+      discount = calculate_discount(subtotal, stripe_invoice.discount.coupon)
+      subtotal_after_discount = subtotal - discount
+
+      # Recalculate VAT based on the total after discount
+      vat_amount, vat_rate = calculate_vat(subtotal_after_discount).to_a
+
+      {
+        discount_amount: discount,
+        subtotal_after_discount: subtotal_after_discount,
+        vat_amount: vat_amount,
+        vat_rate: vat_rate
+      }
+    else
+      {
+        discount_amount: stripe_invoice.subtotal - stripe_invoice.total,
+        subtotal_after_discount: stripe_invoice.total,
+        vat_amount: (vat_line && vat_line.metadata[:amount]).to_i,
+        vat_rate: (vat_line && vat_line.metadata[:rate]).to_i
+      }
+    end
+
+    stripe_invoice.metadata = metadata.merge!(more)
+    stripe_invoice.save
+
+    metadata
+  end
+
   private
 
   def last_invoice
@@ -102,25 +153,11 @@ class StripeService
       vat_registered: (customer.metadata[:vat_registered] == 'true')
   end
 
-  # Adds a snapshot of the customer metadata to the invoice.
-  #
-  # invoice - A Stripe invoice object.
-  #
-  # Returns the Stripe invoice
-  def snapshot(invoice, vat, extra = {})
-    # CALCULATE REAL VAT AMOUNT HERE
-    invoice.metadata = customer.metadata.to_h.merge(
-      vat_amount: vat && vat.amount,
-      vat_rate: vat && vat.rate
-    ).merge(extra)
-    invoice.save
-  end
-
   # Calculates the amount of discount given on an amount
   # with a certain Stripe coupon.
   def calculate_discount(amount, coupon)
     if coupon.percent_off
-      (amount*coupon.percent_off)/100
+      ((amount*coupon.percent_off)/100.0).round
     else
       amount - coupon.amount_off
     end

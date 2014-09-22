@@ -208,4 +208,104 @@ describe StripeService do
       end
     end
   end
+
+  describe '#snapshot_final' do
+    let(:metadata) {{
+      country_code: 'NL',
+      vat_registered: !vat,
+      other: 'random'
+    }}
+
+    describe 'an invoice without vat and without discount' do
+      let(:vat) { false }
+
+      it 'snapshots correctly' do
+        VCR.use_cassette('snapshot_final') do
+          _, invoice = service.create_subscription(plan: 'test')
+          service.snapshot_final(stripe_invoice: invoice)
+          invoice = Stripe::Invoice.retrieve(invoice.id)
+
+          invoice.metadata.to_h.must_equal \
+            country_code: 'NL',
+            vat_registered: 'true',
+            other: 'random',
+            subtotal: '1499',
+            total: '1499',
+            discount_amount: '0',
+            subtotal_after_discount: '1499',
+            vat_amount: '0',
+            vat_rate: '0'
+        end
+      end
+    end
+
+    describe 'an invoice with vat and without discount' do
+      let(:vat) { true }
+
+      it 'snapshots correctly' do
+        VCR.use_cassette('snapshot_final_vat') do
+          _, invoice = service.create_subscription(plan: 'test')
+          service.snapshot_final(stripe_invoice: invoice)
+          invoice = Stripe::Invoice.retrieve(invoice.id)
+
+          invoice.metadata.to_h.must_equal \
+            country_code: 'NL',
+            vat_registered: 'false',
+            other: 'random',
+            subtotal: '1499',
+            total: '1814',
+            discount_amount: '0',
+            subtotal_after_discount: '1814',
+            vat_amount: '315',
+            vat_rate: '21'
+        end
+      end
+    end
+
+    describe 'an invoice without vat and with discount' do
+      let(:vat) { false }
+
+      it 'snapshots correctly' do
+        VCR.use_cassette('snapshot_final_discount') do
+          _, invoice = service.create_subscription(plan: 'test', coupon: coupon.id)
+          service.snapshot_final(stripe_invoice: invoice)
+          invoice = Stripe::Invoice.retrieve(invoice.id)
+
+          invoice.metadata.to_h.must_equal \
+            country_code: 'NL',
+            vat_registered: 'true',
+            other: 'random',
+            subtotal: '1499',
+            total: '1124',
+            discount_amount: '375',
+            subtotal_after_discount: '1124',
+            vat_amount: '0',
+            vat_rate: '0'
+        end
+      end
+    end
+
+    describe 'an invoice with vat and with discount' do
+      let(:vat) { true }
+
+      it 'snapshots correctly' do
+        VCR.use_cassette('snapshot_final_vat_discount') do
+          _, invoice = service.create_subscription(plan: 'test', coupon: coupon.id)
+          service.snapshot_final(stripe_invoice: invoice)
+          invoice = Stripe::Invoice.retrieve(invoice.id)
+
+          invoice.metadata.to_h.must_equal \
+            country_code: 'NL',
+            vat_registered: 'false',
+            other: 'random',
+            subtotal: '1499',
+            total: '1360',
+            discount_amount: '375',
+            subtotal_after_discount: '1124',
+            vat_amount: '236',
+            vat_rate: '21'
+        end
+      end
+    end
+  end
 end
