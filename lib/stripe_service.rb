@@ -84,7 +84,12 @@ class StripeService
       invoice: invoice_id,
       amount: vat.amount,
       currency: currency,
-      description: "VAT (#{vat.rate}%)"
+      description: "VAT (#{vat.rate}%)",
+      metadata: {
+        type: 'vat',
+        amount: vat.amount,
+        rate: vat.rate
+      }
     ) unless vat.amount.zero?
 
     [vat, invoice_item]

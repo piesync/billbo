@@ -66,7 +66,7 @@ describe StripeService do
   let(:service) { StripeService.new(customer_id: customer.id) }
 
   describe '#apply_vat' do
-    it 'finalizes an invoice by charging vat and snapshotting it' do
+    it 'finalizes an invoice by charging vat' do
       VCR.use_cassette('apply_vat_success') do
         Stripe::InvoiceItem.create \
           customer: customer.id,
@@ -80,7 +80,7 @@ describe StripeService do
         invoice = customer.invoices.first
         invoice.total.must_equal 121
 
-        invoice.lines.to_a.find { |l| l.description =~ /VAT/ }
+        invoice.lines.to_a.find { |l| l.metadata[:type] == 'vat' }
           .description.must_equal 'VAT (21%)'
       end
     end
