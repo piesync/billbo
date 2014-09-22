@@ -221,7 +221,7 @@ describe StripeService do
 
       it 'snapshots correctly' do
         VCR.use_cassette('snapshot_final') do
-          _, invoice = service.create_subscription(plan: 'test')
+          _, invoice = service.create_subscription(plan: plan.id)
           service.snapshot_final(stripe_invoice: invoice)
           invoice = Stripe::Invoice.retrieve(invoice.id)
 
@@ -244,7 +244,7 @@ describe StripeService do
 
       it 'snapshots correctly' do
         VCR.use_cassette('snapshot_final_vat') do
-          _, invoice = service.create_subscription(plan: 'test')
+          _, invoice = service.create_subscription(plan: plan.id)
           service.snapshot_final(stripe_invoice: invoice)
           invoice = Stripe::Invoice.retrieve(invoice.id)
 
@@ -267,7 +267,7 @@ describe StripeService do
 
       it 'snapshots correctly' do
         VCR.use_cassette('snapshot_final_discount') do
-          _, invoice = service.create_subscription(plan: 'test', coupon: coupon.id)
+          _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
           service.snapshot_final(stripe_invoice: invoice)
           invoice = Stripe::Invoice.retrieve(invoice.id)
 
@@ -290,7 +290,7 @@ describe StripeService do
 
       it 'snapshots correctly' do
         VCR.use_cassette('snapshot_final_vat_discount') do
-          _, invoice = service.create_subscription(plan: 'test', coupon: coupon.id)
+          _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
           service.snapshot_final(stripe_invoice: invoice)
           invoice = Stripe::Invoice.retrieve(invoice.id)
 
@@ -304,6 +304,42 @@ describe StripeService do
             subtotal_after_discount: '1124',
             vat_amount: '236',
             vat_rate: '21'
+        end
+      end
+
+      describe 'the rounding is unfortunate' do
+        let(:plan) do
+          begin
+            Stripe::Plan.retrieve('rounding')
+          rescue
+            Stripe::Plan.create \
+              id: 'rounding',
+              name: 'Test Plan',
+              amount: 903,
+              currency: 'usd',
+              interval: 'month'
+          end
+        end
+
+        it 'snapshots correctly' do
+          VCR.use_cassette('snapshot_final_vat_discount_rounding') do
+            _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
+            service.snapshot_final(stripe_invoice: invoice)
+            invoice = Stripe::Invoice.retrieve(invoice.id)
+
+            invoice.metadata.to_h.must_equal \
+              country_code: 'NL',
+              vat_registered: 'false',
+              other: 'random',
+              subtotal: '903',
+              total: '820',
+              discount_amount: '227',
+              subtotal_after_discount: '676',
+              vat_amount: '142',
+              vat_rate: '21'
+
+            invoice.total.must_equal 820
+          end
         end
       end
     end

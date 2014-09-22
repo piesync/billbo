@@ -86,6 +86,10 @@ class StripeService
       # Recalculate VAT based on the total after discount
       vat_amount, vat_rate = calculate_vat(subtotal_after_discount).to_a
 
+      # Modify discount so that the total amount checks out.
+      discount += stripe_invoice.total - (subtotal_after_discount + vat_amount)
+      subtotal_after_discount = subtotal - discount
+
       {
         discount_amount: discount,
         subtotal_after_discount: subtotal_after_discount,
