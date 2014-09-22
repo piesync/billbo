@@ -79,7 +79,6 @@ class StripeService
 
     # If there is vat and a discount, we need to recalculate VAT and the discount.
     more = if vat_line && stripe_invoice.discount
-      p subtotal
       # Recalculate discount based on the sum of all lines besides the vat line.
       discount = calculate_discount(subtotal, stripe_invoice.discount.coupon)
       subtotal_after_discount = subtotal - discount
