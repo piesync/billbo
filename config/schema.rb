@@ -14,6 +14,9 @@ Configuration.db.create_table :invoices do
   Integer :vat_amount
   Decimal :vat_rate
   Integer :total
+  String  :country_code
+  Boolean :vat_registered
+  String  :vat_number
   Boolean :credit_note, default: false
   String  :reference_number
   Time    :pdf_generated_at

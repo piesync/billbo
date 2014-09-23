@@ -90,7 +90,10 @@ class InvoiceService
       subtotal_after_discount: stripe_invoice.metadata[:subtotal_after_discount].to_i,
       vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
       vat_rate: stripe_invoice.metadata[:vat_rate].to_f,
-      total: stripe_invoice.total
+      total: stripe_invoice.total,
+      country_code: stripe_invoice.metadata[:country_code],
+      vat_number: stripe_invoice.metadata[:vat],
+      vat_registered: (stripe_invoice.metadata[:vat_registered] == 'true')
   end
 
   def ensure_invoice(stripe_id)

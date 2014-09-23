@@ -67,6 +67,10 @@ class Invoice < Sequel::Model
     vat_amount && vat_amount != 0
   end
 
+  def eu?
+    Valvat::Utils::EU_COUNTRIES.include?(country_code)
+  end
+
   private
 
   def self.safe_transaction
