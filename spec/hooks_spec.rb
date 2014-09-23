@@ -78,10 +78,6 @@ describe Hooks do
           invoice.sequence_number.must_be_nil
           invoice.added_vat?.must_equal true
           invoice.finalized_at.must_be_nil
-
-          invoice.total.must_equal 121
-          invoice.vat_amount.must_equal 21
-          invoice.vat_rate.must_equal 21.to_f
         end
       end
     end
@@ -201,9 +197,6 @@ describe Hooks do
           last_response.ok?.must_equal true
           invoice = Invoice.first
           invoice.number.wont_be_nil
-          invoice.total.must_equal 100
-          invoice.vat_amount.must_equal 0
-          invoice.vat_rate.must_equal 0
         end
       end
     end
