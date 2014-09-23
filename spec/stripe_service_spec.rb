@@ -82,6 +82,8 @@ describe StripeService do
 
         invoice.lines.to_a.find { |l| l.metadata[:type] == 'vat' }
           .description.must_equal 'VAT (21%)'
+
+        invoice.metadata[:country_code].must_equal 'NL'
       end
     end
 
@@ -147,6 +149,7 @@ describe StripeService do
         invoice = invoices.first
         invoice.total.must_equal 1814
         invoice.lines.to_a.size.must_equal 2
+        invoice.metadata[:country_code].must_equal 'NL'
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.

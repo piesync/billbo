@@ -32,7 +32,11 @@ class StripeService
     # This call automatically creates an invoice, always.
     subscription = customer.subscriptions.create(options)
 
-    [subscription, last_invoice]
+    # Get the last invoice to snapshot customer data.
+    _last_invoice = last_invoice
+    snapshot_customer(_last_invoice)
+
+    [subscription, _last_invoice]
   rescue Stripe::StripeError => e
     # Something failed in Stripe, if we already charged for VAT,
     # we need to rollback this. As we may charge twice later otherwise.
@@ -54,19 +58,22 @@ class StripeService
     vat, invoice_item = charge_vat(stripe_invoice.subtotal,
       invoice_id: invoice_id, currency: stripe_invoice.currency)
 
+    # Snapshot customer data.
+    snapshot_customer(stripe_invoice)
+
     Stripe::Invoice.retrieve(invoice_id)
   end
 
-  # Snapshots the final correct state of an invoice. It copies
-  # customer metadata to invoice metadata and figures out the right
-  # amount of VAT and discount.
+  # Snapshots the final correct state of an invoice. It
+  # figures out the right amount of VAT and discount.
   #
   # stripe_invoice - The Stripe invoice to snapshot.
   #
   # Returns a hash that contains all snapshotted data.
-  def snapshot_final(stripe_invoice:)
-    # Start off with the customer metadata.
-    metadata = customer.metadata.to_h
+  def snapshot_final(stripe_invoice:, **extra)
+    # Start off with the existing and extra metadata.
+    metadata = stripe_invoice.metadata.to_h
+    metadata.merge!(extra)
 
     # Find the VAT invoice item.
     vat_line = stripe_invoice.lines.find { |line| line.metadata[:type] == 'vat' }
@@ -115,6 +122,14 @@ class StripeService
 
   def last_invoice
     Stripe::Invoice.all(customer: customer.id, limit: 1).first
+  end
+
+  def snapshot_customer(stripe_invoice)
+    metadata = stripe_invoice.metadata.to_h
+    metadata.merge!(customer.metadata.to_h)
+    stripe_invoice.metadata = metadata
+    stripe_invoice.save
+    metadata
   end
 
   def charge_vat_of_plan(plan)
