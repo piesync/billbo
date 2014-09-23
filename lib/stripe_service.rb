@@ -80,9 +80,7 @@ class StripeService
     other_lines = stripe_invoice.lines.to_a - [vat_line]
     subtotal = other_lines.map(&:amount).inject(:+)
 
-    metadata.merge! \
-      subtotal: subtotal,
-      total: stripe_invoice.total
+    metadata.merge!(subtotal: subtotal)
 
     # If there is vat and a discount, we need to recalculate VAT and the discount.
     more = if vat_line && stripe_invoice.discount

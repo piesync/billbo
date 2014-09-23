@@ -54,6 +54,14 @@ class InvoiceService
     # need to make an invoice for it.
     invoice.finalize! unless stripe_invoice.total.zero?
 
+    # Now we are sure nothing is going to change the invoice anymore.
+    # Take a final snapshot into the invoice.
+    stripe_service.snapshot_final \
+      stripe_invoice: stripe_invoice,
+      number: invoice.number
+
+    snapshot(stripe_invoice, invoice)
+
     invoice
   rescue Invoice::AlreadyFinalized
   end
@@ -77,9 +85,12 @@ class InvoiceService
   # Take a snapshot from a Stripe invoice to an internal invoice.
   def snapshot(stripe_invoice, invoice)
     invoice.update \
-      total: stripe_invoice.total,
+      subtotal: stripe_invoice.metadata[:subtotal].to_i,
+      discount_amount: stripe_invoice.metadata[:discount_amount].to_i,
+      subtotal_after_discount: stripe_invoice.metadata[:subtotal_after_discount].to_i,
       vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
-      vat_rate: stripe_invoice.metadata[:vat_rate].to_f
+      vat_rate: stripe_invoice.metadata[:vat_rate].to_f,
+      total: stripe_invoice.total
   end
 
   def ensure_invoice(stripe_id)
