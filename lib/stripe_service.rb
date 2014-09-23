@@ -80,14 +80,14 @@ class StripeService
     other_lines = stripe_invoice.lines.to_a - [vat_line]
     subtotal = other_lines.map(&:amount).inject(:+)
 
+    # Recalculate discount based on the sum of all lines besides the vat line.
+    discount = calculate_discount(subtotal, stripe_invoice.discount.coupon) if stripe_invoice.discount
+    subtotal_after_discount = subtotal - discount.to_i
+
     metadata.merge!(subtotal: subtotal)
 
     # If there is vat and a discount, we need to recalculate VAT and the discount.
     more = if vat_line && stripe_invoice.discount
-      # Recalculate discount based on the sum of all lines besides the vat line.
-      discount = calculate_discount(subtotal, stripe_invoice.discount.coupon)
-      subtotal_after_discount = subtotal - discount
-
       # Recalculate VAT based on the total after discount
       vat_amount, vat_rate = calculate_vat(subtotal_after_discount).to_a
 
@@ -104,7 +104,7 @@ class StripeService
     else
       {
         discount_amount: stripe_invoice.subtotal - stripe_invoice.total,
-        subtotal_after_discount: stripe_invoice.total,
+        subtotal_after_discount: subtotal_after_discount,
         vat_amount: (vat_line && vat_line.metadata[:amount]).to_i,
         vat_rate: (vat_line && vat_line.metadata[:rate]).to_i
       }
