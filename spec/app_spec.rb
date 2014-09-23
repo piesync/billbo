@@ -91,8 +91,10 @@ describe App do
       it 'generates an invoice without VAT' do
         VCR.use_cassette('invoice_template_sub_no_vat') do
           invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.finalize!.number
+          number = Invoice.first.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_without_vat.png', :full => true)
