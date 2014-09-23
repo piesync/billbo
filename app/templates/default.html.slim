@@ -53,7 +53,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         thead
           tr#header_row
             th.left.details_th Details
-            th.subtotal_th Price (#{currency_symbol(stripe.currency)})
+            th.subtotal_th Price (#{stripe.currency.upcase})
         tfoot
           tr#discount_tr
             td.item_r 10% Discount
