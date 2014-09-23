@@ -66,7 +66,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           tr#vat_tr
             td.item_r
               - if invoice.vat?
-                = "VAT (#{invoice.vat_rate}%)"
+                = "VAT (#{invoice.vat_rate.to_i}%)"
               - else
                 | VAT*
             td.item_r = format_money(invoice.vat_amount, stripe.currency)

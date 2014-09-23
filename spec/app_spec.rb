@@ -101,6 +101,24 @@ describe App do
         end
       end
     end
+
+    describe 'subscription with VAT' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_vat') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          number = Invoice.first.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_with_vat.png', :full => true)
+        end
+      end
+    end
   end
 
   describe 'get /preview' do
