@@ -256,7 +256,7 @@ describe StripeService do
             other: 'random',
             subtotal: '1499',
             discount_amount: '0',
-            subtotal_after_discount: '1814',
+            subtotal_after_discount: '1499',
             vat_amount: '315',
             vat_rate: '21'
         end
