@@ -49,21 +49,27 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           .locality = country_name(stripe.metadata.try(:country_code))
 
 
+      br /
       table#invoice-amount
         thead
           tr#header_row
             th.left.details_th Details
             th.subtotal_th Price (#{stripe.currency.upcase})
         tfoot
-          tr#discount_tr
-            td.item_r 10% Discount
-            td.item_r $123.00
+          - if invoice.discount?
+            tr#discount_tr
+              td.item_r = "#{coupon.percentage_off}% Discount"
+              td.item_r = format_money(invoice.discount_amount, stripe.currency)
           tr#net_total_tr
             td.item_r Net Total
-            td.item_r $1234.00
+            td.item_r = format_money(invoice.subtotal_after_discount, stripe.currency)
           tr#vat_tr
-            td.item_r VAT
-            td.item_r $123.45
+            td.item_r
+              - if invoice.vat?
+                = "VAT (#{invoice.vat_rate}%)"
+              - else
+                | VAT*
+            td.item_r = format_money(invoice.vat_amount, stripe.currency)
           tr#total_tr
             td#total_currency.total
               span.currency = stripe.currency.upcase
@@ -94,4 +100,9 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
       #comments
         p
-          | Notes
+          - if !invoice.vat?
+            // we need to show a reason for not charging vat.
+            - if invoice.eu?
+              | * VAT Reverse charge
+            - else
+              | * Export
