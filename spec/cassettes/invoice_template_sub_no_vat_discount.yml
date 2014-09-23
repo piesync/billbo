@@ -31,7 +31,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:24 GMT
+      - Tue, 23 Sep 2014 13:45:06 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -53,8 +53,8 @@ http_interactions:
       string: |
         {
           "object": "customer",
-          "created": 1411475844,
-          "id": "cus_4pXd7YykzVs48D",
+          "created": 1411479906,
+          "id": "cus_4pYiHe6pR9LYyS",
           "livemode": false,
           "description": null,
           "email": null,
@@ -69,7 +69,7 @@ http_interactions:
             "object": "list",
             "total_count": 0,
             "has_more": false,
-            "url": "/v1/customers/cus_4pXd7YykzVs48D/subscriptions",
+            "url": "/v1/customers/cus_4pYiHe6pR9LYyS/subscriptions",
             "data": [],
             "count": 0
           },
@@ -80,10 +80,10 @@ http_interactions:
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/customers/cus_4pXd7YykzVs48D/cards",
+            "url": "/v1/customers/cus_4pYiHe6pR9LYyS/cards",
             "data": [
               {
-                "id": "card_14fsXo2nHroS7mLXUuXtLaFb",
+                "id": "card_14ftbK2nHroS7mLX4kHtv39c",
                 "object": "card",
                 "last4": "4242",
                 "brand": "Visa",
@@ -102,16 +102,16 @@ http_interactions:
                 "cvc_check": "pass",
                 "address_line1_check": null,
                 "address_zip_check": null,
-                "customer": "cus_4pXd7YykzVs48D",
+                "customer": "cus_4pYiHe6pR9LYyS",
                 "type": "Visa"
               }
             ],
             "count": 1
           },
-          "default_card": "card_14fsXo2nHroS7mLXUuXtLaFb"
+          "default_card": "card_14ftbK2nHroS7mLX4kHtv39c"
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:24 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:06 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/plans/test
@@ -141,7 +141,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:25 GMT
+      - Tue, 23 Sep 2014 13:45:07 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -176,7 +176,7 @@ http_interactions:
           "statement_description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:25 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:07 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/coupons/25OFF
@@ -206,7 +206,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:26 GMT
+      - Tue, 23 Sep 2014 13:45:08 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -237,13 +237,13 @@ http_interactions:
           "duration": "repeating",
           "redeem_by": null,
           "max_redemptions": null,
-          "times_redeemed": 36,
+          "times_redeemed": 43,
           "duration_in_months": 3,
           "valid": true,
           "metadata": {}
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:26 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:08 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/plans/test
@@ -273,7 +273,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:27 GMT
+      - Tue, 23 Sep 2014 13:45:09 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -308,10 +308,10 @@ http_interactions:
           "statement_description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:27 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:09 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/customers/cus_4pXd7YykzVs48D
+    uri: https://api.stripe.com/v1/customers/cus_4pYiHe6pR9LYyS
     body:
       encoding: US-ASCII
       string: ''
@@ -338,7 +338,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:27 GMT
+      - Tue, 23 Sep 2014 13:45:09 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -360,8 +360,8 @@ http_interactions:
       string: |
         {
           "object": "customer",
-          "created": 1411475844,
-          "id": "cus_4pXd7YykzVs48D",
+          "created": 1411479906,
+          "id": "cus_4pYiHe6pR9LYyS",
           "livemode": false,
           "description": null,
           "email": null,
@@ -376,7 +376,7 @@ http_interactions:
             "object": "list",
             "total_count": 0,
             "has_more": false,
-            "url": "/v1/customers/cus_4pXd7YykzVs48D/subscriptions",
+            "url": "/v1/customers/cus_4pYiHe6pR9LYyS/subscriptions",
             "data": [],
             "count": 0
           },
@@ -387,10 +387,10 @@ http_interactions:
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/customers/cus_4pXd7YykzVs48D/cards",
+            "url": "/v1/customers/cus_4pYiHe6pR9LYyS/cards",
             "data": [
               {
-                "id": "card_14fsXo2nHroS7mLXUuXtLaFb",
+                "id": "card_14ftbK2nHroS7mLX4kHtv39c",
                 "object": "card",
                 "last4": "4242",
                 "brand": "Visa",
@@ -409,19 +409,19 @@ http_interactions:
                 "cvc_check": "pass",
                 "address_line1_check": null,
                 "address_zip_check": null,
-                "customer": "cus_4pXd7YykzVs48D",
+                "customer": "cus_4pYiHe6pR9LYyS",
                 "type": "Visa"
               }
             ],
             "count": 1
           },
-          "default_card": "card_14fsXo2nHroS7mLXUuXtLaFb"
+          "default_card": "card_14ftbK2nHroS7mLX4kHtv39c"
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:27 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:09 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/customers/cus_4pXd7YykzVs48D/subscriptions
+    uri: https://api.stripe.com/v1/customers/cus_4pYiHe6pR9LYyS/subscriptions
     body:
       encoding: US-ASCII
       string: plan=test&coupon=25OFF
@@ -450,7 +450,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:29 GMT
+      - Tue, 23 Sep 2014 13:45:11 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -471,7 +471,7 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "sub_4pXdCtGan3cv07",
+          "id": "sub_4pYibcXqTmbuvX",
           "plan": {
             "interval": "month",
             "name": "Test Plan",
@@ -487,12 +487,12 @@ http_interactions:
             "statement_description": null
           },
           "object": "subscription",
-          "start": 1411475848,
+          "start": 1411479910,
           "status": "active",
-          "customer": "cus_4pXd7YykzVs48D",
+          "customer": "cus_4pYiHe6pR9LYyS",
           "cancel_at_period_end": false,
-          "current_period_start": 1411475848,
-          "current_period_end": 1414067848,
+          "current_period_start": 1411479910,
+          "current_period_end": 1414071910,
           "ended_at": null,
           "trial_start": null,
           "trial_end": null,
@@ -511,24 +511,24 @@ http_interactions:
               "duration": "repeating",
               "redeem_by": null,
               "max_redemptions": null,
-              "times_redeemed": 37,
+              "times_redeemed": 44,
               "duration_in_months": 3,
               "valid": true,
               "metadata": {}
             },
-            "start": 1411475848,
+            "start": 1411479910,
             "object": "discount",
-            "customer": "cus_4pXd7YykzVs48D",
-            "subscription": "sub_4pXdCtGan3cv07",
-            "end": 1419338248
+            "customer": "cus_4pYiHe6pR9LYyS",
+            "subscription": "sub_4pYibcXqTmbuvX",
+            "end": 1419342310
           },
           "metadata": {}
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:29 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:11 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices?customer=cus_4pXd7YykzVs48D&limit=1
+    uri: https://api.stripe.com/v1/invoices?customer=cus_4pYiHe6pR9LYyS&limit=1
     body:
       encoding: US-ASCII
       string: ''
@@ -555,7 +555,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:29 GMT
+      - Tue, 23 Sep 2014 13:45:12 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -581,18 +581,18 @@ http_interactions:
           "url": "/v1/invoices",
           "data": [
             {
-              "date": 1411475848,
-              "id": "in_14fsXs2nHroS7mLXKmri0VId",
-              "period_start": 1411475848,
-              "period_end": 1411475848,
+              "date": 1411479910,
+              "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+              "period_start": 1411479910,
+              "period_end": 1411479910,
               "lines": {
                 "object": "list",
                 "total_count": 1,
                 "has_more": false,
-                "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+                "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
                 "data": [
                   {
-                    "id": "sub_4pXdCtGan3cv07",
+                    "id": "sub_4pYibcXqTmbuvX",
                     "object": "line_item",
                     "type": "subscription",
                     "livemode": false,
@@ -600,8 +600,8 @@ http_interactions:
                     "currency": "usd",
                     "proration": false,
                     "period": {
-                      "start": 1411475848,
-                      "end": 1414067848
+                      "start": 1411479910,
+                      "end": 1414071910
                     },
                     "quantity": 1,
                     "plan": {
@@ -626,7 +626,7 @@ http_interactions:
               },
               "subtotal": 1499,
               "total": 1124,
-              "customer": "cus_4pXd7YykzVs48D",
+              "customer": "cus_4pYiHe6pR9LYyS",
               "object": "invoice",
               "attempted": true,
               "closed": true,
@@ -639,8 +639,8 @@ http_interactions:
               "starting_balance": 0,
               "ending_balance": 0,
               "next_payment_attempt": null,
-              "webhooks_delivered_at": 1411475848,
-              "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+              "webhooks_delivered_at": 1411479910,
+              "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
               "discount": {
                 "coupon": {
                   "id": "25OFF",
@@ -653,19 +653,19 @@ http_interactions:
                   "duration": "repeating",
                   "redeem_by": null,
                   "max_redemptions": null,
-                  "times_redeemed": 37,
+                  "times_redeemed": 44,
                   "duration_in_months": 3,
                   "valid": true,
                   "metadata": {}
                 },
-                "start": 1411475848,
+                "start": 1411479910,
                 "object": "discount",
-                "customer": "cus_4pXd7YykzVs48D",
-                "subscription": "sub_4pXdCtGan3cv07",
-                "end": 1419338248
+                "customer": "cus_4pYiHe6pR9LYyS",
+                "subscription": "sub_4pYibcXqTmbuvX",
+                "end": 1419342310
               },
               "application_fee": null,
-              "subscription": "sub_4pXdCtGan3cv07",
+              "subscription": "sub_4pYibcXqTmbuvX",
               "metadata": {},
               "statement_description": null,
               "description": null
@@ -674,10 +674,10 @@ http_interactions:
           "count": 1
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:29 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:12 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId
+    uri: https://api.stripe.com/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD
     body:
       encoding: US-ASCII
       string: metadata[country_code]=US&metadata[vat_registered]=false&metadata[name]=John%20Doe&metadata[address]=Doestreet
@@ -706,7 +706,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:30 GMT
+      - Tue, 23 Sep 2014 13:45:12 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -727,18 +727,18 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "date": 1411475848,
-          "id": "in_14fsXs2nHroS7mLXKmri0VId",
-          "period_start": 1411475848,
-          "period_end": 1411475848,
+          "date": 1411479910,
+          "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+          "period_start": 1411479910,
+          "period_end": 1411479910,
           "lines": {
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+            "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
             "data": [
               {
-                "id": "sub_4pXdCtGan3cv07",
+                "id": "sub_4pYibcXqTmbuvX",
                 "object": "line_item",
                 "type": "subscription",
                 "livemode": false,
@@ -746,8 +746,8 @@ http_interactions:
                 "currency": "usd",
                 "proration": false,
                 "period": {
-                  "start": 1411475848,
-                  "end": 1414067848
+                  "start": 1411479910,
+                  "end": 1414071910
                 },
                 "quantity": 1,
                 "plan": {
@@ -772,7 +772,7 @@ http_interactions:
           },
           "subtotal": 1499,
           "total": 1124,
-          "customer": "cus_4pXd7YykzVs48D",
+          "customer": "cus_4pYiHe6pR9LYyS",
           "object": "invoice",
           "attempted": true,
           "closed": true,
@@ -785,8 +785,8 @@ http_interactions:
           "starting_balance": 0,
           "ending_balance": 0,
           "next_payment_attempt": null,
-          "webhooks_delivered_at": 1411475848,
-          "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+          "webhooks_delivered_at": 1411479910,
+          "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
           "discount": {
             "coupon": {
               "id": "25OFF",
@@ -799,19 +799,19 @@ http_interactions:
               "duration": "repeating",
               "redeem_by": null,
               "max_redemptions": null,
-              "times_redeemed": 37,
+              "times_redeemed": 44,
               "duration_in_months": 3,
               "valid": true,
               "metadata": {}
             },
-            "start": 1411475848,
+            "start": 1411479910,
             "object": "discount",
-            "customer": "cus_4pXd7YykzVs48D",
-            "subscription": "sub_4pXdCtGan3cv07",
-            "end": 1419338248
+            "customer": "cus_4pYiHe6pR9LYyS",
+            "subscription": "sub_4pYibcXqTmbuvX",
+            "end": 1419342310
           },
           "application_fee": null,
-          "subscription": "sub_4pXdCtGan3cv07",
+          "subscription": "sub_4pYibcXqTmbuvX",
           "metadata": {
             "country_code": "US",
             "vat_registered": "false",
@@ -822,10 +822,10 @@ http_interactions:
           "description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:30 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:13 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices?customer=cus_4pXd7YykzVs48D
+    uri: https://api.stripe.com/v1/invoices?customer=cus_4pYiHe6pR9LYyS
     body:
       encoding: US-ASCII
       string: ''
@@ -852,7 +852,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:32 GMT
+      - Tue, 23 Sep 2014 13:45:13 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -878,18 +878,18 @@ http_interactions:
           "url": "/v1/invoices",
           "data": [
             {
-              "date": 1411475848,
-              "id": "in_14fsXs2nHroS7mLXKmri0VId",
-              "period_start": 1411475848,
-              "period_end": 1411475848,
+              "date": 1411479910,
+              "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+              "period_start": 1411479910,
+              "period_end": 1411479910,
               "lines": {
                 "object": "list",
                 "total_count": 1,
                 "has_more": false,
-                "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+                "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
                 "data": [
                   {
-                    "id": "sub_4pXdCtGan3cv07",
+                    "id": "sub_4pYibcXqTmbuvX",
                     "object": "line_item",
                     "type": "subscription",
                     "livemode": false,
@@ -897,8 +897,8 @@ http_interactions:
                     "currency": "usd",
                     "proration": false,
                     "period": {
-                      "start": 1411475848,
-                      "end": 1414067848
+                      "start": 1411479910,
+                      "end": 1414071910
                     },
                     "quantity": 1,
                     "plan": {
@@ -923,7 +923,7 @@ http_interactions:
               },
               "subtotal": 1499,
               "total": 1124,
-              "customer": "cus_4pXd7YykzVs48D",
+              "customer": "cus_4pYiHe6pR9LYyS",
               "object": "invoice",
               "attempted": true,
               "closed": true,
@@ -936,8 +936,8 @@ http_interactions:
               "starting_balance": 0,
               "ending_balance": 0,
               "next_payment_attempt": null,
-              "webhooks_delivered_at": 1411475848,
-              "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+              "webhooks_delivered_at": 1411479910,
+              "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
               "discount": {
                 "coupon": {
                   "id": "25OFF",
@@ -950,19 +950,19 @@ http_interactions:
                   "duration": "repeating",
                   "redeem_by": null,
                   "max_redemptions": null,
-                  "times_redeemed": 37,
+                  "times_redeemed": 44,
                   "duration_in_months": 3,
                   "valid": true,
                   "metadata": {}
                 },
-                "start": 1411475848,
+                "start": 1411479910,
                 "object": "discount",
-                "customer": "cus_4pXd7YykzVs48D",
-                "subscription": "sub_4pXdCtGan3cv07",
-                "end": 1419338248
+                "customer": "cus_4pYiHe6pR9LYyS",
+                "subscription": "sub_4pYibcXqTmbuvX",
+                "end": 1419342310
               },
               "application_fee": null,
-              "subscription": "sub_4pXdCtGan3cv07",
+              "subscription": "sub_4pYibcXqTmbuvX",
               "metadata": {
                 "country_code": "US",
                 "vat_registered": "false",
@@ -976,10 +976,10 @@ http_interactions:
           "count": 1
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:32 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:13 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId
+    uri: https://api.stripe.com/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD
     body:
       encoding: US-ASCII
       string: ''
@@ -1006,7 +1006,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:32 GMT
+      - Tue, 23 Sep 2014 13:45:14 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -1027,18 +1027,18 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "date": 1411475848,
-          "id": "in_14fsXs2nHroS7mLXKmri0VId",
-          "period_start": 1411475848,
-          "period_end": 1411475848,
+          "date": 1411479910,
+          "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+          "period_start": 1411479910,
+          "period_end": 1411479910,
           "lines": {
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+            "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
             "data": [
               {
-                "id": "sub_4pXdCtGan3cv07",
+                "id": "sub_4pYibcXqTmbuvX",
                 "object": "line_item",
                 "type": "subscription",
                 "livemode": false,
@@ -1046,8 +1046,8 @@ http_interactions:
                 "currency": "usd",
                 "proration": false,
                 "period": {
-                  "start": 1411475848,
-                  "end": 1414067848
+                  "start": 1411479910,
+                  "end": 1414071910
                 },
                 "quantity": 1,
                 "plan": {
@@ -1072,7 +1072,7 @@ http_interactions:
           },
           "subtotal": 1499,
           "total": 1124,
-          "customer": "cus_4pXd7YykzVs48D",
+          "customer": "cus_4pYiHe6pR9LYyS",
           "object": "invoice",
           "attempted": true,
           "closed": true,
@@ -1085,8 +1085,8 @@ http_interactions:
           "starting_balance": 0,
           "ending_balance": 0,
           "next_payment_attempt": null,
-          "webhooks_delivered_at": 1411475848,
-          "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+          "webhooks_delivered_at": 1411479910,
+          "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
           "discount": {
             "coupon": {
               "id": "25OFF",
@@ -1099,19 +1099,19 @@ http_interactions:
               "duration": "repeating",
               "redeem_by": null,
               "max_redemptions": null,
-              "times_redeemed": 37,
+              "times_redeemed": 44,
               "duration_in_months": 3,
               "valid": true,
               "metadata": {}
             },
-            "start": 1411475848,
+            "start": 1411479910,
             "object": "discount",
-            "customer": "cus_4pXd7YykzVs48D",
-            "subscription": "sub_4pXdCtGan3cv07",
-            "end": 1419338248
+            "customer": "cus_4pYiHe6pR9LYyS",
+            "subscription": "sub_4pYibcXqTmbuvX",
+            "end": 1419342310
           },
           "application_fee": null,
-          "subscription": "sub_4pXdCtGan3cv07",
+          "subscription": "sub_4pYibcXqTmbuvX",
           "metadata": {
             "country_code": "US",
             "vat_registered": "false",
@@ -1122,10 +1122,10 @@ http_interactions:
           "description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:32 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:14 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId
+    uri: https://api.stripe.com/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD
     body:
       encoding: US-ASCII
       string: metadata[country_code]=US&metadata[vat_registered]=false&metadata[name]=John%20Doe&metadata[address]=Doestreet&metadata[number]=2014000001&metadata[subtotal]=1499&metadata[discount_amount]=375&metadata[subtotal_after_discount]=1124&metadata[vat_amount]=0&metadata[vat_rate]=0
@@ -1154,7 +1154,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:33 GMT
+      - Tue, 23 Sep 2014 13:45:15 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -1175,18 +1175,18 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "date": 1411475848,
-          "id": "in_14fsXs2nHroS7mLXKmri0VId",
-          "period_start": 1411475848,
-          "period_end": 1411475848,
+          "date": 1411479910,
+          "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+          "period_start": 1411479910,
+          "period_end": 1411479910,
           "lines": {
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+            "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
             "data": [
               {
-                "id": "sub_4pXdCtGan3cv07",
+                "id": "sub_4pYibcXqTmbuvX",
                 "object": "line_item",
                 "type": "subscription",
                 "livemode": false,
@@ -1194,8 +1194,8 @@ http_interactions:
                 "currency": "usd",
                 "proration": false,
                 "period": {
-                  "start": 1411475848,
-                  "end": 1414067848
+                  "start": 1411479910,
+                  "end": 1414071910
                 },
                 "quantity": 1,
                 "plan": {
@@ -1220,7 +1220,7 @@ http_interactions:
           },
           "subtotal": 1499,
           "total": 1124,
-          "customer": "cus_4pXd7YykzVs48D",
+          "customer": "cus_4pYiHe6pR9LYyS",
           "object": "invoice",
           "attempted": true,
           "closed": true,
@@ -1233,8 +1233,8 @@ http_interactions:
           "starting_balance": 0,
           "ending_balance": 0,
           "next_payment_attempt": null,
-          "webhooks_delivered_at": 1411475848,
-          "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+          "webhooks_delivered_at": 1411479910,
+          "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
           "discount": {
             "coupon": {
               "id": "25OFF",
@@ -1247,19 +1247,19 @@ http_interactions:
               "duration": "repeating",
               "redeem_by": null,
               "max_redemptions": null,
-              "times_redeemed": 37,
+              "times_redeemed": 44,
               "duration_in_months": 3,
               "valid": true,
               "metadata": {}
             },
-            "start": 1411475848,
+            "start": 1411479910,
             "object": "discount",
-            "customer": "cus_4pXd7YykzVs48D",
-            "subscription": "sub_4pXdCtGan3cv07",
-            "end": 1419338248
+            "customer": "cus_4pYiHe6pR9LYyS",
+            "subscription": "sub_4pYibcXqTmbuvX",
+            "end": 1419342310
           },
           "application_fee": null,
-          "subscription": "sub_4pXdCtGan3cv07",
+          "subscription": "sub_4pYibcXqTmbuvX",
           "metadata": {
             "country_code": "US",
             "vat_registered": "false",
@@ -1276,10 +1276,10 @@ http_interactions:
           "description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:33 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:15 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId
+    uri: https://api.stripe.com/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD
     body:
       encoding: US-ASCII
       string: ''
@@ -1306,7 +1306,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:34 GMT
+      - Tue, 23 Sep 2014 13:45:16 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -1327,18 +1327,18 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "date": 1411475848,
-          "id": "in_14fsXs2nHroS7mLXKmri0VId",
-          "period_start": 1411475848,
-          "period_end": 1411475848,
+          "date": 1411479910,
+          "id": "in_14ftbO2nHroS7mLXMm2MLjfD",
+          "period_start": 1411479910,
+          "period_end": 1411479910,
           "lines": {
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/invoices/in_14fsXs2nHroS7mLXKmri0VId/lines",
+            "url": "/v1/invoices/in_14ftbO2nHroS7mLXMm2MLjfD/lines",
             "data": [
               {
-                "id": "sub_4pXdCtGan3cv07",
+                "id": "sub_4pYibcXqTmbuvX",
                 "object": "line_item",
                 "type": "subscription",
                 "livemode": false,
@@ -1346,8 +1346,8 @@ http_interactions:
                 "currency": "usd",
                 "proration": false,
                 "period": {
-                  "start": 1411475848,
-                  "end": 1414067848
+                  "start": 1411479910,
+                  "end": 1414071910
                 },
                 "quantity": 1,
                 "plan": {
@@ -1372,7 +1372,7 @@ http_interactions:
           },
           "subtotal": 1499,
           "total": 1124,
-          "customer": "cus_4pXd7YykzVs48D",
+          "customer": "cus_4pYiHe6pR9LYyS",
           "object": "invoice",
           "attempted": true,
           "closed": true,
@@ -1385,8 +1385,8 @@ http_interactions:
           "starting_balance": 0,
           "ending_balance": 0,
           "next_payment_attempt": null,
-          "webhooks_delivered_at": 1411475848,
-          "charge": "ch_14fsXs2nHroS7mLXI88CtQhk",
+          "webhooks_delivered_at": 1411479910,
+          "charge": "ch_14ftbO2nHroS7mLXCsr57SvZ",
           "discount": {
             "coupon": {
               "id": "25OFF",
@@ -1399,19 +1399,19 @@ http_interactions:
               "duration": "repeating",
               "redeem_by": null,
               "max_redemptions": null,
-              "times_redeemed": 37,
+              "times_redeemed": 44,
               "duration_in_months": 3,
               "valid": true,
               "metadata": {}
             },
-            "start": 1411475848,
+            "start": 1411479910,
             "object": "discount",
-            "customer": "cus_4pXd7YykzVs48D",
-            "subscription": "sub_4pXdCtGan3cv07",
-            "end": 1419338248
+            "customer": "cus_4pYiHe6pR9LYyS",
+            "subscription": "sub_4pYibcXqTmbuvX",
+            "end": 1419342310
           },
           "application_fee": null,
-          "subscription": "sub_4pXdCtGan3cv07",
+          "subscription": "sub_4pYibcXqTmbuvX",
           "metadata": {
             "country_code": "US",
             "vat_registered": "false",
@@ -1428,10 +1428,10 @@ http_interactions:
           "description": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:34 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:16 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/charges/ch_14fsXs2nHroS7mLXI88CtQhk
+    uri: https://api.stripe.com/v1/charges/ch_14ftbO2nHroS7mLXCsr57SvZ
     body:
       encoding: US-ASCII
       string: ''
@@ -1458,7 +1458,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 23 Sep 2014 12:37:35 GMT
+      - Tue, 23 Sep 2014 13:45:17 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -1479,16 +1479,16 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "ch_14fsXs2nHroS7mLXI88CtQhk",
+          "id": "ch_14ftbO2nHroS7mLXCsr57SvZ",
           "object": "charge",
-          "created": 1411475848,
+          "created": 1411479910,
           "livemode": false,
           "paid": true,
           "amount": 1124,
           "currency": "usd",
           "refunded": false,
           "card": {
-            "id": "card_14fsXo2nHroS7mLXUuXtLaFb",
+            "id": "card_14ftbK2nHroS7mLX4kHtv39c",
             "object": "card",
             "last4": "4242",
             "brand": "Visa",
@@ -1507,17 +1507,17 @@ http_interactions:
             "cvc_check": "pass",
             "address_line1_check": null,
             "address_zip_check": null,
-            "customer": "cus_4pXd7YykzVs48D",
+            "customer": "cus_4pYiHe6pR9LYyS",
             "type": "Visa"
           },
           "captured": true,
           "refunds": [],
-          "balance_transaction": "txn_14fsXs2nHroS7mLXkWlxFvfh",
+          "balance_transaction": "txn_14ftbO2nHroS7mLXo6mF7wfm",
           "failure_message": null,
           "failure_code": null,
           "amount_refunded": 0,
-          "customer": "cus_4pXd7YykzVs48D",
-          "invoice": "in_14fsXs2nHroS7mLXKmri0VId",
+          "customer": "cus_4pYiHe6pR9LYyS",
+          "invoice": "in_14ftbO2nHroS7mLXMm2MLjfD",
           "description": null,
           "dispute": null,
           "metadata": {},
@@ -1525,5 +1525,5 @@ http_interactions:
           "receipt_email": null
         }
     http_version: 
-  recorded_at: Tue, 23 Sep 2014 12:37:35 GMT
+  recorded_at: Tue, 23 Sep 2014 13:45:17 GMT
 recorded_with: VCR 2.9.2

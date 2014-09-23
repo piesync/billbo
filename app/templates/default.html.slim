@@ -54,15 +54,18 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         thead
           tr#header_row
             th.left.details_th Details
-            th.subtotal_th Price (#{stripe.currency.upcase})
+            th.unitprice_th Price (#{stripe.currency.upcase})
+            th.subtotal_th Price (EUR)
         tfoot
           - if invoice.discount?
             tr#discount_tr
-              td.item_r = "#{coupon.percent_off}% Discount"
+              td.item_r #{coupon.percent_off}% Discount
               td.item_r = format_money(invoice.discount_amount, stripe.currency)
+              td.item_r = format_money(invoice.discount_amount, stripe.currency, :eur)
           tr#net_total_tr
             td.item_r Net Total
             td.item_r = format_money(invoice.subtotal_after_discount, stripe.currency)
+            td.item_r = format_money(invoice.subtotal_after_discount, stripe.currency, :eur)
           tr#vat_tr
             td.item_r
               - if invoice.vat?
@@ -70,17 +73,19 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
               - else
                 | VAT*
             td.item_r = format_money(invoice.vat_amount, stripe.currency)
+            td.item_r = format_money(invoice.vat_amount, stripe.currency, :eur)
           tr#total_tr
             td#total_currency.total
-              span.currency = stripe.currency.upcase
-              |  Total
-            td.total #{format_money(stripe.total, stripe.currency)}
+              span.currency Total
+            td.total = format_money(stripe.total, stripe.currency)
+            td.total = format_money(stripe.total, stripe.currency, :eur)
         tbody
           - stripe.lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
               - if line.type == 'subscription'
                 td.item_l Subscription: #{line.plan.name} (from #{format_date(line.period.start)} to #{format_date(line.period.end)})
                 td.item_r = format_money(line.amount, line.currency)
+                td.item_r
 
       #payment-details
         h2 Payment Details

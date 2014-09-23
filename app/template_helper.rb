@@ -1,7 +1,7 @@
 class TemplateHelper
 
-  def format_money(amount, currency)
-    Money.new(amount, currency).format
+  def format_money(amount, currency, to = currency)
+    Money.new(amount, currency).exchange_to(to)
   end
 
   def currency_symbol(currency)

@@ -37,6 +37,9 @@ Shrimp.configure do |config|
   config.orientation = 'portrait'
 end
 
+# Configure Money
+Money.add_rate('USD', 'EUR', 0.78)
+
 # Configure Rumor
 require 'rumor/async/sucker_punch'
 

@@ -20,4 +20,5 @@ Configuration.db.create_table :invoices do
   Boolean :credit_note, default: false
   String  :reference_number
   Time    :pdf_generated_at
+  Decimal :exchange_rate
 end unless Configuration.db.tables.include?(:invoices)
