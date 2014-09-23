@@ -49,11 +49,6 @@ class InvoiceService
     invoice = ensure_invoice(stripe_invoice_id)
     stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
-    # Finalize the invoice.
-    # Unless if the invoice's total amount is 0, then we don't
-    # need to make an invoice for it.
-    invoice.finalize! unless stripe_invoice.total.zero?
-
     # Now we are sure nothing is going to change the invoice anymore.
     # Take a final snapshot into the invoice.
     stripe_service.snapshot_final \
@@ -61,6 +56,11 @@ class InvoiceService
       number: invoice.number
 
     snapshot(stripe_invoice, invoice)
+
+    # Finalize the invoice.
+    # Unless if the invoice's total amount is 0, then we don't
+    # need to make an invoice for it.
+    invoice.finalize! unless stripe_invoice.total.zero?
 
     invoice
   rescue Invoice::AlreadyFinalized
