@@ -59,6 +59,14 @@ class Invoice < Sequel::Model
     finalized_at + Configuration.due_days.days
   end
 
+  def discount?
+    discount_amount && discount_amount != 0
+  end
+
+  def vat?
+    vat_amount && vat_amount != 0
+  end
+
   private
 
   def self.safe_transaction
