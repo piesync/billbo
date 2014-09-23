@@ -22,6 +22,19 @@ describe App do
     end
   end
 
+  let(:coupon) do
+    begin
+      Stripe::Coupon.retrieve('25OFF')
+    rescue
+      Stripe::Coupon.create(
+        percent_off: 25,
+        duration: 'repeating',
+        duration_in_months: 3,
+        id: '25OFF'
+      )
+    end
+  end
+
   let(:subscription) {{
     customer: customer.id,
     plan: 'test'
@@ -84,12 +97,12 @@ describe App do
 
     let(:invoice_service) { InvoiceService.new(customer_id: customer.id) }
 
-    describe 'subscription without VAT' do
+    describe 'subscription without VAT (export)' do
       let(:country_code) { 'US' }
       let(:vat_registered) { false }
 
       it 'generates an invoice without VAT' do
-        VCR.use_cassette('invoice_template_sub_no_vat') do
+        VCR.use_cassette('invoice_template_sub_no_vat_export') do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
@@ -97,7 +110,25 @@ describe App do
           number = Invoice.first.number
 
           visit "/invoices/#{number}"
-          page.save_screenshot('spec/visual/subscription_without_vat.png', :full => true)
+          page.save_screenshot('spec/visual/subscription_without_vat_export.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription without VAT (reverse)' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { true }
+
+      it 'generates an invoice without VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat_reverse') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          number = Invoice.first.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat_reverse.png', :full => true)
         end
       end
     end
@@ -116,6 +147,42 @@ describe App do
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_with_vat.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription without VAT, with discount' do
+      let(:country_code) { 'US' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat_discount') do
+          invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          number = Invoice.first.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat_with_discount.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription with VAT, with discount' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_vat_discount') do
+          invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          number = Invoice.first.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_with_vat_with_discount.png', :full => true)
         end
       end
     end

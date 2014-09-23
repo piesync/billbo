@@ -58,7 +58,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         tfoot
           - if invoice.discount?
             tr#discount_tr
-              td.item_r = "#{coupon.percentage_off}% Discount"
+              td.item_r = "#{coupon.percent_off}% Discount"
               td.item_r = format_money(invoice.discount_amount, stripe.currency)
           tr#net_total_tr
             td.item_r Net Total
