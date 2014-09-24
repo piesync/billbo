@@ -331,7 +331,7 @@ describe StripeService do
               vat_registered: 'false',
               other: 'random',
               subtotal: '903',
-              discount_amount: '227',
+              discount_amount: '225',
               subtotal_after_discount: '676',
               vat_amount: '142',
               vat_rate: '21'
