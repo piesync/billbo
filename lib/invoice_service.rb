@@ -91,6 +91,7 @@ class InvoiceService
       vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
       vat_rate: stripe_invoice.metadata[:vat_rate].to_f,
       total: stripe_invoice.total,
+      currency: stripe_invoice.currency,
       country_code: stripe_invoice.metadata[:country_code],
       vat_number: stripe_invoice.metadata[:vat],
       vat_registered: (stripe_invoice.metadata[:vat_registered] == 'true')
