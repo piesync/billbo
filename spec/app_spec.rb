@@ -257,6 +257,16 @@ describe App do
 
       get '/vat/2/details'
       last_response.ok?.must_equal false
+      last_response.status.must_equal 404
+      last_response.body.must_be_empty
+    end
+
+    it "returns 504 when VIES is down" do
+      vat_service.expects(:details).with(vat_number: '1').raises(VatService::ViesDown)
+
+      get '/vat/1/details'
+      last_response.ok?.must_equal false
+      last_response.status.must_equal 504
       last_response.body.must_be_empty
     end
   end

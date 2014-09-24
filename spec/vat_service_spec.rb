@@ -66,6 +66,15 @@ describe VatService do
       end
     end
 
+    describe 'the VIES service is down' do
+      it 'raises an error' do
+        Valvat.any_instance.stubs(:exists?).returns(nil)
+
+        proc do
+          service.details(vat_number: 'LU21416127')
+        end.must_raise(VatService::ViesDown)
+      end
+    end
   end
 
   def example amount, country_code, company

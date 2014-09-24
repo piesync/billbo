@@ -99,10 +99,15 @@ class App < Base
   #
   # Returns details or false/nil
   get '/vat/:number/details' do
-    request = { vat_number: params[:number] }
-    request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
+    begin
+      request = { vat_number: params[:number] }
+      request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
 
-    vat_service.details(request) || status(404)
+      vat_service.details(request) || status(404)
+
+    rescue VatService::ViesDown
+      status(504)
+    end
   end
 
   get '/ping' do

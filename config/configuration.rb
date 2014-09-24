@@ -46,7 +46,7 @@ class Configuration
     attr_accessor :seller_address_line2
 
     # VAT number of the seller
-    attr_accessor :seller_vat
+    attr_accessor :seller_vat_number
 
     # Other information of the seller that the invoice must contain
     attr_accessor :seller_other_info

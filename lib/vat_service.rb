@@ -1,4 +1,5 @@
 class VatService
+  ViesDown = Class.new(StandardError)
   VatCharge = Struct.new(:amount, :rate)
 
   # http://ec.europa.eu/taxation_customs/resources/documents/taxation/vat/how_vat_works/rates/vat_rates_en.pdf
@@ -65,13 +66,19 @@ class VatService
   # vat_number  - VAT number to be validated
   # own_vat     - own VAT number to additionally get a request identifier
   #
-  # Returns details or false/nil
+  # Raises ViesDown if the VIES service is down.
+  #
+  # Returns details or false if the number does not exist.
   def details(vat_number:, own_vat: nil)
-    if own_vat
+    details = if own_vat
       Valvat.new(vat_number).exists?(requester_vat: own_vat)
     else
       Valvat.new(vat_number).exists?(detail: true)
     end
+
+    raise ViesDown if details.nil?
+
+    details
   end
 
   private
