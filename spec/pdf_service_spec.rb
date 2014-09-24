@@ -48,20 +48,5 @@ describe PdfService do
         exists.must_equal true
       end
     end
-
-    describe '#generate_missing' do
-      it 'generates all missing pdfs' do
-        invoices = 5.times.map { Invoice.new.finalize! }
-
-        service.expects(:generate_pdf)
-          .with(instance_of(Invoice)).times(5)
-        service.generate_missing
-
-        invoices.each(&:pdf_generated!)
-
-        service.expects(:generate_pdf).never
-        service.generate_missing
-      end
-    end
   end
 end

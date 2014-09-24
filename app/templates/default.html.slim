@@ -29,7 +29,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
       #invoice-info
         h2
           ' Invoice
-          strong= invoice.number
+          strong = invoice.number
         p = format_date(invoice.finalized_at)
         - if stripe.paid
           p
@@ -41,7 +41,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
       #client-details.vcard
         .fn NAME
-        .org COMPANY
+        .org = invoice.vies_company_name
         .adr
           .street-address
             = stripe.metadata[:address]

@@ -12,12 +12,6 @@ class PdfService
     invoice.pdf_generated! if uploader.store!(File.open("tmp/#{invoice.number}.pdf"))
   end
 
-  def generate_missing
-    Invoice.where(pdf_generated_at: nil).each do |invoice|
-      generate_pdf(invoice)
-    end
-  end
-
   private
 
   attr_reader :uploader

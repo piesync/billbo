@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/bblimke/webmock.git
+  revision: a340f830d5ec5af43262856c0d5bde886eff6313
+  specs:
+    webmock (1.18.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+
+GIT
   remote: git://github.com/piesync/rumor.git
   revision: 7b196c9b586d32edd6164269f1ce843baf79a412
   specs:
@@ -220,9 +228,6 @@ GEM
       httpi (~> 2.0)
       mime-types (< 2.0.0)
       nokogiri (>= 1.4.0)
-    webmock (1.18.0)
-      addressable (>= 2.3.6)
-      crack (>= 0.3.2)
     websocket-driver (0.3.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
@@ -265,4 +270,4 @@ DEPENDENCIES
   thin
   valvat
   vcr
-  webmock
+  webmock!

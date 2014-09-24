@@ -26,7 +26,7 @@ gem 'money'
 gem 'countries'
 
 group :test do
-  gem 'webmock'
+  gem 'webmock', github: 'bblimke/webmock'
   gem 'vcr'
   gem 'mocha'
   gem 'rack-test', :require => 'rack/test'

@@ -107,7 +107,10 @@ describe App do
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.number
+          invoice = Invoice.first
+          invoice.update \
+            vies_company_name: 'Ebay'
+          number = invoice.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_without_vat_export.png', :full => true)
@@ -125,7 +128,10 @@ describe App do
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.number
+          invoice = Invoice.first
+          invoice.update \
+            vies_company_name: 'Ebay'
+          number = invoice.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_without_vat_reverse.png', :full => true)
@@ -143,7 +149,10 @@ describe App do
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.number
+          invoice = Invoice.first
+          invoice.update \
+            vies_company_name: 'Ebay'
+          number = invoice.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_with_vat.png', :full => true)
@@ -161,7 +170,10 @@ describe App do
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.number
+          invoice = Invoice.first
+          invoice.update \
+            vies_company_name: 'Ebay'
+          number = invoice.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_without_vat_with_discount.png', :full => true)
@@ -179,7 +191,10 @@ describe App do
           invoice_service.process_payment(
             stripe_invoice_id: customer.invoices.first.id)
 
-          number = Invoice.first.number
+          invoice = Invoice.first
+          invoice.update \
+            vies_company_name: 'Ebay'
+          number = invoice.number
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_with_vat_with_discount.png', :full => true)

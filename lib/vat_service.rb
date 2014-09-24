@@ -71,7 +71,7 @@ class VatService
   # Returns details or false if the number does not exist.
   def details(vat_number:, own_vat: nil)
     details = if own_vat
-      Valvat.new(vat_number).exists?(requester_vat: own_vat)
+      Valvat.new(vat_number).exists?(requester_vat: own_vat, raise_error: true)
     else
       Valvat.new(vat_number).exists?(detail: true)
     end
@@ -79,6 +79,19 @@ class VatService
     raise ViesDown if details.nil?
 
     details
+  end
+
+  # Loads VIES data into the invoice model.
+  #
+  # Raises VatService::ViesDown if the VIES service is down.
+  def load_vies_data(invoice: invoice)
+    details = self.details(vat_number: invoice.vat_number,
+      own_vat: Configuration.seller_vat_number)
+
+    invoice.update \
+      vies_company_name: details[:name],
+      vies_address: details[:address],
+      vies_request_identifier: details[:request_identifier]
   end
 
   private

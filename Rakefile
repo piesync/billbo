@@ -18,13 +18,6 @@ end
 
 task :default => :spec
 
-# Task that generates PDF's for all invoices that were not
-# generated already.
-task :generate_pdfs => :environment do
-  begin
-    PdfService.new.generate_missing
-  rescue StandardError => e
-    Raven.capture_exception(e) if Configuration.sentry?
-    raise e
-  end
+task :job => :environment do
+  Job.new.perform
 end
