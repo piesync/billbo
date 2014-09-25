@@ -42,7 +42,8 @@ class VatService
   #
   # Returns amount of VAT payable, in cents (rounded down).
   def calculate(amount:, country_code:, vat_registered:)
-    rate = vat_rate(country_code, vat_registered)
+    rate = vat_rate(country_code: country_code,
+      vat_registered: vat_registered)
     VatCharge.new((amount*rate/100.0).round, rate)
   end
 
@@ -74,15 +75,13 @@ class VatService
     end
   end
 
-  private
-
-  # Calculates VAT percentage.
+  # Calculates VAT rate.
   #
   # country_code     - ISO country code.
   # vat_registered   - true if customer is vat registered
   #
-  # Returns an integer (percentage).
-  def vat_rate(country_code, vat_registered)
+  # Returns an integer (rate).
+  def vat_rate(country_code:, vat_registered:)
     # VAT Rate is zero if country code is nil.
     return 0 if country_code.nil?
 
@@ -103,6 +102,8 @@ class VatService
       0
     end
   end
+
+  private
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
