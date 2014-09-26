@@ -44,10 +44,6 @@ describe InvoiceService do
         invoice.added_vat?.must_equal true
         invoice.finalized?.must_equal false
         invoice.sequence_number.must_be_nil
-
-        invoice.total.must_equal 1813
-        invoice.vat_amount.must_equal 314
-        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end
@@ -71,16 +67,10 @@ describe InvoiceService do
 
         invoice = customer.invoices.first
         invoice.total.must_equal 121
-        invoice.metadata.to_h.must_equal metadata.merge(
-          vat_amount: '21', vat_rate: '21'
-        )
 
         Invoice.count.must_equal 1
         invoice = Invoice.first
         invoice.added_vat?.must_equal true
-        invoice.total.must_equal 121
-        invoice.vat_amount.must_equal 21
-        invoice.vat_rate.must_equal 21.to_f
       end
     end
   end
@@ -95,8 +85,25 @@ describe InvoiceService do
             currency: 'usd'
 
         stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+
         invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
         invoice.finalized?.must_equal true
+
+        invoice.subtotal.must_equal 100
+        invoice.discount_amount.must_equal 0
+        invoice.subtotal_after_discount.must_equal 100
+        invoice.vat_amount.must_equal 0
+        invoice.vat_rate.must_equal 0
+        invoice.total.must_equal 100
+
+        stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice.id)
+        stripe_invoice.metadata.to_h.must_equal \
+          number: "2014000001",
+          subtotal: "100",
+          discount_amount: "0",
+          subtotal_after_discount: "100",
+          vat_amount: "0",
+          vat_rate: "0"
       end
     end
 
