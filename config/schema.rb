@@ -12,8 +12,10 @@ Configuration.db.create_table :invoices do
   Integer :discount_amount
   Integer :subtotal_after_discount
   Integer :vat_amount
+  Integer :vat_amount_eur
   Decimal :vat_rate
   Integer :total
+  Integer :total_eur
   String  :currency
   String  :country_code
   Boolean :vat_registered

@@ -33,6 +33,7 @@ describe PdfService do
       VCR.use_cassette('pdf_generation') do
         invoice_service.create_subscription(plan: plan.id)
         invoice = Invoice.first.finalize!
+        invoice.update(vat_amount_eur: 0, total_eur: 0, currency: 'usd')
 
         service.generate_pdf(invoice)
 

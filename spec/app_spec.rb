@@ -108,8 +108,7 @@ describe App do
             stripe_invoice_id: customer.invoices.first.id)
 
           invoice = Invoice.first
-          invoice.update \
-            vies_company_name: 'Ebay'
+          complete_invoice(invoice)
           number = invoice.number
 
           visit "/invoices/#{number}"
@@ -129,8 +128,7 @@ describe App do
             stripe_invoice_id: customer.invoices.first.id)
 
           invoice = Invoice.first
-          invoice.update \
-            vies_company_name: 'Ebay'
+          complete_invoice(invoice)
           number = invoice.number
 
           visit "/invoices/#{number}"
@@ -150,8 +148,7 @@ describe App do
             stripe_invoice_id: customer.invoices.first.id)
 
           invoice = Invoice.first
-          invoice.update \
-            vies_company_name: 'Ebay'
+          complete_invoice(invoice)
           number = invoice.number
 
           visit "/invoices/#{number}"
@@ -171,8 +168,7 @@ describe App do
             stripe_invoice_id: customer.invoices.first.id)
 
           invoice = Invoice.first
-          invoice.update \
-            vies_company_name: 'Ebay'
+          complete_invoice(invoice)
           number = invoice.number
 
           visit "/invoices/#{number}"
@@ -192,8 +188,7 @@ describe App do
             stripe_invoice_id: customer.invoices.first.id)
 
           invoice = Invoice.first
-          invoice.update \
-            vies_company_name: 'Ebay'
+          complete_invoice(invoice)
           number = invoice.number
 
           visit "/invoices/#{number}"
@@ -304,5 +299,13 @@ describe App do
 
   def json(object)
     MultiJson.dump(object)
+  end
+
+  def complete_invoice(invoice)
+    invoice.update \
+      vies_company_name: 'Ebay',
+      vat_amount_eur: (invoice.vat_amount*0.75).round,
+      total_eur: (invoice.total*0.75).round,
+      currency: 'usd'
   end
 end

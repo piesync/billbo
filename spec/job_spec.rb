@@ -20,13 +20,18 @@ describe Job do
   end
 
   describe '#perform_for' do
-    it 'loads vies data and generates a pdf' do
-      invoice = Invoice.new
+    it 'loads vies data, euro amounts and generates a pdf' do
+      invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
 
       VatService.any_instance.expects(:load_vies_data).with(invoice).once
       PdfService.any_instance.expects(:generate_pdf).with(invoice).once
 
       Job.new.perform_for(invoice)
+
+      invoice = invoice.reload
+
+      invoice.vat_amount_eur.must_equal 78
+      invoice.total_eur.must_equal 780
     end
   end
 end

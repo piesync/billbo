@@ -12,6 +12,11 @@ class Job
     # First load VIES data into the invoice.
     vat_service.load_vies_data(invoice)
 
+    # Calculate total and vat amount in euro.
+    invoice.update \
+      vat_amount_eur: Money.new(invoice.vat_amount, invoice.currency).exchange_to(:eur).cents,
+      total_eur: Money.new(invoice.total, invoice.currency).exchange_to(:eur).cents
+
     # Now generate an invoice.
     pdf_service.generate_pdf(invoice)
 

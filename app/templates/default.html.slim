@@ -36,7 +36,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
             b Paid with #{card.brand} #{card.last4} registered to #{card.name}
         - else
           p#payment-due Payment due by #{format_date(invoice.due_at)}
-        p#payment-total = format_money(stripe.total, stripe.currency)
+        p#payment-total = format_money(invoice.total, invoice.currency)
 
 
       #client-details.vcard
@@ -54,31 +54,31 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         thead
           tr#header_row
             th.left.details_th Details
-            th.unitprice_th Price (#{stripe.currency.upcase})
+            th.unitprice_th Price (#{invoice.currency.upcase})
             th.subtotal_th Price (EUR)
         tfoot
           - if invoice.discount?
             tr#discount_tr
               td.item_r #{coupon.percent_off}% Discount
-              td.item_r = format_money(invoice.discount_amount, stripe.currency)
-              td.item_r = format_money(invoice.discount_amount, stripe.currency, :eur)
+              td.item_r = format_money(invoice.discount_amount, invoice.currency)
+              td.item_r
           tr#net_total_tr
             td.item_r Net Total
-            td.item_r = format_money(invoice.subtotal_after_discount, stripe.currency)
-            td.item_r = format_money(invoice.subtotal_after_discount, stripe.currency, :eur)
+            td.item_r = format_money(invoice.subtotal_after_discount, invoice.currency)
+            td.item_r
           tr#vat_tr
             td.item_r
               - if invoice.vat?
                 = "VAT (#{invoice.vat_rate.to_i}%)"
               - else
                 | VAT*
-            td.item_r = format_money(invoice.vat_amount, stripe.currency)
-            td.item_r = format_money(invoice.vat_amount, stripe.currency, :eur)
+            td.item_r = format_money(invoice.vat_amount, invoice.currency)
+            td.item_r = format_money(invoice.vat_amount_eur, :eur)
           tr#total_tr
             td#total_currency.total
               span.currency Total
-            td.total = format_money(stripe.total, stripe.currency)
-            td.total = format_money(stripe.total, stripe.currency, :eur)
+            td.total = format_money(invoice.total, invoice.currency)
+            td.total = format_money(invoice.total_eur, :eur)
         tbody
           - stripe.lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
