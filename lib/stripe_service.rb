@@ -79,9 +79,11 @@ class StripeService
     vat_line = stripe_invoice.lines.find { |line| line.metadata[:type] == 'vat' }
     other_lines = stripe_invoice.lines.to_a - [vat_line]
     subtotal = other_lines.map(&:amount).inject(:+)
+    total = stripe_invoice.total
 
     # Recalculate discount based on the sum of all lines besides the vat line.
-    discount = calculate_discount(subtotal, stripe_invoice.discount.coupon) if stripe_invoice.discount
+    discount = calculate_discount(subtotal, calculate_vat_rate, total) if stripe_invoice.discount
+    # we do #to_i here because discount can be nil.
     subtotal_after_discount = subtotal - discount.to_i
 
     metadata.merge!(subtotal: subtotal)
@@ -90,10 +92,6 @@ class StripeService
     more = if vat_line && stripe_invoice.discount
       # Recalculate VAT based on the total after discount
       vat_amount, vat_rate = calculate_vat(subtotal_after_discount).to_a
-
-      # Modify discount so that the total amount checks out.
-      discount += stripe_invoice.total - (subtotal_after_discount + vat_amount)
-      subtotal_after_discount = subtotal - discount
 
       {
         discount_amount: discount,
@@ -169,14 +167,25 @@ class StripeService
       vat_registered: (customer.metadata[:vat_registered] == 'true')
   end
 
+  def calculate_vat_rate
+    vat_service.vat_rate \
+      country_code: customer.metadata[:country_code],
+      vat_registered: (customer.metadata[:vat_registered] == 'true')
+  end
+
   # Calculates the amount of discount given on an amount
   # with a certain Stripe coupon.
-  def calculate_discount(amount, coupon)
-    if coupon.percent_off
-      ((amount*coupon.percent_off)/100.0).round
-    else
-      amount - coupon.amount_off
-    end
+  #
+  # We calculate discount using this formula:
+  # d = [ s*( 1 + vr ) - t ] / ( 1 + vr )
+  # where s is the amount, vr the VAT rate and t the total amount.
+  #
+  # Returns discount rounded up to 1 cent.
+  def calculate_discount(s, vat_rate, t)
+    vr = vat_rate/100.0
+
+    d = (s * (1 + vr) - t)/(1 + vr)
+    d.round
   end
 
   def customer
