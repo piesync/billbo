@@ -49,14 +49,11 @@
 #invoice-other{width:330px;clear:both; float:right;margin-bottom:5mm;}
 #invoice-other h2, #payment-details h2 {margin-bottom: 1mm;}
 
-#comments{
-    clear:both; padding:9px 0.4cm 9px 0.4cm; background:#eee; border:0px; vertical-align:bottom; line-height:1.2;zoom:1;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+#footnote{
+    clear:both; padding:0px; border:0px; vertical-align:bottom; line-height:1.2;zoom:1;
 }
 
-#comments p {padding:10px 0;}
+#footnote p {padding:10px 0; font-size: 9px;}
 
 #invoice table { border-collapse:collapse; width:100%; clear:both;}
 #invoice table th {text-align:left; padding:10px 4px;}

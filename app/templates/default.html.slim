@@ -108,11 +108,11 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
             ' Payment Reference:
           = invoice.number
 
-      #comments
+      #footnote
         p
           - if !invoice.vat?
             // we need to show a reason for not charging vat.
             - if invoice.eu?
-              | * VAT Reverse charge
+              | * VAT Reverse-charged
             - else
-              | * Export
+              | * No EU Vat
