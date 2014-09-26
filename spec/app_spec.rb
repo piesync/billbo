@@ -41,6 +41,7 @@ describe App do
   }}
 
   let(:metadata) {{
+    name: 'John Doe',
     country_code: 'NL',
     vat_registered: 'false',
     other: 'random'

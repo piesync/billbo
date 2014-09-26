@@ -33,14 +33,14 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         p = format_date(invoice.finalized_at)
         - if stripe.paid
           p
-            b Paid with #{card.brand} #{card.last4} registered to #{card.name}
+            b Paid with #{card.brand} #{card.last4}
         - else
           p#payment-due Payment due by #{format_date(invoice.due_at)}
         p#payment-total = format_money(invoice.total, invoice.currency)
 
 
       #client-details.vcard
-        .fn NAME
+        .fn = stripe.metadata[:name]
         .org = invoice.vies_company_name
         .adr
           .street-address
