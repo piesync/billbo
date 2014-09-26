@@ -86,6 +86,11 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
                 td.item_l Subscription: #{line.plan.name} (from #{format_date(line.period.start)} to #{format_date(line.period.end)})
                 td.item_r = format_money(line.amount, line.currency)
                 td.item_r
+              - elsif line.type == 'invoiceitem' && !line.metadata[:type] == 'vat'
+                td.item_l = line.description
+                td.item_r = format_money(line.amount, line.currency)
+                td.item_r
+
 
       #payment-details
         h2 Payment Details

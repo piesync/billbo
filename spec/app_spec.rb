@@ -22,6 +22,19 @@ describe App do
     end
   end
 
+  let(:yearly_plan) do
+    begin
+      Stripe::Plan.retrieve('test2')
+    rescue
+      Stripe::Plan.create \
+        id: 'test2',
+        name: 'Test2 Plan',
+        amount: 2000,
+        currency: 'usd',
+        interval: 'year'
+    end
+  end
+
   let(:coupon) do
     begin
       Stripe::Coupon.retrieve('25OFF')
@@ -114,6 +127,29 @@ describe App do
 
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/subscription_without_vat_export.png', :full => true)
+        end
+      end
+
+      describe 'with proration' do
+        it 'generates an invoice without VAT with multiple lines' do
+          VCR.use_cassette('invoice_template_proration') do
+            subscription, _ = invoice_service.create_subscription(plan: plan.id)
+
+            subscription.plan = yearly_plan.id
+            subscription.save
+
+            id = customer.invoices.first.id
+
+            invoice_service.ensure_vat(stripe_invoice_id: id)
+            invoice_service.process_payment(stripe_invoice_id: id)
+
+            invoice = Invoice.last
+            complete_invoice(invoice)
+            number = invoice.number
+
+            visit "/invoices/#{number}"
+            page.save_screenshot('spec/visual/subscription_proration.png', :full => true)
+          end
         end
       end
     end
