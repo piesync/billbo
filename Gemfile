@@ -3,6 +3,7 @@ ruby '2.1.1'
 
 gemspec
 
+gem 'dotenv'
 gem 'activesupport'
 gem 'sinatra', :require => 'sinatra/base'
 gem 'stripe'
@@ -16,7 +17,6 @@ gem 'analytics-ruby', :require => 'segment'
 
 gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]
-gem 'dotenv', group: [:test, :development]
 
 gem 'shrimp'
 gem 'carrierwave'
