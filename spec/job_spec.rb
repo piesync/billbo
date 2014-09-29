@@ -32,6 +32,7 @@ describe Job do
 
       invoice.vat_amount_eur.must_equal 78
       invoice.total_eur.must_equal 780
+      invoice.exchange_rate_eur.must_equal 0.78
     end
   end
 end
