@@ -67,7 +67,7 @@ else
   end.join(' ')
 
   puts 'Configuring Remote Billbo Instance...'
-  `heroku config:set #{heroku_env} --app #{app}`
+  `heroku config:set #{heroku_env} BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi --app #{app}`
 
   puts 'Billbo has been deployed to Heroku'
   puts "Check this url to confirm that it works: https://X:#{Choice.choices[:api_token]}@#{app}.herokuapp.com/ping"
