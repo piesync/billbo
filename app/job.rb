@@ -10,7 +10,7 @@ class Job
 
   def perform_for(invoice)
     # First load VIES data into the invoice.
-    vat_service.load_vies_data(invoice)
+    vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
 
     # Calculate total and vat amount in euro.
     invoice.update \

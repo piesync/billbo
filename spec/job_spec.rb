@@ -20,10 +20,10 @@ describe Job do
   end
 
   describe '#perform_for' do
-    it 'loads vies data, euro amounts and generates a pdf' do
+    it 'loads euro amounts and generates a pdf' do
       invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
 
-      VatService.any_instance.expects(:load_vies_data).with(invoice).once
+      VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
       PdfService.any_instance.expects(:generate_pdf).with(invoice).once
 
       Job.new.perform_for(invoice)
@@ -33,6 +33,16 @@ describe Job do
       invoice.vat_amount_eur.must_equal 78
       invoice.total_eur.must_equal 780
       invoice.exchange_rate_eur.must_equal 0.78
+    end
+
+    describe 'a vat number is present' do
+      it 'loads vies data, euro amounts and generates a pdf' do
+        invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_vat_number: 'something')
+
+        VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).once
+
+        Job.new.perform_for(invoice)
+      end
     end
   end
 end
