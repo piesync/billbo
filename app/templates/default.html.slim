@@ -47,6 +47,12 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
             = invoice.customer_address
 
           .locality = country_name(invoice.customer_country_code)
+        p
+          br /
+          - if invoice.customer_vat_registered
+            strong
+              ' VAT
+              = invoice.customer_vat_number
 
 
       br /
@@ -83,7 +89,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           - stripe.lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
               - if line.type == 'subscription'
-                td.item_l Subscription: #{line.plan.name} (from #{format_date(line.period.start)} to #{format_date(line.period.end)})
+                td.item_l #{line.plan.name} (#{format_date(line.period.start)} - #{format_date(line.period.end)})
                 td.item_r = format_money(line.amount, line.currency)
                 td.item_r
               - elsif line.type == 'invoiceitem' && line.metadata[:type] != 'vat'

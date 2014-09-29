@@ -106,6 +106,7 @@ describe App do
       country_code: country_code,
       vat_registered: vat_registered,
       name: 'John Doe',
+      vat_number: 'NL1234',
       address: 'Doestreet'
     }}
 
