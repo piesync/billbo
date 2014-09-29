@@ -12,6 +12,11 @@ class PdfService
     invoice.pdf_generated! if uploader.store!(File.open("tmp/#{invoice.number}.pdf"))
   end
 
+  def retrieve_pdf(invoice)
+    uploader.retrieve_from_store!("#{invoice.number}.pdf")
+    uploader.file
+  end
+
   private
 
   attr_reader :uploader

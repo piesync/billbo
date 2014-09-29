@@ -48,6 +48,14 @@ class App < Base
   end
 
   get 'invoices/:number.pdf' do
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice
+
+    pdf = pdf_service.retrieve_pdf(invoice)
+
+    content_type pdf.content_type
+    body pdf.read
   end
 
   # Fetches a preview breakdown of the costs of a subscription.

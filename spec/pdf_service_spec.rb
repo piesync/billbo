@@ -28,7 +28,7 @@ describe PdfService do
     end
   end
 
-  describe '#generate_pdf' do
+  describe '#generate_pdf, #retrieve_pdf' do
     it 'generates a pdf representiation of an invoice and stores it' do
       VCR.use_cassette('pdf_generation') do
         invoice_service.create_subscription(plan: plan.id)
@@ -47,6 +47,10 @@ describe PdfService do
           File.expand_path("../../#{uploader.store_path}/#{uploader.filename}", __FILE__))
 
         exists.must_equal true
+
+        # Retrieve pdf
+        service = PdfService.new
+        service.retrieve_pdf(invoice).filename.must_equal "#{invoice.number}.pdf"
       end
     end
   end
