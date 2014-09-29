@@ -86,7 +86,7 @@ class VatService
   #
   # Raises VatService::ViesDown if the VIES service is down.
   def load_vies_data(invoice: invoice)
-    details = self.details(vat_number: invoice.vat_number,
+    details = self.details(vat_number: invoice.customer_vat_number,
       own_vat: Configuration.seller_vat_number)
 
     invoice.update \

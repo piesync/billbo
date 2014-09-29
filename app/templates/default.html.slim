@@ -40,13 +40,13 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
 
       #client-details.vcard
-        .fn = stripe.metadata[:name]
-        .org = invoice.vies_company_name
+        .fn = invoice.customer_name
+        .org = invoice.customer_company_name
         .adr
           .street-address
-            = stripe.metadata[:address]
+            = invoice.customer_address
 
-          .locality = country_name(invoice.country_code)
+          .locality = country_name(invoice.customer_country_code)
 
 
       br /

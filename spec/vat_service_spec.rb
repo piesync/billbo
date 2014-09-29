@@ -80,7 +80,7 @@ describe VatService do
   describe '#load_vies_data' do
     it 'loads vies data into an invoice' do
       VCR.use_cassette('load_vies_data') do
-        invoice = Invoice.create(vat_number: 'LU21416127')
+        invoice = Invoice.create(customer_vat_number: 'LU21416127')
 
         service.load_vies_data(invoice: invoice)
 

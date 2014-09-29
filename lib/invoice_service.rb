@@ -22,6 +22,7 @@ class InvoiceService
 
     # If this method was succesful, we created a paid invoice with VAT already applied.
     invoice = ensure_invoice(stripe_invoice.id).added_vat!
+    snapshot_customer(invoice)
 
     subscription
   end
@@ -34,6 +35,7 @@ class InvoiceService
     if !invoice.added_vat?
       stripe_invoice = stripe_service.apply_vat(invoice_id: stripe_invoice_id)
       invoice.added_vat!
+      snapshot_customer(invoice)
     end
 
     invoice
@@ -49,18 +51,14 @@ class InvoiceService
     invoice = ensure_invoice(stripe_invoice_id)
     stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
-    # Now we are sure nothing is going to change the invoice anymore.
-    # Take a final snapshot into the invoice.
-    stripe_service.snapshot_final \
-      stripe_invoice: stripe_invoice,
-      number: invoice.number
-
-    snapshot(stripe_invoice, invoice)
-
     # Finalize the invoice.
     # Unless if the invoice's total amount is 0, then we don't
     # need to make an invoice for it.
     invoice.finalize! unless stripe_invoice.total.zero?
+
+    # Now we are sure nothing is going to change the invoice anymore.
+    # Do a final calculation of the invoice amounts.
+    invoice.update(stripe_service.calculate_final(stripe_invoice: stripe_invoice))
 
     invoice
   rescue Invoice::AlreadyFinalized
@@ -82,19 +80,23 @@ class InvoiceService
 
   private
 
-  # Take a snapshot from a Stripe invoice to an internal invoice.
-  def snapshot(stripe_invoice, invoice)
-    invoice.update \
-      subtotal: stripe_invoice.metadata[:subtotal].to_i,
-      discount_amount: stripe_invoice.metadata[:discount_amount].to_i,
-      subtotal_after_discount: stripe_invoice.metadata[:subtotal_after_discount].to_i,
-      vat_amount: stripe_invoice.metadata[:vat_amount].to_i,
-      vat_rate: stripe_invoice.metadata[:vat_rate].to_f,
-      total: stripe_invoice.total,
-      currency: stripe_invoice.currency,
-      country_code: stripe_invoice.metadata[:country_code],
-      vat_number: stripe_invoice.metadata[:vat],
-      vat_registered: (stripe_invoice.metadata[:vat_registered] == 'true')
+  def snapshot_customer(invoice)
+    metadata = stripe_service.customer_metadata.slice(
+      :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id)
+
+    # Transform vat_registered into boolean
+    metadata[:vat_registered] = metadata[:vat_registered] == 'true'
+
+    # Prepend :customer
+    customer_metadata = metadata.map do |k,v|
+      ["customer_#{k}".to_sym, v]
+    end.to_h
+
+    # Add the customer id
+    customer_metadata[:stripe_customer_id] = @customer_id
+
+    # Save to invoice
+    invoice.update(customer_metadata)
   end
 
   def ensure_invoice(stripe_id)

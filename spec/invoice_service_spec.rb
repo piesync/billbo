@@ -5,6 +5,8 @@ describe InvoiceService do
   let(:metadata) {{
     country_code: 'NL',
     vat_registered: 'false',
+    vat_number: 'NL123',
+    accounting_id: '10001',
     other: 'random'
   }}
 
@@ -86,24 +88,22 @@ describe InvoiceService do
 
         stripe_invoice = Stripe::Invoice.create(customer: customer.id)
 
+        service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
         invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
         invoice.finalized?.must_equal true
 
         invoice.subtotal.must_equal 100
         invoice.discount_amount.must_equal 0
         invoice.subtotal_after_discount.must_equal 100
-        invoice.vat_amount.must_equal 0
-        invoice.vat_rate.must_equal 0
-        invoice.total.must_equal 100
-
-        stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice.id)
-        stripe_invoice.metadata.to_h.must_equal \
-          number: "2014000001",
-          subtotal: "100",
-          discount_amount: "0",
-          subtotal_after_discount: "100",
-          vat_amount: "0",
-          vat_rate: "0"
+        invoice.vat_amount.must_equal 21
+        invoice.vat_rate.must_equal 21
+        invoice.total.must_equal 121
+        invoice.currency.must_equal 'usd'
+        invoice.customer_country_code.must_equal 'NL'
+        invoice.customer_vat_number.must_equal 'NL123'
+        invoice.stripe_customer_id.must_equal customer.id
+        invoice.customer_accounting_id.must_equal '10001'
+        invoice.customer_vat_registered.must_equal false
       end
     end
 
