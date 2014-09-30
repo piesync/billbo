@@ -17,3 +17,7 @@ task :console => :environment do
 end
 
 task :default => :spec
+
+task :job => :environment do
+  Job.new.perform
+end

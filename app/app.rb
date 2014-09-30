@@ -1,4 +1,7 @@
+require 'template_helper'
+
 class App < Base
+  TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.slim', __FILE__))
 
   # Creates a new subscription with VAT.
   #
@@ -15,6 +18,44 @@ class App < Base
       .create_subscription(params)
 
     json(subscription)
+  end
+
+  # Populates a template with all invoice data.
+  # This should never be used to show to customers, it should
+  # only be used to generate PDF's, as information on the invoice
+  # could change between different calls.
+  #
+  # number - The invoice number.
+  #
+  # Returns the html and status 200 if successful
+  get '/invoices/:number' do
+    content_type 'text/html'
+
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice
+
+    stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+    charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+
+    TEMPLATE.render(TemplateHelper.new,
+      invoice: invoice,
+      stripe: stripe_invoice,
+      coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
+      customer: stripe_invoice.customer,
+      card: charge.card
+    )
+  end
+
+  get 'invoices/:number.pdf' do
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice
+
+    pdf = pdf_service.retrieve_pdf(invoice)
+
+    content_type pdf.content_type
+    body pdf.read
   end
 
   # Fetches a preview breakdown of the costs of a subscription.
@@ -66,10 +107,15 @@ class App < Base
   #
   # Returns details or false/nil
   get '/vat/:number/details' do
-    request = { vat_number: params[:number] }
-    request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
+    begin
+      request = { vat_number: params[:number] }
+      request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
 
-    vat_service.details(request) || status(404)
+      vat_service.details(request) || status(404)
+
+    rescue VatService::ViesDown
+      status(504)
+    end
   end
 
   get '/ping' do

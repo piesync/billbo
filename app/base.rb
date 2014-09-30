@@ -46,4 +46,8 @@ class Base < Sinatra::Base
   def vat_service
     VatService.new
   end
+
+  def pdf_service
+    PdfService.new
+  end
 end

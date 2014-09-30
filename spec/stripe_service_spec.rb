@@ -82,8 +82,6 @@ describe StripeService do
 
         invoice.lines.to_a.find { |l| l.metadata[:type] == 'vat' }
           .description.must_equal 'VAT (21%)'
-
-        invoice.metadata[:country_code].must_equal 'NL'
       end
     end
 
@@ -149,7 +147,6 @@ describe StripeService do
         invoice = invoices.first
         invoice.total.must_equal 1814
         invoice.lines.to_a.size.must_equal 2
-        invoice.metadata[:country_code].must_equal 'NL'
 
         upcoming = customer.upcoming_invoice
         # Upcoming does not have VAT yet, waiting to close invoice.
@@ -212,7 +209,7 @@ describe StripeService do
     end
   end
 
-  describe '#snapshot_final' do
+  describe '#calculate_final' do
     let(:metadata) {{
       country_code: 'NL',
       vat_registered: !vat,
@@ -222,21 +219,19 @@ describe StripeService do
     describe 'an invoice without vat and without discount' do
       let(:vat) { false }
 
-      it 'snapshots correctly' do
-        VCR.use_cassette('snapshot_final') do
+      it 'calculates correctly' do
+        VCR.use_cassette('calculate_final') do
           _, invoice = service.create_subscription(plan: plan.id)
-          service.snapshot_final(stripe_invoice: invoice)
-          invoice = Stripe::Invoice.retrieve(invoice.id)
+          metadata = service.calculate_final(stripe_invoice: invoice)
 
-          invoice.metadata.to_h.must_equal \
-            country_code: 'NL',
-            vat_registered: 'true',
-            other: 'random',
-            subtotal: '1499',
-            discount_amount: '0',
-            subtotal_after_discount: '1499',
-            vat_amount: '0',
-            vat_rate: '0'
+          metadata.must_equal \
+            subtotal: 1499,
+            discount_amount: 0,
+            subtotal_after_discount: 1499,
+            vat_amount: 0,
+            vat_rate: 0,
+            total: 1499,
+            currency: 'usd'
         end
       end
     end
@@ -244,21 +239,19 @@ describe StripeService do
     describe 'an invoice with vat and without discount' do
       let(:vat) { true }
 
-      it 'snapshots correctly' do
-        VCR.use_cassette('snapshot_final_vat') do
+      it 'calculates correctly' do
+        VCR.use_cassette('calculate_final_vat') do
           _, invoice = service.create_subscription(plan: plan.id)
-          service.snapshot_final(stripe_invoice: invoice)
-          invoice = Stripe::Invoice.retrieve(invoice.id)
+          metadata = service.calculate_final(stripe_invoice: invoice)
 
-          invoice.metadata.to_h.must_equal \
-            country_code: 'NL',
-            vat_registered: 'false',
-            other: 'random',
-            subtotal: '1499',
-            discount_amount: '0',
-            subtotal_after_discount: '1499',
-            vat_amount: '315',
-            vat_rate: '21'
+          metadata.must_equal \
+            subtotal: 1499,
+            discount_amount: 0,
+            subtotal_after_discount: 1499,
+            vat_amount: 315,
+            vat_rate: 21,
+            total: 1814,
+            currency: 'usd'
         end
       end
     end
@@ -266,21 +259,19 @@ describe StripeService do
     describe 'an invoice without vat and with discount' do
       let(:vat) { false }
 
-      it 'snapshots correctly' do
-        VCR.use_cassette('snapshot_final_discount') do
+      it 'calculates correctly' do
+        VCR.use_cassette('calculate_final_discount') do
           _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
-          service.snapshot_final(stripe_invoice: invoice)
-          invoice = Stripe::Invoice.retrieve(invoice.id)
+          metadata = service.calculate_final(stripe_invoice: invoice)
 
-          invoice.metadata.to_h.must_equal \
-            country_code: 'NL',
-            vat_registered: 'true',
-            other: 'random',
-            subtotal: '1499',
-            discount_amount: '375',
-            subtotal_after_discount: '1124',
-            vat_amount: '0',
-            vat_rate: '0'
+          metadata.must_equal \
+            subtotal: 1499,
+            discount_amount: 375,
+            subtotal_after_discount: 1124,
+            vat_amount: 0,
+            vat_rate: 0,
+            total: 1124,
+            currency: 'usd'
         end
       end
     end
@@ -288,21 +279,19 @@ describe StripeService do
     describe 'an invoice with vat and with discount' do
       let(:vat) { true }
 
-      it 'snapshots correctly' do
-        VCR.use_cassette('snapshot_final_vat_discount') do
+      it 'calculates correctly' do
+        VCR.use_cassette('calculate_final_vat_discount') do
           _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
-          service.snapshot_final(stripe_invoice: invoice)
-          invoice = Stripe::Invoice.retrieve(invoice.id)
+          metadata = service.calculate_final(stripe_invoice: invoice)
 
-          invoice.metadata.to_h.must_equal \
-            country_code: 'NL',
-            vat_registered: 'false',
-            other: 'random',
-            subtotal: '1499',
-            discount_amount: '375',
-            subtotal_after_discount: '1124',
-            vat_amount: '236',
-            vat_rate: '21'
+          metadata.must_equal \
+            subtotal: 1499,
+            discount_amount: 375,
+            subtotal_after_discount: 1124,
+            vat_amount: 236,
+            vat_rate: 21,
+            total: 1360,
+            currency: 'usd'
         end
       end
 
@@ -320,21 +309,19 @@ describe StripeService do
           end
         end
 
-        it 'snapshots correctly' do
-          VCR.use_cassette('snapshot_final_vat_discount_rounding') do
+        it 'calculates correctly' do
+          VCR.use_cassette('calculate_final_vat_discount_rounding') do
             _, invoice = service.create_subscription(plan: plan.id, coupon: coupon.id)
-            service.snapshot_final(stripe_invoice: invoice)
-            invoice = Stripe::Invoice.retrieve(invoice.id)
+            metadata = service.calculate_final(stripe_invoice: invoice)
 
-            invoice.metadata.to_h.must_equal \
-              country_code: 'NL',
-              vat_registered: 'false',
-              other: 'random',
-              subtotal: '903',
-              discount_amount: '225',
-              subtotal_after_discount: '678',
-              vat_amount: '142',
-              vat_rate: '21'
+            metadata.must_equal \
+              subtotal: 903,
+              discount_amount: 225,
+              subtotal_after_discount: 678,
+              vat_amount: 142,
+              vat_rate: 21,
+              total: 820,
+              currency: 'usd'
 
             invoice.total.must_equal 820
           end

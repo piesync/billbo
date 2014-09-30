@@ -22,12 +22,39 @@ describe App do
     end
   end
 
+  let(:yearly_plan) do
+    begin
+      Stripe::Plan.retrieve('test2')
+    rescue
+      Stripe::Plan.create \
+        id: 'test2',
+        name: 'Test2 Plan',
+        amount: 2000,
+        currency: 'usd',
+        interval: 'year'
+    end
+  end
+
+  let(:coupon) do
+    begin
+      Stripe::Coupon.retrieve('25OFF')
+    rescue
+      Stripe::Coupon.create(
+        percent_off: 25,
+        duration: 'repeating',
+        duration_in_months: 3,
+        id: '25OFF'
+      )
+    end
+  end
+
   let(:subscription) {{
     customer: customer.id,
     plan: 'test'
   }}
 
   let(:metadata) {{
+    name: 'John Doe',
     country_code: 'NL',
     vat_registered: 'false',
     other: 'random'
@@ -60,6 +87,151 @@ describe App do
 
         last_response.ok?.must_equal true
         MultiJson.load(last_response.body)['customer'].must_equal customer.id
+      end
+    end
+  end
+
+  describe 'get /invoices/:number' do
+    include Capybara::DSL
+
+    before do
+      page.driver.basic_authorize('', Configuration.api_token)
+    end
+
+    after do
+      Capybara.reset_sessions!
+    end
+
+    let(:metadata) {{
+      country_code: country_code,
+      vat_registered: vat_registered,
+      name: 'John Doe',
+      vat_number: 'NL1234',
+      address: 'Doestreet'
+    }}
+
+    let(:invoice_service) { InvoiceService.new(customer_id: customer.id) }
+
+    describe 'subscription without VAT (export)' do
+      let(:country_code) { 'US' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice without VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat_export') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat_export.png', :full => true)
+        end
+      end
+
+      describe 'with proration' do
+        it 'generates an invoice without VAT with multiple lines' do
+          VCR.use_cassette('invoice_template_proration') do
+            subscription, _ = invoice_service.create_subscription(plan: plan.id)
+
+            subscription.plan = yearly_plan.id
+            subscription.save
+
+            id = customer.invoices.first.id
+
+            invoice_service.ensure_vat(stripe_invoice_id: id)
+            invoice_service.process_payment(stripe_invoice_id: id)
+
+            invoice = Invoice.last
+            complete_invoice(invoice)
+            number = invoice.number
+
+            visit "/invoices/#{number}"
+            page.save_screenshot('spec/visual/subscription_proration.png', :full => true)
+          end
+        end
+      end
+    end
+
+    describe 'subscription without VAT (reverse)' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { true }
+
+      it 'generates an invoice without VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat_reverse') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat_reverse.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription with VAT' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_vat') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_with_vat.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription without VAT, with discount' do
+      let(:country_code) { 'US' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_no_vat_discount') do
+          invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_without_vat_with_discount.png', :full => true)
+        end
+      end
+    end
+
+    describe 'subscription with VAT, with discount' do
+      let(:country_code) { 'NL' }
+      let(:vat_registered) { false }
+
+      it 'generates an invoice with VAT' do
+        VCR.use_cassette('invoice_template_sub_vat_discount') do
+          invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+          invoice_service.process_payment(
+            stripe_invoice_id: customer.invoices.first.id)
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_with_vat_with_discount.png', :full => true)
+        end
       end
     end
   end
@@ -133,6 +305,16 @@ describe App do
 
       get '/vat/2/details'
       last_response.ok?.must_equal false
+      last_response.status.must_equal 404
+      last_response.body.must_be_empty
+    end
+
+    it "returns 504 when VIES is down" do
+      vat_service.expects(:details).with(vat_number: '1').raises(VatService::ViesDown)
+
+      get '/vat/1/details'
+      last_response.ok?.must_equal false
+      last_response.status.must_equal 504
       last_response.body.must_be_empty
     end
   end
@@ -155,5 +337,13 @@ describe App do
 
   def json(object)
     MultiJson.dump(object)
+  end
+
+  def complete_invoice(invoice)
+    invoice.update \
+      vies_company_name: 'Ebay',
+      vat_amount_eur: (invoice.vat_amount*0.75).round,
+      total_eur: (invoice.total*0.75).round,
+      currency: 'usd'
   end
 end

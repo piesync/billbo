@@ -1,4 +1,5 @@
 class VatService
+  ViesDown = Class.new(StandardError)
   VatCharge = Struct.new(:amount, :rate)
 
   # http://ec.europa.eu/taxation_customs/resources/documents/taxation/vat/how_vat_works/rates/vat_rates_en.pdf
@@ -66,13 +67,32 @@ class VatService
   # vat_number  - VAT number to be validated
   # own_vat     - own VAT number to additionally get a request identifier
   #
-  # Returns details or false/nil
+  # Raises ViesDown if the VIES service is down.
+  #
+  # Returns details or false if the number does not exist.
   def details(vat_number:, own_vat: nil)
-    if own_vat
-      Valvat.new(vat_number).exists?(requester_vat: own_vat)
+    details = if own_vat
+      Valvat.new(vat_number).exists?(requester_vat: own_vat, raise_error: true)
     else
       Valvat.new(vat_number).exists?(detail: true)
     end
+
+    raise ViesDown if details.nil?
+
+    details
+  end
+
+  # Loads VIES data into the invoice model.
+  #
+  # Raises VatService::ViesDown if the VIES service is down.
+  def load_vies_data(invoice: invoice)
+    details = self.details(vat_number: invoice.customer_vat_number,
+      own_vat: Configuration.seller_vat_number)
+
+    invoice.update \
+      vies_company_name: details[:name],
+      vies_address: details[:address],
+      vies_request_identifier: details[:request_identifier]
   end
 
   # Calculates VAT rate.
@@ -87,7 +107,7 @@ class VatService
 
     # Both individuals and companies pay VAT
     # in a country where you are VAT registered.
-    if configuration_service.registered_countries.include?(country_code)
+    if Configuration.registered_countries.include?(country_code)
       VAT_RATES[country_code]
     elsif eu?(country_code)
       # Companies in other EU countries don't need to pay VAT.
@@ -95,7 +115,7 @@ class VatService
         0
       # Individuals in other EU countries do need to pay VAT.
       else
-        VAT_RATES[configuration_service.primary_country]
+        VAT_RATES[Configuration.primary_country]
       end
     # All non-EU customers don't need to pay VAT.
     else
@@ -107,9 +127,5 @@ class VatService
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
-  end
-
-  def configuration_service
-    @configuration_service ||= ConfigurationService.new
   end
 end

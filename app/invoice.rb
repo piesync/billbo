@@ -41,6 +41,12 @@ class Invoice < Sequel::Model
     self
   end
 
+  def pdf_generated!
+    update pdf_generated_at: Time.now
+
+    self
+  end
+
   def added_vat?
     !!added_vat
   end
@@ -49,12 +55,28 @@ class Invoice < Sequel::Model
     !finalized_at.nil?
   end
 
+  def due_at
+    finalized_at + Configuration.due_days.days
+  end
+
   def discount?
     discount_amount && discount_amount != 0
   end
 
   def vat?
     vat_amount && vat_amount != 0
+  end
+
+  def eu?
+    Valvat::Utils::EU_COUNTRIES.include?(customer_country_code)
+  end
+
+  def customer_company_name
+    super || vies_company_name
+  end
+
+  def customer_address
+    super || vies_address
   end
 
   private

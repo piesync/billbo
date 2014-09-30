@@ -8,6 +8,7 @@ require 'minitest/spec'
 require 'minitest/autorun'
 require 'mocha/mini_test'
 require 'webmock/minitest'
+require 'capybara/poltergeist'
 
 # Configure VCR
 VCR.configure do |c|
@@ -22,7 +23,12 @@ VCR.configure do |c|
     (interaction.request.headers['Authorization'] || []).first
   end
 
+  c.ignore_localhost = true
   c.ignore_hosts 'codeclimate.com'
+end
+
+VCR.use_cassette('configuration_preload') do
+  require './config/environment'
 end
 
 # Minitest clear db hook
@@ -39,6 +45,9 @@ MiniTest::Spec.send :include, MiniTestHooks
 Billbo.host = 'billbo.test'
 Billbo.token = 'TOKEN'
 
-VCR.use_cassette('configuration_preload') do
-  require './config/environment'
-end
+# Configure Capybara
+Capybara.default_driver = :poltergeist
+Capybara.app = Configuration.app
+
+# Override the Billbo host to the in-process capybara server
+Configuration.host = "#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"

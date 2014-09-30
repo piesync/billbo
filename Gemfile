@@ -3,6 +3,8 @@ ruby '2.1.1'
 
 gemspec
 
+gem 'dotenv'
+gem 'activesupport'
 gem 'sinatra', :require => 'sinatra/base'
 gem 'stripe'
 gem 'valvat'
@@ -15,14 +17,22 @@ gem 'analytics-ruby', :require => 'segment'
 
 gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]
-gem 'dotenv', group: [:test, :development]
+
+gem 'shrimp'
+gem 'carrierwave'
+gem 'fog'
+gem 'slim'
+gem 'money'
+gem 'countries'
 
 group :test do
-  gem 'webmock'
+  gem 'webmock', github: 'bblimke/webmock'
   gem 'vcr'
   gem 'mocha'
   gem 'rack-test', :require => 'rack/test'
   gem 'codeclimate-test-reporter', :require => false
+  gem 'capybara'
+  gem 'poltergeist'
 end
 
 group :development do

@@ -32,11 +32,7 @@ class StripeService
     # This call automatically creates an invoice, always.
     subscription = customer.subscriptions.create(options)
 
-    # Get the last invoice to snapshot customer data.
-    _last_invoice = last_invoice
-    snapshot_customer(_last_invoice)
-
-    [subscription, _last_invoice]
+    [subscription, last_invoice]
   rescue Stripe::StripeError => e
     # Something failed in Stripe, if we already charged for VAT,
     # we need to rollback this. As we may charge twice later otherwise.
@@ -58,23 +54,16 @@ class StripeService
     vat, invoice_item = charge_vat(stripe_invoice.subtotal,
       invoice_id: invoice_id, currency: stripe_invoice.currency)
 
-    # Snapshot customer data.
-    snapshot_customer(stripe_invoice)
-
     Stripe::Invoice.retrieve(invoice_id)
   end
 
-  # Snapshots the final correct state of an invoice. It
+  # Calculates the final correct state of an invoice. It
   # figures out the right amount of VAT and discount.
   #
-  # stripe_invoice - The Stripe invoice to snapshot.
+  # stripe_invoice - The Stripe invoice to calculate.
   #
-  # Returns a hash that contains all snapshotted data.
-  def snapshot_final(stripe_invoice:, **extra)
-    # Start off with the existing and extra metadata.
-    metadata = stripe_invoice.metadata.to_h
-    metadata.merge!(extra)
-
+  # Returns a hash that contains all calculated data.
+  def calculate_final(stripe_invoice:)
     # Find the VAT invoice item.
     vat_line = stripe_invoice.lines.find { |line| line.metadata[:type] == 'vat' }
     other_lines = stripe_invoice.lines.to_a - [vat_line]
@@ -83,13 +72,12 @@ class StripeService
 
     # Recalculate discount based on the sum of all lines besides the vat line.
     discount = calculate_discount(subtotal, calculate_vat_rate, total) if stripe_invoice.discount
+
     # we do #to_i here because discount can be nil.
     subtotal_after_discount = subtotal - discount.to_i
 
-    metadata.merge!(subtotal: subtotal)
-
     # If there is vat and a discount, we need to recalculate VAT and the discount.
-    more = if vat_line && stripe_invoice.discount
+    calculation = if vat_line && stripe_invoice.discount
       # Recalculate VAT based on the total after discount
       vat_amount, vat_rate = calculate_vat(subtotal_after_discount).to_a
 
@@ -108,24 +96,21 @@ class StripeService
       }
     end
 
-    stripe_invoice.metadata = metadata.merge!(more)
-    stripe_invoice.save
+    calculation.merge! \
+      subtotal: subtotal,
+      total: stripe_invoice.total,
+      currency: stripe_invoice.currency
+  end
 
-    metadata
+  # Gets metadata for the customer.
+  def customer_metadata
+    customer.metadata.to_h
   end
 
   private
 
   def last_invoice
     Stripe::Invoice.all(customer: customer.id, limit: 1).first
-  end
-
-  def snapshot_customer(stripe_invoice)
-    metadata = stripe_invoice.metadata.to_h
-    metadata.merge!(customer.metadata.to_h)
-    stripe_invoice.metadata = metadata
-    stripe_invoice.save
-    metadata
   end
 
   def charge_vat_of_plan(plan)
