@@ -5,6 +5,7 @@ describe Job do
   describe '#perform' do
     it 'calls perform for for all missing pdf invoices' do
       invoices = 5.times.map { Invoice.new.finalize! }
+      Invoice.create
 
       job = Job.new
 
