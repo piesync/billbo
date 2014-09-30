@@ -41,7 +41,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
 
       #client-details.vcard
-        .fn = invoice.customer_name
+        .fn = invoice.customer_name || customer.email
         .org = invoice.customer_company_name
         .adr
           .street-address

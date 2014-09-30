@@ -42,7 +42,7 @@ class App < Base
       invoice: invoice,
       stripe: stripe_invoice,
       coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
-      customer: stripe_invoice.customer,
+      customer: Stripe::Customer.retrieve(stripe_invoice.customer),
       card: charge.card
     )
   end
