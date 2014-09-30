@@ -23,7 +23,7 @@ Features
 * Automatic and consistent invoice numbering (configurable)
 * Revenue analytics with [Segment.io](https://segment.io/) (optional)
 * Error Tracking with [Getsentry](https://getsentry.com/) (optional)
-* Automatic pdf invoice generation and emailing (work in progress)
+* Automatic and legally correct pdf invoice generation
 * Battle-tested at [PieSync](http://www.piesync.com)
 
 How it Works with Stripe
