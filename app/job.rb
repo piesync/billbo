@@ -27,7 +27,9 @@ class Job
   rescue VatService::ViesDown => e
     # Just wait until it's up again...
   rescue StandardError => e
-    Raven.capture_exception(e) if Configuration.sentry?
+    Raven.capture_exception(e, extra: {
+      invoice: invoice.id
+    }) if Configuration.sentry?
   end
 
   private
