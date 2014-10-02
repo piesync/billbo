@@ -91,7 +91,7 @@ class StripeService
       {
         discount_amount: stripe_invoice.subtotal - stripe_invoice.total,
         subtotal_after_discount: subtotal_after_discount,
-        vat_amount: (vat_line && vat_line.metadata[:amount]).to_i,
+        vat_amount: (vat_line && vat_line.amount).to_i,
         vat_rate: (vat_line && vat_line.metadata[:rate]).to_i
       }
     end
@@ -137,7 +137,6 @@ class StripeService
       description: "VAT (#{vat.rate}%)",
       metadata: {
         type: 'vat',
-        amount: vat.amount,
         rate: vat.rate
       }
     ) unless vat.amount.zero?
