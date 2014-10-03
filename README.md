@@ -79,11 +79,11 @@ Stripe::Customer.create(
   metadata: {
     country_code: 'US', # required - ISO 3166-1 alpha-2 standard
     vat_registered: true, # required
-    name: 'John Doe' # optional
-    company_name: 'DoeComp' # optional, VIES value if not provided and vat_number is provided
-    address: 'Doestreet 1, 1111 Doeville' # optional, VIES value if not provided and vat_number is provided
-    vat_number: 'DOE1234' # optional
-    accounting_id: '8723648' # optional
+    name: 'John Doe', # optional
+    company_name: 'DoeComp', # optional, VIES value if not provided and vat_number is provided
+    address: 'Doestreet 1, 1111 Doeville', # optional, VIES value if not provided and vat_number is provided
+    vat_number: 'DOE1234', # optional
+    accounting_id: '8723648', # optional
     ... # optional extra metadata
   }
 )
