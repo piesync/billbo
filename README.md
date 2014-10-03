@@ -19,12 +19,15 @@ Features
 --------
 
 * Automatic VAT addition according to legal regulations
-* VAT number validation and owner details (company name, address)
+* VAT number validation and owner details using VIES service (company name, address)
 * Automatic and consistent invoice numbering (configurable)
 * Revenue analytics with [Segment.io](https://segment.io/) (optional)
 * Error Tracking with [Getsentry](https://getsentry.com/) (optional)
-* Automatic and legally correct pdf invoice generation
+* Automatic and legally correct pdf invoice generation ([download example pdf](https://github.com/piesync/billbo/blob/master/assets/example.pdf?raw=true))
 * Battle-tested at [PieSync](http://www.piesync.com)
+* Works in various situations like prorations, discount ([examples](https://github.com/piesync/billbo/tree/master/spec/visual))
+* Works with refunds
+* Invoice storage: choice between local or or Amazon S3
 
 How it Works with Stripe
 ------------------------
@@ -33,7 +36,7 @@ Basically, whenever we receive an `invoice.created` event from Stripe, VAT is ca
 
 When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
 
-Deployment
+Deployment and configuration
 ----------
 
 The easiest way to get Billbo online to use it for production is Heroku. The `deploy-heroku` script in the root directory helps you with that. It provisions a Heroku instance with a Postgres database and all the right settings.
@@ -53,6 +56,13 @@ The deploy script takes lots of additional options to customize your Billbo inst
 
 Add a Webhook to Stripe that points to `https://HEROKU_APP_NAME.herokuapp.com/hook`
 
+**Configuration**
+
+TK list env vars
+
+**Generating invoices**
+
+TK CRON JOB
 
 Basic Usage
 -----------
@@ -69,6 +79,11 @@ Stripe::Customer.create(
   metadata: {
     country_code: 'US', # required - ISO 3166-1 alpha-2 standard
     vat_registered: true, # required
+    name: 'John Doe' # optional
+    company_name: 'DoeComp' # optional, VIES value if not provided and vat_number is provided
+  address: 'Doestreet 1, 1111 Doeville' # optional, VIES value if not provided and vat_number is provided
+    vat_number: 'DOE1234' # optional
+    accounting_id: '8723648' # optional
     ... # optional extra metadata
   }
 )
