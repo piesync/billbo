@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+# Get all customer ids that have a paid invoice.
+customer_ids = Configuration.db[:invoices].distinct.select(:stripe_customer_id) \
+  .where('finalized_at IS NOT NULL') \
+  .where('reserved_at is NULL') \
+  .map { |s| s[:stripe_customer_id] }.compact
+
+vat = []
+no_vat = []
+
+customer_ids.each do |customer_id|
+  # Get a random invoice of the customer.
+  invoice = Invoice.where(stripe_customer_id: customer_id).limit(1).first
+
+  # The vat code is calculated as follows:
+  #   F - Businesses in the EU (not belgium) - reverse charged
+  #   E - Customers outside the EU - no vat charged
+  #   S - Customers in Belgium or individuals in the EU - vat charged
+  vat_code = if !invoice.eu?
+    'E'
+  elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
+    'F'
+  else
+    'S'
+  end
+
+  if invoice.customer_vat_number
+    # If a company has a VAT number (could be from code F or S) add it to vat
+    vat << "#{invoice.customer_company_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}, #{invoice.customer_vat_number}"
+  else
+    # Add companies without vat number to another array
+    no_vat << "#{invoice.customer_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}"
+  end
+end
+
+# Print everything.
+puts 'Naam, Code, Klantenrekening, Grootboekrekening: Verkoop, BTW-code: Verkoop, BTW / Ondernemingsnummer'
+puts vat.join("\n")
+puts
+puts
+puts 'Naam, Code, Klantenrekening, Grootboekrekening: Verkoop, BTW-code: Verkoop'
+puts no_vat.join("\n")
