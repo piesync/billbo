@@ -37,6 +37,7 @@ Configuration.db.create_table :invoices do
   Integer :total_eur
 
   # Snapshot of customer
+  String  :customer_email
   String  :customer_name
   String  :customer_company_name
   String  :customer_country_code
