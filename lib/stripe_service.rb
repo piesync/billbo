@@ -104,7 +104,7 @@ class StripeService
 
   # Gets metadata for the customer.
   def customer_metadata
-    customer.metadata.to_h
+    customer.metadata.to_h.merge!(email: customer.email)
   end
 
   private

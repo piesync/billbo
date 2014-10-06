@@ -82,7 +82,7 @@ class InvoiceService
 
   def snapshot_customer(invoice)
     metadata = stripe_service.customer_metadata.slice(
-      :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id)
+      :email, :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id)
 
     # Transform vat_registered into boolean
     metadata[:vat_registered] = metadata[:vat_registered] == 'true'
