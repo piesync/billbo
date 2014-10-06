@@ -71,6 +71,10 @@ class Invoice < Sequel::Model
     Valvat::Utils::EU_COUNTRIES.include?(customer_country_code)
   end
 
+  def customer_name
+    super || customer_email
+  end
+
   def customer_company_name
     super || vies_company_name
   end
