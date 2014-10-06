@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require './config/environment'
 
 # Get all customer ids that have a paid invoice.
 customer_ids = Configuration.db[:invoices].distinct.select(:stripe_customer_id) \
