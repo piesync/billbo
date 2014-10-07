@@ -24,7 +24,7 @@ def vat_code(invoice)
   elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
     'F'
   else
-    'S'
+    '5'
   end
 end
 
@@ -54,7 +54,7 @@ invoices = []
 
 Invoice \
   .where(conditions) \
-  .order(Sequel.asc(:finalized_at)) \
+  .order(Sequel.asc(:number)) \
   .each do |invoice|
     date = invoice.finalized_at.strftime('%d-%m-%Y')
 
