@@ -47,6 +47,7 @@ The fastest path we can offer you:
 
 ```
 git clone git@github.com:piesync/billbo.git && cd billbo
+bundle install
 ./deploy-heroku [HEROKU_APP_NAME] -s [SECRET_STRIPE_KEY]
 ```
 
