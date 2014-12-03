@@ -3,6 +3,11 @@ require 'template_helper'
 class App < Base
   TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.slim', __FILE__))
 
+  get '/configuration' do
+    content_type 'text/html'
+    erb :configuration
+  end
+
   # Creates a new subscription with VAT.
   #
   # customer - ID of Stripe customer.
