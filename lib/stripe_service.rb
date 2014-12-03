@@ -33,7 +33,7 @@ class StripeService
     subscription = customer.subscriptions.create(options)
 
     [subscription, last_invoice]
-  rescue Stripe::StripeError => e
+  rescue Stripe::StripeError, Stripe::CardError => e
     # Something failed in Stripe, if we already charged for VAT,
     # we need to rollback this. As we may charge twice later otherwise.
     invoice_item.delete if invoice_item
