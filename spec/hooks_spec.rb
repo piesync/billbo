@@ -85,6 +85,8 @@ describe Hooks do
     describe 'post invoice payment succeeded' do
       it 'finalizes the invoice' do
         VCR.use_cassette('hook_invoice_payment_succeeded') do
+          stripe_invoice.pay
+
           post '/', json(type: 'invoice.payment_succeeded',
             data: { object: stripe_invoice})
 

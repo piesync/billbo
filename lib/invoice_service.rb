@@ -60,6 +60,16 @@ class InvoiceService
     # Do a final calculation of the invoice amounts.
     invoice.update(stripe_service.calculate_final(stripe_invoice: stripe_invoice))
 
+    # Take a snapshot of the card used to make payment.
+    # Note: There will be no charge in two cases:
+    #   1. The invoice total is 0 so no charge is needed.
+    #   2. The invoice could be paid with credit.
+    #
+    if stripe_invoice.charge
+      charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+      snapshot_card(charge.card, invoice)
+    end
+
     invoice
   rescue Invoice::AlreadyFinalized
   end
@@ -97,6 +107,14 @@ class InvoiceService
 
     # Save to invoice
     invoice.update(customer_metadata)
+  end
+
+  def snapshot_card(card, invoice)
+    invoice.update(
+      card_brand: card.brand,
+      card_last4: card.last4,
+      card_country_code: card.country
+    )
   end
 
   def ensure_invoice(stripe_id)

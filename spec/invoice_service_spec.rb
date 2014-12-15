@@ -89,6 +89,10 @@ describe InvoiceService do
         stripe_invoice = Stripe::Invoice.create(customer: customer.id)
 
         service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
+
+        # Pay the invoice before processing the payment.
+        stripe_invoice.pay
+
         invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
         invoice.finalized?.must_equal true
 
@@ -104,6 +108,9 @@ describe InvoiceService do
         invoice.stripe_customer_id.must_equal customer.id
         invoice.customer_accounting_id.must_equal '10001'
         invoice.customer_vat_registered.must_equal false
+        invoice.card_brand.must_equal 'Visa'
+        invoice.card_last4.must_equal '4242'
+        invoice.card_country_code.must_equal 'US'
       end
     end
 
@@ -136,6 +143,10 @@ describe InvoiceService do
             currency: 'usd'
 
         stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+
+        # Pay the invoice before processing the payment.
+        stripe_invoice.pay
+
         invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
 
         credit_note = service.process_refund(stripe_invoice_id: stripe_invoice.id)

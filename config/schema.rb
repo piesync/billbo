@@ -36,6 +36,11 @@ Configuration.db.create_table :invoices do
   Integer :vat_amount_eur
   Integer :total_eur
 
+  # Card used to pay the invoice
+  String  :card_brand
+  String  :card_last4
+  String  :card_country_code
+
   # Snapshot of customer
   String  :customer_email
   String  :customer_name
