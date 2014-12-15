@@ -344,6 +344,7 @@ describe App do
       vies_company_name: 'Ebay',
       vat_amount_eur: (invoice.vat_amount*0.75).round,
       total_eur: (invoice.total*0.75).round,
-      currency: 'usd'
+      currency: 'usd',
+      finalized_at: DateTime.parse('6/10/2014') # Stub time so screenshots do not change every time.
   end
 end
