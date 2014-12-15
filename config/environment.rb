@@ -9,6 +9,8 @@ end
 # Bundle (gems)
 require 'boot'
 
+I18n.config.enforce_available_locales = true
+
 # Require needed active support bits
 require 'active_support/core_ext/integer'
 

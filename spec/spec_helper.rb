@@ -1,9 +1,6 @@
 $environment = :test
 require './config/boot'
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'mocha/mini_test'

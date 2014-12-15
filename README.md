@@ -1,7 +1,6 @@
 Billbo
 ==============
 [![Build Status](https://secure.travis-ci.org/piesync/billbo.png?branch=master)](http://travis-ci.org/piesync/billbo)
-[![Code Climate](https://codeclimate.com/github/piesync/billbo.png)](https://codeclimate.com/github/piesync/billbo)
 [![Test Coverage](https://codeclimate.com/github/piesync/billbo/coverage.png)](https://codeclimate.com/github/piesync/billbo)
 
 About
