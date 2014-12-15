@@ -54,6 +54,7 @@ class Invoice < Sequel::Model
   def finalized?
     !finalized_at.nil?
   end
+  alias :paid? :finalized?
 
   def due_at
     finalized_at + Configuration.due_days.days

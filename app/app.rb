@@ -1,4 +1,4 @@
-require 'template_helper'
+require 'template_view_model'
 
 class App < Base
   TEMPLATE = Tilt.new(File.expand_path('../templates/default.html.slim', __FILE__))
@@ -36,15 +36,12 @@ class App < Base
     halt 404 unless invoice
 
     stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
-    charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
-    TEMPLATE.render(TemplateHelper.new,
+    TEMPLATE.render(TemplateViewModel.new(
       invoice: invoice,
-      stripe: stripe_invoice,
-      coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
-      customer: Stripe::Customer.retrieve(stripe_invoice.customer),
-      card: charge.card
-    )
+      stripe_invoice: stripe_invoice,
+      stripe_coupon: stripe_invoice.discount && stripe_invoice.discount.coupon
+    ))
   end
 
   get 'invoices/:number.pdf' do
