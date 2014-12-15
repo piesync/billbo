@@ -10,7 +10,7 @@ describe VatService do
       example(100, 'US', false).amount.must_equal(0)
 
       example(100, 'FR', true).amount.must_equal(0)
-      example(100, 'FR', false).amount.must_equal(21)
+      example(100, 'FR', false).amount.must_equal(20)
 
       example(100, 'BE', false).amount.must_equal(21)
       example(100, 'BE', true).amount.must_equal(21)

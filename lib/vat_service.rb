@@ -105,18 +105,12 @@ class VatService
     # VAT Rate is zero if country code is nil.
     return 0 if country_code.nil?
 
-    # Both individuals and companies pay VAT
-    # in a country where you are VAT registered.
-    if Configuration.registered_countries.include?(country_code)
+    # Companies pay VAT in the origin country when you are VAT registered there.
+    # Individuals always need to pay the VAT rate set in their origin country.
+    if registered?(country_code) || (eu?(country_code) && !vat_registered)
       VAT_RATES[country_code]
-    elsif eu?(country_code)
-      # Companies in other EU countries don't need to pay VAT.
-      if vat_registered
-        0
-      # Individuals in other EU countries do need to pay VAT.
-      else
-        VAT_RATES[Configuration.primary_country]
-      end
+
+    # Companies in other EU countries don't need to pay VAT.
     # All non-EU customers don't need to pay VAT.
     else
       0
@@ -124,6 +118,11 @@ class VatService
   end
 
   private
+
+  # Whether the seller is registered in the given country.
+  def registered?(country_code)
+    Configuration.registered_countries.include?(country_code)
+  end
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
