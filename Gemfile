@@ -30,7 +30,6 @@ group :test do
   gem 'vcr'
   gem 'mocha'
   gem 'rack-test', :require => 'rack/test'
-  gem 'codeclimate-test-reporter', :require => false
   gem 'capybara'
   gem 'poltergeist'
 end
