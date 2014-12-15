@@ -51,6 +51,10 @@ Configuration.db.create_table :invoices do
   String  :customer_vat_number
   String  :customer_accounting_id
 
+  # GeoIP information
+  String  :ip_address
+  String  :ip_country_code
+
   # VIES information
   String  :vies_company_name
   String  :vies_address
