@@ -148,13 +148,13 @@ class StripeService
     vat_service.calculate \
       amount: amount,
       country_code: customer.metadata[:country_code],
-      vat_registered: (customer.metadata[:vat_registered] == 'true')
+      vat_registered: !customer.metadata[:vat_number].blank?
   end
 
   def calculate_vat_rate
     vat_service.vat_rate \
       country_code: customer.metadata[:country_code],
-      vat_registered: (customer.metadata[:vat_registered] == 'true')
+      vat_registered: !customer.metadata[:vat_number].blank?
   end
 
   # Calculates the amount of discount given on an amount

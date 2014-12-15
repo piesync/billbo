@@ -63,6 +63,10 @@ class Invoice < Sequel::Model
     discount_amount && discount_amount != 0
   end
 
+  def customer_vat_registered?
+    !customer_vat_number.blank?
+  end
+
   def vat?
     vat_amount && vat_amount != 0
   end

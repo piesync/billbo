@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.stripe.com/v1/customers
     body:
       encoding: US-ASCII
-      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=30&card[cvc]=222&metadata[country_code]=NL&metadata[vat_registered]=false&metadata[vat_number]=NL123&metadata[accounting_id]=10001&metadata[other]=random
+      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=30&card[cvc]=222&metadata[country_code]=NL&metadata[accounting_id]=10001&metadata[other]=random
     headers:
       Accept:
       - "*/*; q=0.5, application/xml"
@@ -22,7 +22,7 @@ http_interactions:
         Mattiass-MacBook-Air.local 13.0.0 Darwin Kernel Version 13.0.0: Thu Sep 19
         22:22:27 PDT 2013; root:xnu-2422.1.72~6/RELEASE_X86_64 x86_64"}'
       Content-Length:
-      - '217'
+      - '159'
   response:
     status:
       code: 200
@@ -31,11 +31,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Mon, 15 Dec 2014 14:34:15 GMT
+      - Mon, 15 Dec 2014 16:07:07 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
-      - '1488'
+      - '1430'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -47,7 +47,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_3DS3Tz6osTBqQJr2
+      - req_MiXcD3qO9H0Xx9H2
       Stripe-Version:
       - '2014-03-13'
       Strict-Transport-Security:
@@ -57,16 +57,14 @@ http_interactions:
       string: |
         {
           "object": "customer",
-          "created": 1418654055,
-          "id": "cus_5KfFPRVq2MAP9J",
+          "created": 1418659627,
+          "id": "cus_5KgkOCoewaPncR",
           "livemode": false,
           "description": null,
           "email": null,
           "delinquent": false,
           "metadata": {
             "country_code": "NL",
-            "vat_registered": "false",
-            "vat_number": "NL123",
             "accounting_id": "10001",
             "other": "random"
           },
@@ -74,7 +72,7 @@ http_interactions:
             "object": "list",
             "total_count": 0,
             "has_more": false,
-            "url": "/v1/customers/cus_5KfFPRVq2MAP9J/subscriptions",
+            "url": "/v1/customers/cus_5KgkOCoewaPncR/subscriptions",
             "data": [],
             "count": 0
           },
@@ -85,10 +83,10 @@ http_interactions:
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/customers/cus_5KfFPRVq2MAP9J/cards",
+            "url": "/v1/customers/cus_5KgkOCoewaPncR/cards",
             "data": [
               {
-                "id": "card_159zvP2nHroS7mLX4k8XP8sQ",
+                "id": "card_15A1NH2nHroS7mLX1hVExJLA",
                 "object": "card",
                 "last4": "4242",
                 "brand": "Visa",
@@ -108,16 +106,16 @@ http_interactions:
                 "address_line1_check": null,
                 "address_zip_check": null,
                 "dynamic_last4": null,
-                "customer": "cus_5KfFPRVq2MAP9J",
+                "customer": "cus_5KgkOCoewaPncR",
                 "type": "Visa"
               }
             ],
             "count": 1
           },
-          "default_card": "card_159zvP2nHroS7mLX4k8XP8sQ"
+          "default_card": "card_15A1NH2nHroS7mLX1hVExJLA"
         }
     http_version: 
-  recorded_at: Mon, 15 Dec 2014 14:34:15 GMT
+  recorded_at: Mon, 15 Dec 2014 16:07:07 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/plans/test
@@ -147,7 +145,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Mon, 15 Dec 2014 14:34:16 GMT
+      - Mon, 15 Dec 2014 16:07:08 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -163,7 +161,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_M6Zj5F1ebmKGOqnV
+      - req_nHe2ACP5ViNxtAxK
       Stripe-Version:
       - '2014-03-13'
       Strict-Transport-Security:
@@ -186,13 +184,13 @@ http_interactions:
           "statement_description": null
         }
     http_version: 
-  recorded_at: Mon, 15 Dec 2014 14:34:16 GMT
+  recorded_at: Mon, 15 Dec 2014 16:07:08 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/customers/cus_5KfFPRVq2MAP9J/subscriptions
+    uri: https://api.stripe.com/v1/customers/cus_5KgkOCoewaPncR/subscriptions
     body:
       encoding: US-ASCII
-      string: plan=test&trial_end=1418655056
+      string: plan=test&trial_end=1418660628
     headers:
       Accept:
       - "*/*; q=0.5, application/xml"
@@ -218,7 +216,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Mon, 15 Dec 2014 14:34:18 GMT
+      - Mon, 15 Dec 2014 16:07:10 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -234,7 +232,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_Y9TlGiysMugln5bu
+      - req_vXicAC0Z5Ou6IVRq
       Stripe-Version:
       - '2014-03-13'
       Strict-Transport-Security:
@@ -243,7 +241,7 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "sub_5KfFb9N6W3p3wq",
+          "id": "sub_5KgksawYASI84W",
           "plan": {
             "interval": "month",
             "name": "Test Plan",
@@ -259,15 +257,15 @@ http_interactions:
             "statement_description": null
           },
           "object": "subscription",
-          "start": 1418654057,
+          "start": 1418659629,
           "status": "trialing",
-          "customer": "cus_5KfFPRVq2MAP9J",
+          "customer": "cus_5KgkOCoewaPncR",
           "cancel_at_period_end": false,
-          "current_period_start": 1418654057,
-          "current_period_end": 1418655056,
+          "current_period_start": 1418659629,
+          "current_period_end": 1418660628,
           "ended_at": null,
-          "trial_start": 1418654057,
-          "trial_end": 1418655056,
+          "trial_start": 1418659629,
+          "trial_end": 1418660628,
           "canceled_at": null,
           "quantity": 1,
           "application_fee_percent": null,
@@ -275,10 +273,10 @@ http_interactions:
           "metadata": {}
         }
     http_version: 
-  recorded_at: Mon, 15 Dec 2014 14:34:18 GMT
+  recorded_at: Mon, 15 Dec 2014 16:07:10 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices?customer=cus_5KfFPRVq2MAP9J
+    uri: https://api.stripe.com/v1/invoices?customer=cus_5KgkOCoewaPncR
     body:
       encoding: US-ASCII
       string: ''
@@ -305,7 +303,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Mon, 15 Dec 2014 14:34:19 GMT
+      - Mon, 15 Dec 2014 16:07:11 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -321,7 +319,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_rBrCpJlcGokf4Vdm
+      - req_HVkDTlNh235ki2Lj
       Stripe-Version:
       - '2014-03-13'
       Strict-Transport-Security:
@@ -335,18 +333,18 @@ http_interactions:
           "url": "/v1/invoices",
           "data": [
             {
-              "date": 1418654057,
-              "id": "in_159zvR2nHroS7mLXHYTlf2Ij",
-              "period_start": 1418654057,
-              "period_end": 1418654057,
+              "date": 1418659629,
+              "id": "in_15A1NJ2nHroS7mLXnThSuTcW",
+              "period_start": 1418659629,
+              "period_end": 1418659629,
               "lines": {
                 "object": "list",
                 "total_count": 1,
                 "has_more": false,
-                "url": "/v1/invoices/in_159zvR2nHroS7mLXHYTlf2Ij/lines",
+                "url": "/v1/invoices/in_15A1NJ2nHroS7mLXnThSuTcW/lines",
                 "data": [
                   {
-                    "id": "sub_5KfFb9N6W3p3wq",
+                    "id": "sub_5KgksawYASI84W",
                     "object": "line_item",
                     "type": "subscription",
                     "livemode": false,
@@ -354,8 +352,8 @@ http_interactions:
                     "currency": "usd",
                     "proration": false,
                     "period": {
-                      "start": 1418654057,
-                      "end": 1418655056
+                      "start": 1418659629,
+                      "end": 1418660628
                     },
                     "subscription": null,
                     "quantity": 1,
@@ -381,7 +379,7 @@ http_interactions:
               },
               "subtotal": 0,
               "total": 0,
-              "customer": "cus_5KfFPRVq2MAP9J",
+              "customer": "cus_5KgkOCoewaPncR",
               "object": "invoice",
               "attempted": true,
               "closed": true,
@@ -398,7 +396,7 @@ http_interactions:
               "charge": null,
               "discount": null,
               "application_fee": null,
-              "subscription": "sub_5KfFb9N6W3p3wq",
+              "subscription": "sub_5KgksawYASI84W",
               "metadata": {},
               "statement_description": null,
               "description": null,
@@ -408,10 +406,10 @@ http_interactions:
           "count": 1
         }
     http_version: 
-  recorded_at: Mon, 15 Dec 2014 14:34:19 GMT
+  recorded_at: Mon, 15 Dec 2014 16:07:11 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices/in_159zvR2nHroS7mLXHYTlf2Ij
+    uri: https://api.stripe.com/v1/invoices/in_15A1NJ2nHroS7mLXnThSuTcW
     body:
       encoding: US-ASCII
       string: ''
@@ -438,7 +436,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Mon, 15 Dec 2014 14:34:19 GMT
+      - Mon, 15 Dec 2014 16:07:12 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
@@ -454,7 +452,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_n18hc8XW6zXicZua
+      - req_dMrn9OQHY17KYDtU
       Stripe-Version:
       - '2014-03-13'
       Strict-Transport-Security:
@@ -463,18 +461,18 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "date": 1418654057,
-          "id": "in_159zvR2nHroS7mLXHYTlf2Ij",
-          "period_start": 1418654057,
-          "period_end": 1418654057,
+          "date": 1418659629,
+          "id": "in_15A1NJ2nHroS7mLXnThSuTcW",
+          "period_start": 1418659629,
+          "period_end": 1418659629,
           "lines": {
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/invoices/in_159zvR2nHroS7mLXHYTlf2Ij/lines",
+            "url": "/v1/invoices/in_15A1NJ2nHroS7mLXnThSuTcW/lines",
             "data": [
               {
-                "id": "sub_5KfFb9N6W3p3wq",
+                "id": "sub_5KgksawYASI84W",
                 "object": "line_item",
                 "type": "subscription",
                 "livemode": false,
@@ -482,8 +480,8 @@ http_interactions:
                 "currency": "usd",
                 "proration": false,
                 "period": {
-                  "start": 1418654057,
-                  "end": 1418655056
+                  "start": 1418659629,
+                  "end": 1418660628
                 },
                 "subscription": null,
                 "quantity": 1,
@@ -509,7 +507,7 @@ http_interactions:
           },
           "subtotal": 0,
           "total": 0,
-          "customer": "cus_5KfFPRVq2MAP9J",
+          "customer": "cus_5KgkOCoewaPncR",
           "object": "invoice",
           "attempted": true,
           "closed": true,
@@ -526,12 +524,12 @@ http_interactions:
           "charge": null,
           "discount": null,
           "application_fee": null,
-          "subscription": "sub_5KfFb9N6W3p3wq",
+          "subscription": "sub_5KgksawYASI84W",
           "metadata": {},
           "statement_description": null,
           "description": null,
           "receipt_number": null
         }
     http_version: 
-  recorded_at: Mon, 15 Dec 2014 14:34:20 GMT
+  recorded_at: Mon, 15 Dec 2014 16:07:12 GMT
 recorded_with: VCR 2.9.2

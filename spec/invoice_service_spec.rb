@@ -4,8 +4,6 @@ describe InvoiceService do
 
   let(:metadata) {{
     country_code: 'NL',
-    vat_registered: 'false',
-    vat_number: 'NL123',
     accounting_id: '10001',
     other: 'random'
   }}
@@ -104,10 +102,10 @@ describe InvoiceService do
         invoice.total.must_equal 121
         invoice.currency.must_equal 'usd'
         invoice.customer_country_code.must_equal 'NL'
-        invoice.customer_vat_number.must_equal 'NL123'
+        invoice.customer_vat_number.must_equal nil
         invoice.stripe_customer_id.must_equal customer.id
         invoice.customer_accounting_id.must_equal '10001'
-        invoice.customer_vat_registered.must_equal false
+        invoice.customer_vat_registered?.must_equal false
         invoice.card_brand.must_equal 'Visa'
         invoice.card_last4.must_equal '4242'
         invoice.card_country_code.must_equal 'US'

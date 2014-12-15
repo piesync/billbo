@@ -4,7 +4,6 @@ describe StripeService do
 
   let(:metadata) {{
     country_code: 'NL',
-    vat_registered: 'false',
     other: 'random'
   }}
 
@@ -112,7 +111,6 @@ describe StripeService do
     describe 'customer does not have to pay VAT' do
       let(:metadata) {{
         country_code: 'US',
-        vat_registered: 'true',
         other: 'random'
       }}
 
@@ -212,12 +210,14 @@ describe StripeService do
   describe '#calculate_final' do
     let(:metadata) {{
       country_code: 'NL',
-      vat_registered: !vat,
+      vat_number: vat_number,
       other: 'random'
     }}
 
+    let(:vat_number) { nil }
+
     describe 'an invoice without vat and without discount' do
-      let(:vat) { false }
+      let(:vat_number) { 'NL123' }
 
       it 'calculates correctly' do
         VCR.use_cassette('calculate_final') do
@@ -237,7 +237,6 @@ describe StripeService do
     end
 
     describe 'an invoice with vat and without discount' do
-      let(:vat) { true }
 
       it 'calculates correctly' do
         VCR.use_cassette('calculate_final_vat') do
@@ -257,7 +256,7 @@ describe StripeService do
     end
 
     describe 'an invoice without vat and with discount' do
-      let(:vat) { false }
+      let(:vat_number) { 'NL123' }
 
       it 'calculates correctly' do
         VCR.use_cassette('calculate_final_discount') do
@@ -277,7 +276,6 @@ describe StripeService do
     end
 
     describe 'an invoice with vat and with discount' do
-      let(:vat) { true }
 
       it 'calculates correctly' do
         VCR.use_cassette('calculate_final_vat_discount') do

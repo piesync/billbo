@@ -47,7 +47,6 @@ Configuration.db.create_table :invoices do
   String  :customer_company_name
   String  :customer_country_code
   String  :customer_address
-  Boolean :customer_vat_registered
   String  :customer_vat_number
   String  :customer_accounting_id
 

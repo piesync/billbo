@@ -56,7 +56,6 @@ describe App do
   let(:metadata) {{
     name: 'John Doe',
     country_code: 'NL',
-    vat_registered: 'false',
     other: 'random'
   }}
 
@@ -102,11 +101,12 @@ describe App do
       Capybara.reset_sessions!
     end
 
+    let(:vat_number) { nil }
+
     let(:metadata) {{
       country_code: country_code,
-      vat_registered: vat_registered,
       name: 'John Doe',
-      vat_number: 'NL1234',
+      vat_number: vat_number,
       address: 'Doestreet'
     }}
 
@@ -114,7 +114,6 @@ describe App do
 
     describe 'subscription without VAT (export)' do
       let(:country_code) { 'US' }
-      let(:vat_registered) { false }
 
       it 'generates an invoice without VAT' do
         VCR.use_cassette('invoice_template_sub_no_vat_export') do
@@ -157,7 +156,7 @@ describe App do
 
     describe 'subscription without VAT (reverse)' do
       let(:country_code) { 'NL' }
-      let(:vat_registered) { true }
+      let(:vat_number) { 'NL1234' }
 
       it 'generates an invoice without VAT' do
         VCR.use_cassette('invoice_template_sub_no_vat_reverse') do
@@ -177,7 +176,6 @@ describe App do
 
     describe 'subscription with VAT' do
       let(:country_code) { 'NL' }
-      let(:vat_registered) { false }
 
       it 'generates an invoice with VAT' do
         VCR.use_cassette('invoice_template_sub_vat') do
@@ -197,7 +195,6 @@ describe App do
 
     describe 'subscription without VAT, with discount' do
       let(:country_code) { 'US' }
-      let(:vat_registered) { false }
 
       it 'generates an invoice with VAT' do
         VCR.use_cassette('invoice_template_sub_no_vat_discount') do
@@ -217,7 +214,6 @@ describe App do
 
     describe 'subscription with VAT, with discount' do
       let(:country_code) { 'NL' }
-      let(:vat_registered) { false }
 
       it 'generates an invoice with VAT' do
         VCR.use_cassette('invoice_template_sub_vat_discount') do

@@ -50,7 +50,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           .locality = country_name(invoice.customer_country_code)
         p
           br /
-          - if invoice.customer_vat_registered
+          - if invoice.customer_vat_registered?
             strong
               ' VAT
               = invoice.customer_vat_number

@@ -9,7 +9,6 @@ describe Hooks do
 
   let(:metadata) {{
     country_code: 'NL',
-    vat_registered: 'false',
     other: 'random'
   }}
 
