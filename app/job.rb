@@ -13,19 +13,20 @@ class Job
 
   def perform_for(invoice)
     # First load VIES data into the invoice.
-    vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
+    load_vies_data(invoice)
 
     # Calculate total and vat amount in euro.
-    invoice.update \
-      exchange_rate_eur: Money.new(100, invoice.currency).exchange_to(:eur).to_f,
-      vat_amount_eur: Money.new(invoice.vat_amount, invoice.currency).exchange_to(:eur).cents,
-      total_eur: Money.new(invoice.total, invoice.currency).exchange_to(:eur).cents
+    calculate_eur_amounts(invoice)
 
     # Now generate an invoice.
-    pdf_service.generate_pdf(invoice)
+    pdf = generate_pdf(invoice)
+
+    # And mail it to the customer.
+    mail_invoice(invoice, pdf)
 
   rescue VatService::ViesDown => e
     # Just wait until it's up again...
+
   rescue StandardError => e
     Raven.capture_exception(e, extra: {
       invoice: invoice.id
@@ -33,6 +34,26 @@ class Job
   end
 
   private
+
+  def load_vies_data(invoice)
+    vat_service.load_vies_data(invoice: invoice) if invoice.vat_registered?
+  end
+
+  def calculate_eur_amounts(invoice)
+    invoice.update(
+      exchange_rate_eur: Money.new(100, invoice.currency).exchange_to(:eur).to_f,
+      vat_amount_eur: Money.new(invoice.vat_amount, invoice.currency).exchange_to(:eur).cents,
+      total_eur: Money.new(invoice.total, invoice.currency).exchange_to(:eur).cents
+    )
+  end
+
+  def generate_pdf(invoice)
+    pdf_service.generate_pdf(invoice)
+  end
+
+  def mail_invoice(invoice, pdf)
+    mail_service.mail(invoice, pdf)
+  end
 
   def vat_service
     @vat_service ||= VatService.new

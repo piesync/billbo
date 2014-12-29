@@ -132,6 +132,10 @@ class Configuration
       !s3_key_id.nil?
     end
 
+    def mailing?
+      !smtp_uri.nil?
+    end
+
     def uploader
       if s3?
         InvoiceCloudUploader.new
