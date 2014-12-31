@@ -37,7 +37,6 @@ end
 group :development do
   gem 'guard'
   gem 'guard-minitest'
-  gem 'thin'
   gem 'shotgun'
   gem 'choice'
 end
