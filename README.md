@@ -17,7 +17,7 @@ It's currently designed to support billing from EU based countries.
 Features
 --------
 
-* Automatic VAT addition according to legal regulations
+* Automatic VAT addition according to legal regulations (incl 2015 VAT update)
 * VAT number validation and owner details using VIES service (company name, address)
 * Automatic and consistent invoice numbering (configurable)
 * Revenue analytics with [Segment.io](https://segment.io/) (optional)
