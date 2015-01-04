@@ -31,7 +31,7 @@ class VatService
     'SK' => 20,
     'FI' => 24,
     'SE' => 25,
-    'UK' => 20
+    'GB' => 20  # Country code of the United Kingdom
   }
 
   # Calculates VAT amount based on country and whether the customer
