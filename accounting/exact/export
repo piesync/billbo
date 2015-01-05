@@ -28,10 +28,16 @@ def vat_code(invoice)
   end
 end
 
-# Get all customer ids that have a paid invoice.
-customer_ids = Configuration.db[:invoices].distinct.select(:stripe_customer_id) \
-  .where(conditions) \
-  .map { |s| s[:stripe_customer_id] }.compact
+# Get all customer ids that have a paid invoice in this quarter for the first time.
+customer_ids = Configuration.db[:invoices] \
+  .where('finalized_at IS NOT NULL AND reserved_at is NULL') \
+  .to_a \
+  .group_by { |r| r[:customer_accounting_id] } \
+  .select { |accounting_id, rs| rs.size == 1 && rs.first[:finalized_at] > from && rs.first[:finalized_at] < to } \
+  .values \
+  .map(&:first) \
+  .map { |r| r[:stripe_customer_id] } \
+  .compact
 
 vat = []
 no_vat = []
