@@ -90,8 +90,8 @@ class VatService
       own_vat: Configuration.seller_vat_number)
 
     invoice.update \
-      vies_company_name: details[:name],
-      vies_address: details[:address],
+      vies_company_name: details[:name].strip,
+      vies_address: details[:address].strip,
       vies_request_identifier: details[:request_identifier]
   end
 
