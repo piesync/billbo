@@ -44,7 +44,7 @@ no_vat = []
 
 customer_ids.each do |customer_id|
   # Get a random invoice of the customer.
-  invoice = Invoice.where(stripe_customer_id: customer_id).limit(1).first
+  invoice = Invoice.where(stripe_customer_id: customer_id).where(conditions).limit(1).first
   vat_code = vat_code(invoice)
 
   if invoice.customer_vat_number
