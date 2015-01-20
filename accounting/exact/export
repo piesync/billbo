@@ -51,7 +51,7 @@ customer_ids.each do |customer_id|
 
   if invoice.customer_vat_number
     # If a company has a VAT number (could be from code F or S) add it to vat
-    vat << "#{invoice.customer_company_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}, #{invoice.customer_vat_number}"
+    vat << "#{invoice.customer_company_name || invoice.customer_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}, #{invoice.customer_vat_number}"
   else
     # Add companies without vat number to another array
     no_vat << "#{invoice.customer_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}"
