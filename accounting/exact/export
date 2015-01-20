@@ -29,11 +29,13 @@ def vat_code(invoice)
 end
 
 # Get all customer ids that have a paid invoice in this quarter for the first time.
+# We order all invoices chronologically and check for which customers (accounting id) their first invoice was in this quarter.
 customer_ids = Configuration.db[:invoices] \
   .where('finalized_at IS NOT NULL AND reserved_at is NULL') \
+  .order(Sequel.asc(:finalized_at)) \
   .to_a \
   .group_by { |r| r[:customer_accounting_id] } \
-  .select { |accounting_id, rs| rs.size == 1 && rs.first[:finalized_at] > from && rs.first[:finalized_at] < to } \
+  .select { |accounting_id, rs| rs.first[:finalized_at] > from && rs.first[:finalized_at] < to } \
   .values \
   .map(&:first) \
   .map { |r| r[:stripe_customer_id] } \
