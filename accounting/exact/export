@@ -16,15 +16,18 @@ conditions = [
 
 def vat_code(invoice)
   # The vat code is calculated as follows:
-  #   F - Businesses in the EU (not belgium) - reverse charged
-  #   E - Customers outside the EU - no vat charged
-  #   S - Customers in Belgium or individuals in the EU - vat charged
+  #   E    - Customers outside the EU - no vat charged
+  #   F    - Businesses in the EU (not belgium) - reverse charged
+  #   5    - Customers in Belgium
+  #   M**  - Individuals in the EU (not belgium) - vat charged
   vat_code = if !invoice.eu?
     'E'
   elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
     'F'
-  else
+  elsif invoice.customer_country_code == 'BE'
     '5'
+  else
+    "M#{invoice.customer_country_code}"
   end
 end
 
