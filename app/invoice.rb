@@ -65,7 +65,7 @@ class Invoice < Sequel::Model
   end
 
   def customer_vat_registered?
-    !customer_vat_number.blank?
+    !!customer_vat_registered
   end
 
   def discount?
