@@ -11,14 +11,16 @@ class Job
   end
 
   def perform_for(invoice)
-    # First load VIES data into the invoice.
-    vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
+    if !invoice.credit_note?
+      # First load VIES data into the invoice.
+      vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
 
-    # Calculate total and vat amount in euro.
-    invoice.update \
-      exchange_rate_eur: Money.new(100, invoice.currency).exchange_to(:eur).to_f,
-      vat_amount_eur: Money.new(invoice.vat_amount, invoice.currency).exchange_to(:eur).cents,
-      total_eur: Money.new(invoice.total, invoice.currency).exchange_to(:eur).cents
+      # Calculate total and vat amount in euro.
+      invoice.update \
+        exchange_rate_eur: Money.new(100, invoice.currency).exchange_to(:eur).to_f,
+        vat_amount_eur: Money.new(invoice.vat_amount, invoice.currency).exchange_to(:eur).cents,
+        total_eur: Money.new(invoice.total, invoice.currency).exchange_to(:eur).cents
+    end
 
     # Now generate an invoice.
     pdf_service.generate_pdf(invoice)
@@ -26,9 +28,13 @@ class Job
   rescue VatService::ViesDown => e
     # Just wait until it's up again...
   rescue StandardError => e
-    Raven.capture_exception(e, extra: {
-      invoice: invoice.id
-    }) if Configuration.sentry?
+    if Configuration.sentry?
+      Raven.capture_exception(e, extra: {
+        invoice: invoice.id
+      })
+    else
+      raise e
+    end
   end
 
   private

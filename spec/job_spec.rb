@@ -41,8 +41,20 @@ describe Job do
         invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_vat_number: 'something')
 
         VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).once
+        PdfService.any_instance.expects(:generate_pdf).with(invoice).once
 
         Job.new.perform_for(invoice)
+      end
+    end
+
+    describe 'called with a credit note' do
+      it 'generates a pdf' do
+        invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
+        credit_note = Invoice.create(credit_note: true, reference_number: invoice.number)
+
+        PdfService.any_instance.expects(:generate_pdf).with(credit_note).once
+
+        Job.new.perform_for(credit_note)
       end
     end
   end
