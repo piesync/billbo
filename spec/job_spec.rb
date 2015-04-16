@@ -31,7 +31,7 @@ describe Job do
 
       invoice = invoice.reload
 
-      invoice.vat_amount_eur.must_equal 78
+      invoice.vat_amount_eur.must_equal 95
       invoice.total_eur.must_equal 780
       invoice.exchange_rate_eur.must_equal 0.78
     end
