@@ -56,6 +56,10 @@ class Invoice < Sequel::Model
   end
   alias :paid? :finalized?
 
+  def credit_note?
+    !!credit_note
+  end
+
   def due_at
     finalized_at + Configuration.due_days.days
   end

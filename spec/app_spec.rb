@@ -234,6 +234,31 @@ describe App do
         end
       end
     end
+
+    describe 'refund' do
+      let(:country_code) { 'US' }
+      let(:vat_registered) { false }
+
+      it 'generates a credit note' do
+        VCR.use_cassette('invoice_template_refund') do
+          invoice_service.create_subscription(plan: plan.id)
+          stripe_invoice = customer.invoices.first
+          invoice_service.process_payment(
+            stripe_invoice_id: stripe_invoice.id)
+
+          Stripe::Charge.retrieve(stripe_invoice.charge).refund
+          invoice_service.process_refund(
+            stripe_invoice_id: stripe_invoice.id)
+
+          invoice = Invoice.last
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/refund.png', :full => true)
+        end
+      end
+    end
   end
 
   describe 'get /preview' do
@@ -342,8 +367,8 @@ describe App do
   def complete_invoice(invoice)
     invoice.update \
       vies_company_name: 'Ebay',
-      vat_amount_eur: (invoice.vat_amount*0.75).round,
-      total_eur: (invoice.total*0.75).round,
+      vat_amount_eur: (invoice.vat_amount.to_i*0.75).round,
+      total_eur: (invoice.total.to_i*0.75).round,
       currency: 'usd',
       finalized_at: DateTime.parse('6/10/2014') # Stub time so screenshots do not change every time.
   end

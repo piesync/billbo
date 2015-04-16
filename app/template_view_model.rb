@@ -2,11 +2,13 @@ require 'forwardable'
 
 class TemplateViewModel
   extend Forwardable
+  attr_reader :credit_note
 
-  def initialize(invoice:, stripe_invoice:, stripe_coupon:)
+  def initialize(invoice:, stripe_invoice:, stripe_coupon:, credit_note: nil)
     @invoice = invoice
     @stripe_invoice = stripe_invoice
     @stripe_coupon = stripe_coupon
+    @credit_note = credit_note
   end
 
   # Delegate correct methods to underlaying models.
@@ -26,6 +28,17 @@ class TemplateViewModel
     :primary_country, :seller_email, :seller_vat_number, :seller_other_info,
     :seller_bank_name, :seller_bic, :seller_iban
 
+  def credit_note?
+    @credit_note
+  end
+
+  def document_type
+    if @credit_note || total.to_i < 0.0
+      'Credit Note'
+    else
+      'Invoice'
+    end
+  end
 
   private
 

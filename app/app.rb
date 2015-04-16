@@ -33,6 +33,11 @@ class App < Base
 
     invoice = Invoice.where(number: params[:number]).first
 
+    if invoice.credit_note?
+      credit_note = invoice
+      invoice = Invoice.where(number: invoice.reference_number).first
+    end
+
     halt 404 unless invoice
 
     stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
@@ -40,7 +45,8 @@ class App < Base
     TEMPLATE.render(TemplateViewModel.new(
       invoice: invoice,
       stripe_invoice: stripe_invoice,
-      stripe_coupon: stripe_invoice.discount && stripe_invoice.discount.coupon
+      stripe_coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
+      credit_note: credit_note,
     ))
   end
 
