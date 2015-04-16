@@ -193,6 +193,7 @@ describe Hooks do
           Invoice.count.must_equal 1
           Stripe::Invoice.retrieve(stripe_invoice.id).lines.to_a.size.must_equal 1
 
+          stripe_invoice.pay
           post '/', json(type: 'invoice.payment_succeeded',
             data: { object: Stripe::Invoice.retrieve(stripe_invoice.id) })
 
