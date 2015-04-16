@@ -32,8 +32,8 @@ describe Job do
       invoice = invoice.reload
 
       invoice.vat_amount_eur.must_equal 95
-      invoice.total_eur.must_equal 780
-      invoice.exchange_rate_eur.must_equal 0.78
+      invoice.total_eur.must_equal 950
+      invoice.exchange_rate_eur.must_equal 0.95
     end
 
     describe 'a vat number is present' do
