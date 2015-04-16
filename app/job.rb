@@ -3,8 +3,7 @@ class Job
 
   def perform
     # Iterate over all invoice we did not generate a PDF for yet.
-    # TK For now we do not generate credit notes automatically.
-    Invoice.where(pdf_generated_at: nil,reserved_at: nil, credit_note: false)
+    Invoice.where(pdf_generated_at: nil,reserved_at: nil)
       .where('finalized_at IS NOT NULL')
       .each do |invoice|
         perform_for(invoice)
