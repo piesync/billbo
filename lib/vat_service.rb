@@ -4,34 +4,34 @@ class VatService
 
   # http://ec.europa.eu/taxation_customs/resources/documents/taxation/vat/how_vat_works/rates/vat_rates_en.pdf
   VAT_RATES = {
-    'BE' => 21,
-    'BG' => 20,
-    'CZ' => 21,
-    'DK' => 25,
-    'DE' => 19,
-    'EE' => 20,
-    'EL' => 23,
-    'ES' => 21,
-    'FR' => 20,
-    'HR' => 25,
-    'IE' => 23,
-    'IT' => 22,
-    'CY' => 19,
-    'LV' => 21,
-    'LT' => 21,
-    'LU' => 17,
-    'HU' => 27,
-    'MT' => 18,
-    'NL' => 21,
-    'AT' => 20,
-    'PL' => 23,
-    'PT' => 23,
-    'RO' => 24,
-    'SI' => 22,
-    'SK' => 20,
-    'FI' => 24,
-    'SE' => 25,
-    'GB' => 20  # Country code of the United Kingdom
+    'BE' => 21, # Belgium
+    'BG' => 20, # Bulgaria
+    'CZ' => 21, # Czech Republic
+    'DK' => 25, # Denmark
+    'DE' => 19, # Germany
+    'EE' => 20, # Estonia
+    'EL' => 23, # Greece
+    'ES' => 21, # Spain
+    'FR' => 20, # France
+    'HR' => 25, # Croatia
+    'IE' => 23, # Ireland
+    'IT' => 22, # Italy
+    'CY' => 19, # Cryprus
+    'LV' => 21, # Latvia
+    'LT' => 21, # Lithuania
+    'LU' => 17, # Luxembourg
+    'HU' => 27, # Hungary
+    'MT' => 18, # Malta
+    'NL' => 21, # Netherlands
+    'AT' => 20, # Austria
+    'PL' => 23, # Poland
+    'PT' => 23, # Portugal
+    'RO' => 24, # Romania
+    'SI' => 22, # Slovenia
+    'SK' => 20, # Slovakia
+    'FI' => 24, # Finland
+    'SE' => 25, # Sweden
+    'GB' => 20  # United Kingdom
   }
 
   # Calculates VAT amount based on country and whether the customer
