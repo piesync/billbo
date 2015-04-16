@@ -89,10 +89,15 @@ class VatService
     details = self.details(vat_number: invoice.customer_vat_number,
       own_vat: Configuration.seller_vat_number)
 
-    invoice.update \
-      vies_company_name: details[:name].try(:strip).presence,
-      vies_address: details[:address].try(:strip).presence,
-      vies_request_identifier: details[:request_identifier]
+    # details can still be nil here if a VAT number does not exist.
+    # This case can still happen here because the VIES service
+    # was down earlier and we used only checksum to pass the VAT number.
+    if details
+      invoice.update \
+        vies_company_name: details[:name].try(:strip).presence,
+        vies_address: details[:address].try(:strip).presence,
+        vies_request_identifier: details[:request_identifier]
+    end
   end
 
   # Calculates VAT rate.
