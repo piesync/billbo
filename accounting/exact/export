@@ -78,7 +78,7 @@ Invoice \
       [invoice.total_eur-invoice.vat_amount_eur, invoice.vat_amount_eur, invoice.customer_accounting_id]
     end
 
-    invoices <<  "0| #{accounting_id}| 700| #{date}"
+    invoices <<  "0| #{accounting_id}| 700| #{date}| #{invoice.number}"
     invoices <<  "1| 700000| #{vat_code(invoice)}| #{amount/100.0}| #{vat_amount_eur/100.0}| #{invoice.number}"
 end
 
