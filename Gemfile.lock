@@ -7,6 +7,14 @@ GIT
       crack (>= 0.3.2)
 
 GIT
+  remote: git://github.com/challengee/countries.git
+  revision: d983f1a36a9bed32f7a7c8067474447cb16daeec
+  specs:
+    countries (0.11.5)
+      currencies (~> 0.4.2)
+      i18n_data (~> 0.7.0)
+
+GIT
   remote: git://github.com/piesync/rumor.git
   revision: 7b196c9b586d32edd6164269f1ce843baf79a412
   specs:
@@ -62,8 +70,6 @@ GEM
     choice (0.1.6)
     cliver (0.3.2)
     coderay (1.1.0)
-    countries (0.9.3)
-      currencies (~> 0.4.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     currencies (0.4.2)
@@ -113,6 +119,7 @@ GEM
     httpi (2.3.0)
       rack
     i18n (0.6.11)
+    i18n_data (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.0)
     json (1.8.1)
@@ -230,7 +237,7 @@ DEPENDENCIES
   capybara
   carrierwave
   choice
-  countries
+  countries!
   dotenv
   fog
   guard

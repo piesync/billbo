@@ -22,6 +22,10 @@ describe VatService do
       # No country.
       example(1000, nil, true).amount.must_equal(0)
     end
+
+    it 'works for the canary islands' do
+      example(100, 'IC', true).amount.must_equal(0)
+    end
   end
 
   describe '#validate' do

@@ -23,7 +23,7 @@ gem 'carrierwave'
 gem 'fog'
 gem 'slim'
 gem 'money'
-gem 'countries'
+gem 'countries', github: 'challengee/countries'
 
 group :test do
   gem 'webmock', github: 'bblimke/webmock'
