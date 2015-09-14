@@ -73,7 +73,10 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         tfoot
           - if discount?
             tr#discount_tr
-              td.item_r #{percent_off}% Discount
+              td.item_r
+                - if percent_off
+                  ' #{percent_off}%
+                | Discount
               td.item_r = format_money(discount_amount, currency)
               td.item_r
           tr#net_total_tr

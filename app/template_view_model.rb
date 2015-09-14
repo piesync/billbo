@@ -21,8 +21,6 @@ class TemplateViewModel
 
   def_delegators :stripe_invoice, :lines
 
-  def_delegators :stripe_coupon, :percent_off
-
   def_delegators :configuration,
     :seller_logo_url, :seller_company_name, :seller_address_line1, :seller_address_line2,
     :primary_country, :seller_email, :seller_vat_number, :seller_other_info,
@@ -50,6 +48,10 @@ class TemplateViewModel
 
   def format_money(amount, currency)
     Money.new(amount, currency).format(sign_before_symbol: true)
+  end
+
+  def percent_off
+    stripe_coupon.try(:percent_off)
   end
 
   def currency_symbol(currency)
