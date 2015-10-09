@@ -92,6 +92,10 @@ class Invoice < Sequel::Model
     super || vies_address
   end
 
+  def reference
+    reference_number && Invoice.where(number: reference_number).first
+  end
+
   private
 
   def self.safe_transaction

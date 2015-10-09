@@ -15,6 +15,9 @@ conditions = [
 ].join(' AND ')
 
 def vat_code(invoice)
+  # Check info on the original invoice if this is a refund.
+  invoice = invoice.reference || invoice
+
   # The vat code is calculated as follows:
   #   E    - Customers outside the EU - no vat charged
   #   F    - Businesses in the EU (not belgium) - reverse charged
@@ -70,8 +73,8 @@ Invoice \
     date = invoice.finalized_at.strftime('%d-%m-%Y')
 
     # Negative amounts if it is a refund.
-    amount, vat_amount_eur, accounting_id = if invoice.credit_note
-      reference = Invoice.where(number: invoice.reference_number).first if invoice.credit_note
+    amount, vat_amount_eur, accounting_id = if invoice.credit_note?
+      reference = invoice.reference if invoice.credit_note
 
       [-reference.total_eur+reference.vat_amount_eur, -reference.vat_amount_eur, reference.customer_accounting_id]
     else
