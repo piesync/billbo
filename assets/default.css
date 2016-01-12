@@ -1,6 +1,5 @@
 #invoice p, #invoice h2, #invoice h3{margin:0}
 #invoice {font-family: Helvetica, Tahoma,  sans-serif; color: #888;line-height:1.5}
-#invoice h1 {margin: 0;color: #000;text-transform: uppercase;}
 #invoice h2, #invoice h3 {color:#000; text-transform: none; line-height:1.2;margin-top:10px}
 
 #invoice #invoice-info h3, #payment-due {margin:0; font-size:9pt; font-weight:normal; font-style:italic; color:#888}
@@ -24,7 +23,7 @@
 #payment-details strong, #invoice-other strong{font-weight:normal}
 
 .fn, .org {
-    font-weight:bold;
+  font-weight:bold;
 }
 
 #invoice{padding:0 1cm 1cm 1cm;background-color:#fff}
@@ -35,10 +34,8 @@
 #invoice-blank-header {margin-top: 1.6cm;}
 #client-details{float:left; width:330px;  margin-top:0.6cm;margin-bottom:20px }
 #invoice-info {
-    width:340px; padding:10px; background:#eee; border:0px; z-index:10;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+  width:340px; padding:10px; background:#eee; border:0px; z-index:10;
+  border-radius: 5px;
 }
 #invoice-info th{text-align:right}
 #payment-due, #invoice-info h3 {display:inline}
@@ -50,7 +47,7 @@
 #invoice-other h2, #payment-details h2 {margin-bottom: 1mm;}
 
 #footnote{
-    clear:both; padding:0px; border:0px; vertical-align:bottom; line-height:1.2;zoom:1;
+  clear:both; padding:0px; border:0px; vertical-align:bottom; line-height:1.2;zoom:1;
 }
 
 #footnote p {padding:10px 0; font-size: 9px;}
@@ -62,16 +59,12 @@
 #invoice-amount tr.odd td{background:#fff;}
 
 #invoice-amount .details_th{
-    -webkit-border-radius: 5px 0 0 5px;
-    -moz-border-radius: 5px 0 0 5px;
-    border-radius: 5px 0 0 5px;
-    padding-left:7px;
+  border-radius: 5px 0 0 5px;
+  padding-left:7px;
 }
 #invoice-amount .subtotal_th{
-    -webkit-border-radius: 0 5px 5px 0;
-    -moz-border-radius: 0 5px 5px 0;
-    border-radius: 0 5px 5px 0;
-    padding-right:7px;
+  border-radius: 0 5px 5px 0;
+  padding-right:7px;
 }
 
 #invoice-amount #total_tr td{border-bottom:0}
@@ -98,3 +91,25 @@ body {margin: 0;padding: 0;font:62.5%/1.5 Helvetica, Arial, Verdana, sans-serif;
 ul, ul li, p, div, ol {margin:0;padding:0;list-style:none;}
 
 #invoice img { border: none; }
+
+#terms {
+  page-break-before: always;
+  }
+  #terms h1 {
+    color: #000;
+    }
+  #terms .body {
+    line-height: 1.3;
+    font-size: 6pt;
+    -webkit-column-count: 4;
+    -webkit-column-gap: 20px;
+    }
+  #terms h4 {
+    font-size: 1em;
+    line-height: inherit;
+    margin: 1.2em 0 .2em;
+    }
+  #terms .body a {
+    color: #4d96b8;
+    text-decoration: none;
+    }
