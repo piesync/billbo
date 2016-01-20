@@ -31,7 +31,7 @@ Features
 How it Works with Stripe
 ------------------------
 
-Basically, whenever we receive an `invoice.created` event from Stripe, VAT is calculated on the amount and is added as an invoice item to the invoice. However, this does not work when creating a subscription for the first time, because Stripe charges the first invoice immediately, so we don't get a chance to add items via a webhook first. This is what the Billbo create subscription call is for. It calculates VAT in advance and attaches an invoice item to the customer.
+Subscriptions are created through Billbo instead of through the Stripe API directly. When the subscription is being created, Billbo calculated the correct VAT rate that should be applied to this subscription based on the customer metadata. This VAT rate is then passed to Stripe as `tax_percent`.
 
 When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
 
