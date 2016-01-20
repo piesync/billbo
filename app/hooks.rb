@@ -19,6 +19,11 @@ class Hooks < Base
 
   private
 
+  # This blocks invoices from being
+  def invoice_created
+    status 500
+  end
+
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
     stripe_invoice = Stripe::Invoice.construct_from(object)
