@@ -141,7 +141,6 @@ describe App do
 
             id = customer.invoices.first.id
 
-            invoice_service.ensure_vat(stripe_invoice_id: id)
             invoice_service.process_payment(stripe_invoice_id: id)
 
             invoice = Invoice.last

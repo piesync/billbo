@@ -31,6 +31,7 @@ Configuration.db = Sequel.connect(Configuration.database_url)
 
 # Configure Stripe
 Stripe.api_key = Configuration.stripe_secret_key
+Stripe.api_version = '2015-10-16'
 
 # Configure Shrimp
 Shrimp.configure do |config|

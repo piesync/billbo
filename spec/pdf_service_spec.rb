@@ -32,8 +32,9 @@ describe PdfService do
     it 'generates a pdf representiation of an invoice and stores it' do
       VCR.use_cassette('pdf_generation') do
         invoice_service.create_subscription(plan: plan.id)
-        invoice = Invoice.first.finalize!
-        invoice.update(vat_amount_eur: 0, total_eur: 0, currency: 'usd')
+        invoice_service.process_payment(stripe_invoice_id: invoice_service.last_stripe_invoice.id)
+
+        invoice = Invoice.first
 
         service.generate_pdf(invoice)
 

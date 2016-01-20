@@ -34,83 +34,119 @@ describe InvoiceService do
       metadata: metadata
   end
 
+  let(:coupon) do
+    begin
+      Stripe::Coupon.retrieve('25OFF')
+    rescue
+      Stripe::Coupon.create(
+        percent_off: 25,
+        duration: 'repeating',
+        duration_in_months: 3,
+        id: '25OFF'
+      )
+    end
+  end
+
   let(:service) { InvoiceService.new(customer_id: customer.id) }
 
-  describe '#create_subscription' do
-    it 'creates a subscription and an internal invoice, but does not finalize it yet' do
-      VCR.use_cassette('create_subscription_and_invoice') do
-        service.create_subscription(plan: plan.id)
-
-        Invoice.count.must_equal 1
-        invoice = Invoice.first
-        invoice.added_vat?.must_equal true
-        invoice.finalized?.must_equal false
-        invoice.sequence_number.must_be_nil
-      end
-    end
-  end
-
-  describe '#ensure_vat' do
-    it 'is idempotent' do
-      VCR.use_cassette('apply_vat_idempotent') do
-        Stripe::InvoiceItem.create \
-          customer: customer.id,
-          amount: 100,
-          currency: 'usd'
-
-        # Apply VAT on the upcoming invoice.
-        stripe_invoice = Stripe::Invoice.create(customer: customer.id)
-        invoice = service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
-        invoice.must_be_kind_of(Invoice)
-        invoice.added_vat?.must_equal true
-
-        # Apply again.
-        service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
-
-        invoice = customer.invoices.first
-        invoice.total.must_equal 121
-
-        Invoice.count.must_equal 1
-        invoice = Invoice.first
-        invoice.added_vat?.must_equal true
-      end
-    end
-  end
-
   describe '#process_payment' do
-
-    it 'finalizes the invoice' do
-      VCR.use_cassette('process_payment') do
-        Stripe::InvoiceItem.create \
+    describe 'with old invoices' do
+      it 'finalizes the invoice' do
+        VCR.use_cassette('process_payment_old') do
+          Stripe::InvoiceItem.create \
             customer: customer.id,
             amount: 100,
             currency: 'usd'
 
-        stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+          Stripe::InvoiceItem.create(
+            customer: customer.id,
+            amount: 21,
+            currency: 'usd',
+            description: 'vat',
+            metadata: {
+              type: 'vat',
+              rate: 21
+            }
+          )
 
-        service.ensure_vat(stripe_invoice_id: stripe_invoice.id)
+          stripe_invoice = Stripe::Invoice.create(customer: customer.id)
 
-        # Pay the invoice before processing the payment.
-        stripe_invoice.pay
+          # Pay the invoice before processing the payment.
+          stripe_invoice.pay
 
-        invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
-        invoice.finalized?.must_equal true
+          invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
 
-        invoice.subtotal.must_equal 100
-        invoice.discount_amount.must_equal 0
-        invoice.subtotal_after_discount.must_equal 100
-        invoice.vat_amount.must_equal 21
-        invoice.vat_rate.must_equal 21
-        invoice.total.must_equal 121
-        invoice.currency.must_equal 'usd'
-        invoice.customer_country_code.must_equal 'NL'
-        invoice.customer_vat_number.must_equal 'NL123'
-        invoice.stripe_customer_id.must_equal customer.id
-        invoice.customer_accounting_id.must_equal '10001'
-        invoice.customer_vat_registered.must_equal false
-        invoice.card_brand.must_equal 'Visa'
-        invoice.card_last4.must_equal '4242'
-        invoice.card_country_code.must_equal 'US'
+          invoice.finalized?.must_equal true
+          invoice.subtotal.must_equal 100
+          invoice.discount_amount.must_equal 0
+          invoice.subtotal_after_discount.must_equal 100
+          invoice.vat_amount.must_equal 21
+          invoice.vat_rate.must_equal 21
+          invoice.total.must_equal 121
+          invoice.currency.must_equal 'usd'
+          invoice.customer_country_code.must_equal 'NL'
+          invoice.customer_vat_number.must_equal 'NL123'
+          invoice.stripe_customer_id.must_equal customer.id
+          invoice.customer_accounting_id.must_equal '10001'
+          invoice.customer_vat_registered.must_equal false
+          invoice.card_brand.must_equal 'Visa'
+          invoice.card_last4.must_equal '4242'
+          invoice.card_country_code.must_equal 'US'
+        end
+      end
+    end
+
+    describe 'with new invoice' do
+      it 'finalizes the invoice' do
+        VCR.use_cassette('process_payment_new') do
+          service.create_subscription(plan: plan.id)
+
+          invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+
+          invoice.finalized?.must_equal true
+          invoice.subtotal.must_equal 1499
+          invoice.discount_amount.must_equal 0
+          invoice.subtotal_after_discount.must_equal 1499
+          invoice.vat_amount.must_equal 315
+          invoice.vat_rate.must_equal 21
+          invoice.total.must_equal 1814
+          invoice.currency.must_equal 'usd'
+          invoice.customer_country_code.must_equal 'NL'
+          invoice.customer_vat_number.must_equal 'NL123'
+          invoice.stripe_customer_id.must_equal customer.id
+          invoice.customer_accounting_id.must_equal '10001'
+          invoice.customer_vat_registered.must_equal false
+          invoice.card_brand.must_equal 'Visa'
+          invoice.card_last4.must_equal '4242'
+          invoice.card_country_code.must_equal 'US'
+        end
+      end
+    end
+
+    describe 'with new invoice and discount' do
+      it 'finalizes the invoice' do
+        VCR.use_cassette('process_payment_new_discount') do
+          service.create_subscription(plan: plan.id, coupon: coupon.id)
+
+          invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+
+          invoice.finalized?.must_equal true
+          invoice.subtotal.must_equal 1499
+          invoice.discount_amount.must_equal 375
+          invoice.subtotal_after_discount.must_equal 1499-375
+          invoice.vat_amount.must_equal 236
+          invoice.vat_rate.must_equal 21
+          invoice.total.must_equal 1360
+          invoice.currency.must_equal 'usd'
+          invoice.customer_country_code.must_equal 'NL'
+          invoice.customer_vat_number.must_equal 'NL123'
+          invoice.stripe_customer_id.must_equal customer.id
+          invoice.customer_accounting_id.must_equal '10001'
+          invoice.customer_vat_registered.must_equal false
+          invoice.card_brand.must_equal 'Visa'
+          invoice.card_last4.must_equal '4242'
+          invoice.card_country_code.must_equal 'US'
+        end
       end
     end
 
@@ -127,7 +163,6 @@ describe InvoiceService do
   end
 
   describe '#process_refund' do
-
     it 'is an orphan refund' do
       VCR.use_cassette('process_refund_orphan') do
         proc { service.process_refund(stripe_invoice_id: 'xyz') }.must_raise InvoiceService::OrphanRefund

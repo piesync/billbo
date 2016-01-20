@@ -1,43 +1,6 @@
 ---
 http_interactions:
 - request:
-    method: post
-    uri: http://ec.europa.eu/taxation_customs/vies/services/checkVatService
-    body:
-      encoding: UTF-8
-      string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="urn:ec.europa.eu:taxud:vies:services:checkVat"
-        xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins0="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><env:Body><ins0:checkVatApprox><ins0:countryCode>LU</ins0:countryCode><ins0:vatNumber>21416127</ins0:vatNumber><ins0:requesterCountryCode>LU</ins0:requesterCountryCode><ins0:requesterVatNumber>21416127</ins0:requesterVatNumber></ins0:checkVatApprox></env:Body></env:Envelope>
-    headers:
-      Soapaction:
-      - '"checkVatApprox"'
-      Content-Type:
-      - text/xml;charset=UTF-8
-      Content-Length:
-      - '604'
-  response:
-    status:
-      code: 200
-      message: ''
-    headers:
-      Date:
-      - Wed, 24 Sep 2014 13:11:27 GMT
-      Content-Type:
-      - text/xml; charset=UTF-8
-      Server:
-      - Europa
-      Proxy-Connection:
-      - Keep-Alive
-      Connection:
-      - Keep-Alive
-    body:
-      encoding: UTF-8
-      string: |-
-        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatApproxResponse xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416127</vatNumber><requestDate>2014-09-24+02:00</requestDate><valid>true</valid><traderName>EBAY EUROPE S.A R.L.</traderName><traderCompanyType>---</traderCompanyType><traderAddress>22, BOULEVARD ROYAL
-        L-2449  LUXEMBOURG</traderAddress><requestIdentifier>WAPIAAAAUinybgUE</requestIdentifier></checkVatApproxResponse></soap:Body></soap:Envelope>
-    http_version: 
-  recorded_at: Wed, 24 Sep 2014 13:11:28 GMT
-- request:
     method: get
     uri: http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
     body:
@@ -50,13 +13,13 @@ http_interactions:
       message: ''
     headers:
       Date:
-      - Wed, 24 Sep 2014 13:26:35 GMT
+      - Wed, 20 Jan 2016 17:30:22 GMT
       Accept-Ranges:
       - bytes
       Content-Length:
       - '10524'
       Last-Modified:
-      - Wed, 06 Aug 2014 17:52:35 GMT
+      - Tue, 27 Oct 2015 21:39:10 GMT
       Server:
       - Europa
       Proxy-Connection:
@@ -192,5 +155,42 @@ http_interactions:
         location=\"http://ec.europa.eu/taxation_customs/vies/services/checkVatService\"/>\n
         \   </wsdl:port>\n  </wsdl:service>\n</wsdl:definitions>\n"
     http_version: 
-  recorded_at: Wed, 24 Sep 2014 13:26:35 GMT
+  recorded_at: Wed, 20 Jan 2016 17:30:25 GMT
+- request:
+    method: post
+    uri: http://ec.europa.eu/taxation_customs/vies/services/checkVatService
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="urn:ec.europa.eu:taxud:vies:services:checkVat"
+        xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins0="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><env:Body><ins0:checkVatApprox><ins0:countryCode>LU</ins0:countryCode><ins0:vatNumber>21416127</ins0:vatNumber><ins0:requesterCountryCode>LU</ins0:requesterCountryCode><ins0:requesterVatNumber>21416127</ins0:requesterVatNumber></ins0:checkVatApprox></env:Body></env:Envelope>
+    headers:
+      Soapaction:
+      - '"checkVatApprox"'
+      Content-Type:
+      - text/xml;charset=UTF-8
+      Content-Length:
+      - '604'
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 20 Jan 2016 17:30:23 GMT
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Server:
+      - Europa
+      Proxy-Connection:
+      - Keep-Alive
+      Connection:
+      - Keep-Alive
+    body:
+      encoding: UTF-8
+      string: |-
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatApproxResponse xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416127</vatNumber><requestDate>2016-01-20+01:00</requestDate><valid>true</valid><traderName>EBAY EUROPE S.A R.L.</traderName><traderCompanyType>---</traderCompanyType><traderAddress>22, BOULEVARD ROYAL
+        L-2449  LUXEMBOURG</traderAddress><requestIdentifier>WAPIAAAAVJgFlhtg</requestIdentifier></checkVatApproxResponse></soap:Body></soap:Envelope>
+    http_version: 
+  recorded_at: Wed, 20 Jan 2016 17:30:26 GMT
 recorded_with: VCR 2.9.2

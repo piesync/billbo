@@ -63,25 +63,6 @@ describe Hooks do
       Rumor.stubs(:spread)
     end
 
-    describe 'post invoice created' do
-      it 'adds VAT to the invoice' do
-        VCR.use_cassette('hook_invoice_created') do
-          post '/', json(type: 'invoice.created',
-            data: { object: stripe_invoice })
-
-          last_response.ok?.must_equal true
-          last_response.body.must_be_empty
-
-          Invoice.count.must_equal 1
-          invoice = Invoice.first
-          invoice.stripe_id.must_equal stripe_invoice.id
-          invoice.sequence_number.must_be_nil
-          invoice.added_vat?.must_equal true
-          invoice.finalized_at.must_be_nil
-        end
-      end
-    end
-
     describe 'post invoice payment succeeded' do
       it 'finalizes the invoice' do
         VCR.use_cassette('hook_invoice_payment_succeeded') do
@@ -169,10 +150,10 @@ describe Hooks do
         app.any_instance.stubs(:invoice_service)
           .with(customer_id: '10').returns(invoice_service)
 
-        invoice_service.expects(:ensure_vat)
+        invoice_service.expects(:process_payment)
           .raises(Stripe::CardError.new('not good', :test, 1))
 
-        post '/', json(type: 'invoice.created',
+        post '/', json(type: 'invoice.payment_succeeded',
           data: { object: { id: '1', customer: '10'} })
 
         last_response.ok?.must_equal false
@@ -186,14 +167,8 @@ describe Hooks do
 
       it 'does nothing' do
         VCR.use_cassette('hook_invoice_created_no_meta') do
-          post '/', json(type: 'invoice.created',
-              data: { object: stripe_invoice })
-
-          last_response.ok?.must_equal true
-          Invoice.count.must_equal 1
-          Stripe::Invoice.retrieve(stripe_invoice.id).lines.to_a.size.must_equal 1
-
           stripe_invoice.pay
+
           post '/', json(type: 'invoice.payment_succeeded',
             data: { object: Stripe::Invoice.retrieve(stripe_invoice.id) })
 
