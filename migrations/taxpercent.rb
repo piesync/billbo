@@ -58,11 +58,38 @@ while !invoices.data.empty?
   invoices.each do |invoice|
     safe(invoice.id) do
       # If the invoice is unpaid we can still fix taxes!
-      # Only do this is no VAT has been added already.
-      if !invoice.paid && invoice.lines.none? { |line| line.metadata[:type] == 'vat' }
+      # If VAT has been added already, remove it and readd using tax_percent.
+      # This will allow us to deal with old VAT when the invoice gets paid.
+      if !invoice.paid
+
         # Fetch the customer and see if VAT should be paid.
         customer = Stripe::Customer.retrieve(invoice.customer)
         vat_rate = vat_rate(customer)
+
+        if line = invoice.lines.find { |line| line.metadata[:type] == 'vat' }
+          item = Stripe::InvoiceItem.retrieve(line.id)
+          puts "removing old VAT (#{item.metadata[:rate]}) from #{invoice.id} of #{customer.id} (#{customer.email})"
+
+          if execute
+            puts "EXEC"
+            is_closed = invoice.closed
+
+            # Reopen the invoice for modification if it was closed.
+            if is_closed
+              puts 'reopening invoice'
+              invoice.closed = false
+              invoice.save
+            end
+
+            item.delete
+
+            if is_closed
+              puts 'closing again'
+              invoice.closed = true
+              invoice.save
+            end
+          end
+        end
 
         if !vat_rate.zero?
           # VAT needs to be added!

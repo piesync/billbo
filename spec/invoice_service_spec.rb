@@ -50,52 +50,6 @@ describe InvoiceService do
   let(:service) { InvoiceService.new(customer_id: customer.id) }
 
   describe '#process_payment' do
-    describe 'with old invoices' do
-      it 'finalizes the invoice' do
-        VCR.use_cassette('process_payment_old') do
-          Stripe::InvoiceItem.create \
-            customer: customer.id,
-            amount: 100,
-            currency: 'usd'
-
-          Stripe::InvoiceItem.create(
-            customer: customer.id,
-            amount: 21,
-            currency: 'usd',
-            description: 'vat',
-            metadata: {
-              type: 'vat',
-              rate: 21
-            }
-          )
-
-          stripe_invoice = Stripe::Invoice.create(customer: customer.id)
-
-          # Pay the invoice before processing the payment.
-          stripe_invoice.pay
-
-          invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
-
-          invoice.finalized?.must_equal true
-          invoice.subtotal.must_equal 100
-          invoice.discount_amount.must_equal 0
-          invoice.subtotal_after_discount.must_equal 100
-          invoice.vat_amount.must_equal 21
-          invoice.vat_rate.must_equal 21
-          invoice.total.must_equal 121
-          invoice.currency.must_equal 'usd'
-          invoice.customer_country_code.must_equal 'NL'
-          invoice.customer_vat_number.must_equal 'NL123'
-          invoice.stripe_customer_id.must_equal customer.id
-          invoice.customer_accounting_id.must_equal '10001'
-          invoice.customer_vat_registered.must_equal false
-          invoice.card_brand.must_equal 'Visa'
-          invoice.card_last4.must_equal '4242'
-          invoice.card_country_code.must_equal 'US'
-        end
-      end
-    end
-
     describe 'with new invoice' do
       it 'finalizes the invoice' do
         VCR.use_cassette('process_payment_new') do

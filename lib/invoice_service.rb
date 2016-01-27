@@ -22,18 +22,8 @@ class InvoiceService
     # need to make an invoice for it.
     invoice.finalize! unless stripe_invoice.total.zero?
 
-    # Now we are sure nothing is going to change the invoice anymore.
-    # Do a final calculation of the invoice amounts.
-    # This is only needed if the invoice was made with the old hacky
-    # method. When the tax_percent method is used, this is straightforward.
-    if stripe_invoice.lines.any? { |line| line.metadata[:type] == 'vat' }
-      invoice.update(stripe_service.calculate_final(stripe_invoice: stripe_invoice))
-    else
-      snapshot_invoice(stripe_invoice, invoice)
-    end
-
-    # Take a snapshot of the customer so that invoice data
-    # is immutable.
+    # Take snapshots for immutable invoice.
+    snapshot_invoice(stripe_invoice, invoice)
     snapshot_customer(invoice)
 
     # Take a snapshot of the card used to make payment.
