@@ -122,7 +122,7 @@ class Invoice < Sequel::Model
     last_invoice = Invoice
       .where('number IS NOT NULL')
       .where(year: year)
-      .order(Sequel.desc(:finalized_at))
+      .order(Sequel.desc(:sequence_number))
       .limit(1)
       .first
 
