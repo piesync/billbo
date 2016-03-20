@@ -4,7 +4,7 @@ class Invoice < Sequel::Model
   def self.find_or_create_from_stripe(stripe_id:, **attributes)
     # Wrapped in a safe transaction so we do not generate multiple invoices
     # associated with the same Stripe invoice.
-    safe_transaction do
+    transaction do
       attributes = attributes.merge(stripe_id: stripe_id)
       # Check if an invoice exists already with that stripe id.
       invoice = Invoice.first(stripe_id: stripe_id)
@@ -19,7 +19,7 @@ class Invoice < Sequel::Model
     raise AlreadyFinalized if finalized?
 
     # Wrapped in a safe transaction so we do not generate the same invoice number twice.
-    self.class.safe_transaction do
+    self.class.transaction do
       # update the invoice.
       update self.class.next_sequence
     end
@@ -28,7 +28,7 @@ class Invoice < Sequel::Model
   end
 
   def self.reserve!
-    safe_transaction do
+    transaction do
       reserved_info = next_sequence.merge!(reserved_at: Time.now)
       # create the reserved slot.
       create reserved_info
@@ -98,10 +98,20 @@ class Invoice < Sequel::Model
 
   private
 
-  def self.safe_transaction
-    yield
-  rescue Sequel::UniqueConstraintViolation
+  def self.transaction(&block)
+    Configuration.db.transaction(rollback: :reraise) do
+      begin
+        block.call
+      rescue Sequel::UniqueConstraintViolation
+        raise Sequel::Rollback
+      end
+    end
+  rescue Sequel::Rollback
     retry
+  end
+
+  def transaction(&block)
+    self.class.transaction(&block)
   end
 
   def self.next_sequence
