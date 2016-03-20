@@ -1,2 +1,2 @@
-https://github.com/stomita/heroku-buildpack-phantomjs.git
+https://github.com/stomita/heroku-buildpack-phantomjs.git#b9722b9037471c6761e975575fb6259aefd087ce
 https://github.com/heroku/heroku-buildpack-ruby
