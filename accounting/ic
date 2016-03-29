@@ -4,7 +4,7 @@ require './config/environment'
 quarter = ARGV[0].to_i
 year    = (ARGV[1] || Time.now.year).to_i
 
-invoices = Invoice
+customers = Invoice
   .quarter(year, quarter)
   .exclude(customer_vat_number: nil)
   .exclude(customer_country_code: [Configuration.primary_country])
@@ -89,8 +89,8 @@ xml = template.render({
   listing: {
     sequence: '1',
     reference: Configuration.ic_reference,
-    count: invoices.count.to_s,
-    sum: (invoices.map { |i| i[:total] }.inject(&:+).to_f/100).to_s,
+    count: customers.count.to_s,
+    sum: (customers.map { |i| i[:total] }.inject(&:+).to_f/100).to_s,
     declarant: {
       vat_number: Configuration.seller_vat_number[2..-1],
       name: Configuration.seller_company_name,
@@ -105,7 +105,7 @@ xml = template.render({
       year: year.to_s,
       quarter: quarter.to_s
     },
-    clients: invoices.each_with_index.map { |invoice, i|
+    clients: customers.each_with_index.map { |invoice, i|
       {
         sequence: i.to_s,
         vat: {
