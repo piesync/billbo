@@ -298,6 +298,7 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    timecop (0.7.3)
     timers (1.1.0)
     trollop (2.1.2)
     tzinfo (1.2.2)
@@ -353,9 +354,10 @@ DEPENDENCIES
   sqlite3
   stripe
   sucker_punch
+  timecop
   valvat
   vcr
   webmock!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

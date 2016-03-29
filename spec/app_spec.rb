@@ -7,6 +7,14 @@ describe App do
     App
   end
 
+  before do
+    Timecop.freeze(DateTime.parse('20/01/2016'))
+  end
+
+  after do
+    Timecop.return
+  end
+
   let(:vat_service) { mock }
 
   let(:plan) do
@@ -368,7 +376,6 @@ describe App do
       vies_company_name: 'Ebay',
       vat_amount_eur: (invoice.vat_amount.to_i*0.75).round,
       total_eur: (invoice.total.to_i*0.75).round,
-      currency: 'usd',
-      finalized_at: DateTime.parse('6/10/2014') # Stub time so screenshots do not change every time.
+      currency: 'usd'
   end
 end

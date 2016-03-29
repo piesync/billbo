@@ -32,6 +32,7 @@ group :test do
   gem 'rack-test', :require => 'rack/test'
   gem 'capybara'
   gem 'poltergeist'
+  gem 'timecop'
 end
 
 group :development do
