@@ -25,6 +25,8 @@ gem 'slim'
 gem 'money'
 gem 'countries', github: 'challengee/countries'
 
+gem 'tox', github: 'piesync/tox'
+
 group :test do
   gem 'webmock', github: 'bblimke/webmock'
   gem 'vcr'

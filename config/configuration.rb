@@ -44,6 +44,7 @@ class Configuration
     # Address of the seller
     attr_accessor :seller_address_line1
     attr_accessor :seller_address_line2
+    attr_accessor :seller_street, :seller_zip, :seller_city
 
     # VAT number of the seller
     attr_accessor :seller_vat_number
@@ -77,6 +78,11 @@ class Configuration
 
     # Amount of days until invoice is due
     attr_accessor :due_days
+
+    # configuration for IC listing
+    attr_accessor :ic_email,
+                  :ic_phone,
+                  :ic_reference
 
     # S3 invoice storage
     attr_accessor :s3_key_id

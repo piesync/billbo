@@ -21,6 +21,13 @@ GIT
     rumor (0.2.0)
 
 GIT
+  remote: git://github.com/piesync/tox.git
+  revision: 09de6dfda7371aca5b261b6bed6d5ad87a70a472
+  specs:
+    tox (0.1.0)
+      ox
+
+GIT
   remote: https://github.com/getsentry/raven-ruby.git
   revision: c57cf505c661fddd0fab01823a8f75ad7e14e121
   specs:
@@ -235,6 +242,7 @@ GEM
       mini_portile2 (~> 2.0.0.rc2)
     nori (2.4.0)
     oj (2.9.9)
+    ox (2.3.0)
     pg (0.17.1)
     poltergeist (1.6.0)
       capybara (~> 2.1)
@@ -355,6 +363,7 @@ DEPENDENCIES
   stripe
   sucker_punch
   timecop
+  tox!
   valvat
   vcr
   webmock!
