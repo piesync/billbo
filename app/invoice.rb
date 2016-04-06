@@ -19,7 +19,7 @@ class Invoice < Sequel::Model
     raise AlreadyFinalized if finalized?
 
     # Wrapped in a safe transaction so we do not generate the same invoice number twice.
-    self.class.transaction do
+    transaction do
       # update the invoice.
       update self.class.next_sequence
     end
@@ -98,20 +98,32 @@ class Invoice < Sequel::Model
 
   private
 
+  def transaction(&block)
+    self.class.transaction(&block)
+  rescue Sequel::Rollback
+    # We refresh the model here because of a bug in Sequel.
+    # Sequel marks the fields as non-dirty before executing the
+    # actual update. When the transaction fails and we try
+    # to allocate a new sequence number, the year does not change.
+    # This results in the year not being saved.
+    refresh
+    retry
+  end
+
   def self.transaction(&block)
-    Configuration.db.transaction(rollback: :reraise) do
+    execute_transaction(&block)
+  rescue Sequel::Rollback
+    retry
+  end
+
+  def self.execute_transaction(&block)
+    Configuration.db.transaction(isolation: :serializable, rollback: :reraise) do
       begin
         block.call
       rescue Sequel::UniqueConstraintViolation
         raise Sequel::Rollback
       end
     end
-  rescue Sequel::Rollback
-    retry
-  end
-
-  def transaction(&block)
-    self.class.transaction(&block)
   end
 
   def self.next_sequence
