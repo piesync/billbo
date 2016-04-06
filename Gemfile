@@ -23,6 +23,7 @@ gem 'carrierwave'
 gem 'fog'
 gem 'slim'
 gem 'money'
+gem 'eu_central_bank'
 gem 'countries', github: 'challengee/countries'
 
 group :test do

@@ -41,7 +41,7 @@ Shrimp.configure do |config|
 end
 
 # Configure Money
-Money.add_rate('USD', 'EUR', 0.95)
+Money.default_bank = EuCentralBank.new
 
 # Configure Rumor
 require 'rumor/async/sucker_punch'

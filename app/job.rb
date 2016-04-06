@@ -3,14 +3,24 @@ class Job
 
   def perform
     # Iterate over all invoice we did not generate a PDF for yet.
-    Invoice.where(pdf_generated_at: nil,reserved_at: nil)
+    invoices = Invoice.where(pdf_generated_at: nil,reserved_at: nil)
       .where('finalized_at IS NOT NULL')
-      .each do |invoice|
-        perform_for(invoice)
+
+    perform_for(invoices)
+  end
+
+  def perform_for(invoices)
+    # Update Exchange rates from ECB
+    Money.default_bank.update_rates
+
+    invoices.each do |invoice|
+      perform_for_single(invoice)
     end
   end
 
-  def perform_for(invoice)
+  private
+
+  def perform_for_single(invoice)
     if !invoice.credit_note?
       # First load VIES data into the invoice.
       vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
@@ -36,8 +46,6 @@ class Job
       raise e
     end
   end
-
-  private
 
   def vat_service
     @vat_service ||= VatService.new
