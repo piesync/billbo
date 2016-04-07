@@ -1,0 +1,110 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+now   = Time.now
+year  = ARGV[0].to_i || now.year
+month = ARGV[1].to_i || now.month
+day   = ARGV[2].to_i || now.day
+
+def vat_code(invoice)
+  # Check info on the original invoice if this is a refund.
+  invoice = invoice.reference || invoice
+
+  vat_code = if !invoice.eu?
+    ['TRMExport outside the EU', '6']
+  elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
+    ['TRMVAT reverse-charged', '17']
+  elsif invoice.customer_country_code == 'BE'
+    ['TRMVAT 21%', '1']
+  else
+    country_name = ISO3166::Country.new(invoice.customer_country_code).name
+    ["MOSS #{country_name.upcase}", '8']
+  end
+end
+
+template = Tox.dsl do
+  el('SalesInvoices',
+    mel('SalesInvoice', {
+      reference: el('Reference', text),
+      subject: el('Subject', text),
+      process: el('Process', text),
+      date: el('Date', text),
+      due_date: el('DueDate', text),
+      contact_code: el('Contact', el('ContactCode', text)),
+      lines: el('InvoiceLines', mel('InvoiceLine', {
+        description: el('Description', text),
+        quantity: el('ProductQuantity', text),
+        product: el('Product', {
+          description: el('Description', text),
+          reference: el('Reference', text),
+          category: el('Category', text),
+          amount: el('SalesPrice', text),
+          vat_rate: el('VATPercentage', text),
+          vat_included: el('VATIncluded', text),
+          vat_type: el('VATType', text),
+          vat_description: el('VATDescription', text),
+          account_code: el('GLAccountCode', text),
+          remarks: el('Remarks', text)
+        })
+      }))
+    })
+  )
+end
+
+client = Savon.client(
+  wsdl: 'https://api.yukiworks.nl/ws/Sales.asmx?wsdl',
+  log: true,
+  log_level: :debug
+)
+
+session_id = client.call(:authenticate_by_user_name, message: {
+  userName: ENV['YUKI_USERNAME'],
+  password: ENV['YUKI_PASSWORD']
+}).body[:authenticate_by_user_name_response][:authenticate_by_user_name_result]
+
+administration_id = client.call(:administration_id, message: {
+  sessionID: session_id,
+  administrationName: ENV['YUKI_ADMINISTRATION']
+}).body[:administration_id_response][:administration_id_result]
+
+start = Date.new(year, month, day)
+stop  = start + 1.day
+
+invoices = Invoice.between(start, stop)
+
+lines = invoices.map do |invoice|
+  vat_desc, vat_type = vat_code(invoice)
+
+  {
+    description: invoice.number,
+    quantity: '1',
+    product: {
+      description: 'invoice',
+      reference: '',
+      category: '13',
+      amount: (invoice.total_eur.to_f / 100).round(2).to_s,
+      vat_rate: invoice.vat_rate.round(2).to_f.to_s,
+      vat_included: 'true',
+      vat_type: vat_type,
+      vat_description: vat_desc,
+      account_code: '8000',
+      remarks: 'none'
+    }
+  }
+end
+
+xml = template.render([{
+  reference: '%02d%02d' % [month, day],
+  subject: 'Dagtotaal %02d/%02d/%d' % [day, month, year],
+  process: 'true',
+  date: "#{year}-#{month}-#{day}",
+  due_date: "#{year}-#{month}-#{day}",
+  contact_code: '1',
+  lines: lines
+}])
+
+client.call(:process_sales_invoices, message: {
+  'sessionId'        => session_id,
+  'administrationId' => administration_id,
+  "xmlDoc!"          => xml
+}).body

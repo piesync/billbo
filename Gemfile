@@ -26,6 +26,7 @@ gem 'money'
 gem 'countries', github: 'challengee/countries'
 
 gem 'tox', github: 'piesync/tox'
+gem 'savon'
 
 group :test do
   gem 'webmock', github: 'bblimke/webmock'

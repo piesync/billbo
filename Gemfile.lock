@@ -353,6 +353,7 @@ DEPENDENCIES
   rack-test
   rake
   rumor!
+  savon
   sentry-raven!
   sequel
   shotgun
