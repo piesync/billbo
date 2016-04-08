@@ -49,7 +49,7 @@ class Job
   private
 
   def load_vies_data(invoice)
-    vat_service.load_vies_data(invoice: invoice) if invoice.vat_registered?
+    vat_service.load_vies_data(invoice: invoice) if invoice.customer_vat_number
   end
 
   def calculate_eur_amounts(invoice)
