@@ -77,6 +77,9 @@ GEM
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
+    eu_central_bank (0.3.8)
+      money (>= 6.0.1)
+      nokogiri
     excon (0.45.4)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
@@ -334,6 +337,7 @@ DEPENDENCIES
   choice
   countries!
   dotenv
+  eu_central_bank
   fog
   guard
   guard-minitest
