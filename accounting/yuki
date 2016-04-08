@@ -93,12 +93,14 @@ lines = invoices.map do |invoice|
   }
 end
 
+xml_date = '%d-%02d-%02d' % [year, month, day]
+
 xml = template.render([{
   reference: '%02d%02d' % [month, day],
   subject: 'Dagtotaal %02d/%02d/%d' % [day, month, year],
   process: 'true',
-  date: "#{year}-#{month}-#{day}",
-  due_date: "#{year}-#{month}-#{day}",
+  date: xml_date,
+  due_date: xml_date,
   contact_code: '1',
   lines: lines
 }])
