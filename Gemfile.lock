@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/RubyMoney/eu_central_bank.git
+  revision: 00a9fcb7c8eba95e5779d67b0deac7257e6c693d
+  specs:
+    eu_central_bank (1.0.0)
+      money (~> 6.7.0)
+      nokogiri (~> 1.6.3)
+
+GIT
   remote: git://github.com/bblimke/webmock.git
   revision: a340f830d5ec5af43262856c0d5bde886eff6313
   specs:
@@ -84,9 +92,6 @@ GEM
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
-    eu_central_bank (0.3.8)
-      money (>= 6.0.1)
-      nokogiri
     excon (0.45.4)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
@@ -242,7 +247,7 @@ GEM
     multi_json (1.11.2)
     multipart-post (2.0.0)
     netrc (0.7.7)
-    nokogiri (1.6.7.1)
+    nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     nori (2.4.0)
     oj (2.9.9)
@@ -345,7 +350,7 @@ DEPENDENCIES
   choice
   countries!
   dotenv
-  eu_central_bank
+  eu_central_bank!
   fog
   guard
   guard-minitest
