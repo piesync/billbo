@@ -88,6 +88,23 @@ describe StripeService do
       end
     end
 
+    describe 'the customer has a VAT number' do
+      let(:metadata) {{
+        country_code: 'NL',
+        vat_number: 'GB1234',
+        vat_registered: 'false',
+        other: 'random'
+      }}
+
+      it 'uses the VAT country code' do
+        VCR.use_cassette('create_subscription_vat_success') do
+          subscription = service.create_subscription(plan: plan.id)
+          invoice = customer.invoices.first
+          invoice.tax.must_equal 300
+        end
+      end
+    end
+
     describe 'the plan has a trial period' do
       it 'creates a subscription but does not add VAT' do
         VCR.use_cassette('create_subscription_trial_success') do

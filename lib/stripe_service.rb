@@ -27,8 +27,14 @@ class StripeService
   private
 
   def calculate_vat_rate
+    country_code = if vat = customer.metadata[:vat_number]
+      vat[0..1]
+    else
+      customer.metadata[:country_code]
+    end
+
     vat_service.vat_rate \
-      country_code: customer.metadata[:country_code],
+      country_code: country_code,
       vat_registered: (customer.metadata[:vat_registered] == 'true')
   end
 
