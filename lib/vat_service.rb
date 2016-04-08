@@ -4,34 +4,34 @@ class VatService
 
   # http://ec.europa.eu/taxation_customs/resources/documents/taxation/vat/how_vat_works/rates/vat_rates_en.pdf
   VAT_RATES = {
-    'BE' => 21,
-    'BG' => 20,
-    'CZ' => 21,
-    'DK' => 25,
-    'DE' => 19,
-    'EE' => 20,
-    'EL' => 23,
-    'ES' => 21,
-    'FR' => 20,
-    'HR' => 25,
-    'IE' => 23,
-    'IT' => 22,
-    'CY' => 19,
-    'LV' => 21,
-    'LT' => 21,
-    'LU' => 15,
-    'HU' => 27,
-    'MT' => 18,
-    'NL' => 21,
-    'AT' => 20,
-    'PL' => 23,
-    'PT' => 23,
-    'RO' => 24,
-    'SI' => 22,
-    'SK' => 20,
-    'FI' => 24,
-    'SE' => 25,
-    'UK' => 20
+    'BE' => 21, # Belgium
+    'BG' => 20, # Bulgaria
+    'CZ' => 21, # Czech Republic
+    'DK' => 25, # Denmark
+    'DE' => 19, # Germany
+    'EE' => 20, # Estonia
+    'EL' => 23, # Greece
+    'ES' => 21, # Spain
+    'FR' => 20, # France
+    'HR' => 25, # Croatia
+    'IE' => 23, # Ireland
+    'IT' => 22, # Italy
+    'CY' => 19, # Cryprus
+    'LV' => 21, # Latvia
+    'LT' => 21, # Lithuania
+    'LU' => 17, # Luxembourg
+    'HU' => 27, # Hungary
+    'MT' => 18, # Malta
+    'NL' => 21, # Netherlands
+    'AT' => 20, # Austria
+    'PL' => 23, # Poland
+    'PT' => 23, # Portugal
+    'RO' => 24, # Romania
+    'SI' => 22, # Slovenia
+    'SK' => 20, # Slovakia
+    'FI' => 24, # Finland
+    'SE' => 25, # Sweden
+    'GB' => 20  # United Kingdom
   }
 
   # Calculates VAT amount based on country and whether the customer
@@ -85,14 +85,19 @@ class VatService
   # Loads VIES data into the invoice model.
   #
   # Raises VatService::ViesDown if the VIES service is down.
-  def load_vies_data(invoice: invoice)
+  def load_vies_data(invoice:)
     details = self.details(vat_number: invoice.customer_vat_number,
       own_vat: Configuration.seller_vat_number)
 
-    invoice.update \
-      vies_company_name: details[:name],
-      vies_address: details[:address],
-      vies_request_identifier: details[:request_identifier]
+    # details can still be nil here if a VAT number does not exist.
+    # This case can still happen here because the VIES service
+    # was down earlier and we used only checksum to pass the VAT number.
+    if details
+      invoice.update \
+        vies_company_name: details[:name].try(:strip).presence,
+        vies_address: details[:address].try(:strip).presence,
+        vies_request_identifier: details[:request_identifier]
+    end
   end
 
   # Calculates VAT rate.
@@ -105,18 +110,12 @@ class VatService
     # VAT Rate is zero if country code is nil.
     return 0 if country_code.nil?
 
-    # Both individuals and companies pay VAT
-    # in a country where you are VAT registered.
-    if Configuration.registered_countries.include?(country_code)
+    # Companies pay VAT in the origin country when you are VAT registered there.
+    # Individuals always need to pay the VAT rate set in their origin country.
+    if registered?(country_code) || (eu?(country_code) && !vat_registered)
       VAT_RATES[country_code]
-    elsif eu?(country_code)
-      # Companies in other EU countries don't need to pay VAT.
-      if vat_registered
-        0
-      # Individuals in other EU countries do need to pay VAT.
-      else
-        VAT_RATES[Configuration.primary_country]
-      end
+
+    # Companies in other EU countries don't need to pay VAT.
     # All non-EU customers don't need to pay VAT.
     else
       0
@@ -124,6 +123,11 @@ class VatService
   end
 
   private
+
+  # Whether the seller is registered in the given country.
+  def registered?(country_code)
+    Configuration.registered_countries.include?(country_code)
+  end
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)

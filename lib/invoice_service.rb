@@ -1,14 +1,3 @@
-# There are 2 ways invoices get created in Stripe:
-#   1. Creating a subscription which immediately issues a new invoice. This still fires
-#      an invoice.created event, but the invoice is not editable anymore. So we need to apply VAT
-#      before creating the subscription.
-#      It is possible that the invoice.created hook is called before the create_subscription method
-#      ends. It this case it is possible that we try to add VAT again, because the added_vat
-#      flag is not yet set on the invoice. In this case Stripe::InvalidRequestError will be raised.
-#
-#   2. At the end of a subscription cycle. This will trigger an invoice.created hook which
-#      call the #ensure_vat method. This adds VAT to the invoice.
-#
 class InvoiceService
   OrphanRefund = Class.new(StandardError)
 
@@ -17,33 +6,10 @@ class InvoiceService
     @customer_id = customer_id
   end
 
+  # An internal invoice is not created, we only do this when
+  # the invoice gets paid (#process_payment)
   def create_subscription(options)
-    subscription, stripe_invoice = stripe_service.create_subscription(options)
-
-    # If this method was succesful, we created a paid invoice with VAT already applied.
-    invoice = ensure_invoice(stripe_invoice.id).added_vat!
-    snapshot_customer(invoice)
-
-    subscription
-  end
-
-  def ensure_vat(stripe_invoice_id:)
-    # Get/create an internal invoice.
-    invoice = ensure_invoice(stripe_invoice_id)
-
-    # Only apply VAT if not applied yet.
-    if !invoice.added_vat?
-      stripe_invoice = stripe_service.apply_vat(invoice_id: stripe_invoice_id)
-      invoice.added_vat!
-      snapshot_customer(invoice)
-    end
-
-    invoice
-  rescue Stripe::InvalidRequestError
-    # This means we could not add VAT because the invoice is not editable anymore.
-    # The invoice was probably created through #create_subscription so VAT and snapshotting
-    # will be handled there. Nothing to do anymore here.
-    invoice
+    stripe_service.create_subscription(options)
   end
 
   def process_payment(stripe_invoice_id:)
@@ -56,9 +22,19 @@ class InvoiceService
     # need to make an invoice for it.
     invoice.finalize! unless stripe_invoice.total.zero?
 
-    # Now we are sure nothing is going to change the invoice anymore.
-    # Do a final calculation of the invoice amounts.
-    invoice.update(stripe_service.calculate_final(stripe_invoice: stripe_invoice))
+    # Take snapshots for immutable invoice.
+    snapshot_invoice(stripe_invoice, invoice)
+    snapshot_customer(invoice)
+
+    # Take a snapshot of the card used to make payment.
+    # Note: There will be no charge in two cases:
+    #   1. The invoice total is 0 so no charge is needed.
+    #   2. The invoice could be paid with credit.
+    #
+    if stripe_invoice.charge
+      charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+      snapshot_card(charge.source, invoice)
+    end
 
     invoice
   rescue Invoice::AlreadyFinalized
@@ -78,11 +54,15 @@ class InvoiceService
     end
   end
 
+  def last_stripe_invoice
+    Stripe::Invoice.all(customer: @customer_id, limit: 1).first
+  end
+
   private
 
   def snapshot_customer(invoice)
     metadata = stripe_service.customer_metadata.slice(
-      :email, :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id)
+      :email, :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id, :ip_address)
 
     # Transform vat_registered into boolean
     metadata[:vat_registered] = metadata[:vat_registered] == 'true'
@@ -97,6 +77,25 @@ class InvoiceService
 
     # Save to invoice
     invoice.update(customer_metadata)
+  end
+
+  def snapshot_invoice(stripe_invoice, invoice)
+    # In Stripe: total = subtotal - discount + tax
+    invoice.total = stripe_invoice.total.to_i
+    invoice.subtotal = stripe_invoice.subtotal.to_i
+    invoice.subtotal_after_discount = stripe_invoice.total.to_i - stripe_invoice.tax.to_i
+    invoice.discount_amount = stripe_invoice.tax.to_i + stripe_invoice.subtotal.to_i - stripe_invoice.total.to_i
+    invoice.vat_amount = stripe_invoice.tax.to_i
+    invoice.vat_rate = stripe_invoice.tax_percent
+    invoice.currency = stripe_invoice.currency
+  end
+
+  def snapshot_card(card, invoice)
+    invoice.update(
+      card_brand: card.brand,
+      card_last4: card.last4,
+      card_country_code: card.country
+    )
   end
 
   def ensure_invoice(stripe_id)

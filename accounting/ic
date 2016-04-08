@@ -1,0 +1,123 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+quarter = ARGV[0].to_i
+year    = (ARGV[1] || Time.now.year).to_i
+
+customers = Invoice
+  .quarter(year, quarter)
+  .exclude(customer_vat_number: nil)
+  .exclude(customer_country_code: [Configuration.primary_country])
+  .group_by(:customer_vat_number)
+  .select{[
+    customer_vat_number.as(vat_number),
+    min(stripe_customer_id).as(stripe_id),
+    sum(total_eur).as(total)
+  ]}
+  .order_by(Sequel.desc(:total))
+  .to_a
+  .map(&:values)
+
+template = Tox.dsl do
+  el('IntraConsignment', {
+    representative: el('Representative', {
+      id: el('ic:RepresentativeID', {
+        country_code: at('issuedBy'),
+        type: at('identificationType'),
+        vat_number: text
+      }),
+      name: el('ic:Name', text),
+      street: el('ic:Street', text),
+      zip: el('ic:PostCode', text),
+      city: el('ic:City', text),
+      country_code: el('ic:CountryCode', text),
+      email: el('ic:EmailAddress', text),
+      phone: el('ic:Phone', text)
+    }),
+    reference: el('RepresentativeReference', text),
+    listing: el('IntraListing', {
+      sequence: at('SequenceNumber'),
+      reference: at('DeclarantReference'),
+      count: at('ClientsNbr'),
+      sum: at('AmountSum'),
+      declarant: el('Declarant', {
+        vat_number: el('ic:VATNumber', text),
+        name: el('ic:Name', text),
+        street: el('ic:Street', text),
+        zip: el('ic:PostCode', text),
+        city: el('ic:City', text),
+        country_code: el('ic:CountryCode', text),
+        email: el('ic:EmailAddress', text),
+        phone: el('ic:Phone', text)
+      }),
+      period: el('Period', {
+        quarter: el('Quarter', text),
+        year: el('Year', text)
+      }),
+      clients: mel('IntraClient', {
+        sequence: at('SequenceNumber'),
+        vat: el('CompanyVATNumber', {
+          country_code: at('issuedBy'),
+          number: text
+        }),
+        code: el('Code', text),
+        amount: el('Amount', text)
+      })
+    })
+  }, {
+    ''   => 'http://www.minfin.fgov.be/IntraConsignment',
+    'ic' => 'http://www.minfin.fgov.be/InputCommon'
+  })
+end
+
+xml = template.render({
+  representative: {
+    id: {
+      type: 'NVAT',
+      country_code: Configuration.primary_country,
+      vat_number: Configuration.seller_vat_number[2..-1]
+    },
+    name: Configuration.seller_company_name,
+    street: Configuration.seller_street,
+    zip: Configuration.seller_zip,
+    city: Configuration.seller_city,
+    country_code: Configuration.primary_country,
+    email: Configuration.ic_email,
+    phone: Configuration.ic_phone
+  },
+  reference: Configuration.ic_reference,
+  listing: {
+    sequence: '1',
+    reference: Configuration.ic_reference,
+    count: customers.count.to_s,
+    sum: (customers.map { |i| i[:total] }.inject(&:+).to_f/100).to_s,
+    declarant: {
+      vat_number: Configuration.seller_vat_number[2..-1],
+      name: Configuration.seller_company_name,
+      street: Configuration.seller_street,
+      zip: Configuration.seller_zip,
+      city: Configuration.seller_city,
+      country_code: Configuration.primary_country,
+      email: Configuration.ic_email,
+      phone: Configuration.ic_phone,
+    },
+    period: {
+      year: year.to_s,
+      quarter: quarter.to_s
+    },
+    clients: customers.each_with_index.map { |invoice, i|
+      {
+        sequence: i.to_s,
+        vat: {
+          country_code: invoice[:vat_number][0..1],
+          number: invoice[:vat_number][2..-1]
+        },
+        code: 'S',
+        amount: (invoice[:total].to_f/100).to_s
+      }
+    }
+  }
+})
+
+puts %{<?xml version="1.0" encoding="utf-8"?>}
+puts xml

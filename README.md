@@ -17,7 +17,7 @@ It's currently designed to support billing from EU based countries.
 Features
 --------
 
-* Automatic VAT addition according to legal regulations
+* Automatic VAT addition according to legal regulations (incl 2015 VAT update)
 * VAT number validation and owner details using VIES service (company name, address)
 * Automatic and consistent invoice numbering (configurable)
 * Revenue analytics with [Segment.io](https://segment.io/) (optional)
@@ -31,7 +31,7 @@ Features
 How it Works with Stripe
 ------------------------
 
-Basically, whenever we receive an `invoice.created` event from Stripe, VAT is calculated on the amount and is added as an invoice item to the invoice. However, this does not work when creating a subscription for the first time, because Stripe charges the first invoice immediately, so we don't get a chance to add items via a webhook first. This is what the Billbo create subscription call is for. It calculates VAT in advance and attaches an invoice item to the customer.
+Subscriptions are created through Billbo instead of through the Stripe API directly. When the subscription is being created, Billbo calculated the correct VAT rate that should be applied to this subscription based on the customer metadata. This VAT rate is then passed to Stripe as `tax_percent`.
 
 When we receive a `invoice.payment_succeeded` event from Stripe, we finalize and assign an invoice number to the associated invoice in the Billbo database.
 

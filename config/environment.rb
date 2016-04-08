@@ -31,6 +31,7 @@ Configuration.db = Sequel.connect(Configuration.database_url)
 
 # Configure Stripe
 Stripe.api_key = Configuration.stripe_secret_key
+Stripe.api_version = '2015-10-16'
 
 # Configure Shrimp
 Shrimp.configure do |config|
@@ -40,7 +41,7 @@ Shrimp.configure do |config|
 end
 
 # Configure Money
-Money.add_rate('USD', 'EUR', 0.78)
+Money.default_bank = EuCentralBank.new
 
 # Configure Rumor
 require 'rumor/async/sucker_punch'

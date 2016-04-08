@@ -80,13 +80,21 @@ describe Invoice do
     end
 
     it 'does not reserve two invoices with the same number' do
-        Invoice.stubs(:next_sequence_number).returns(3).then.returns(3).then.returns(4)
+      Invoice.stubs(:next_sequence_number).returns(3).then.returns(3).then.returns(4)
 
-        invoice1 = Invoice.reserve!
-        invoice2 = Invoice.reserve!
+      invoice1 = Invoice.reserve!
+      invoice2 = Invoice.reserve!
 
-        invoice1.number.must_equal "#{year}000003"
-        invoice2.number.must_equal "#{year}000004"
+      invoice1.number.must_equal "#{year}000003"
+      invoice2.number.must_equal "#{year}000004"
+    end
+
+    it 'always computes the correct next sequence number' do
+      # 2 invoices, finalized at the same time.
+      time = Time.now
+      Invoice.create(year: year, sequence_number: 1, number: "#{year}000002", finalized_at: time)
+      Invoice.create(year: year, sequence_number: 2, number: "#{year}000001", finalized_at: time)
+      Invoice.create.finalize!.number.must_equal "#{year}000003"
     end
 
     it 'finalizes an invoice and reserves an empty slot for an invoice' do

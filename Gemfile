@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.1'
+ruby '2.2.3'
 
 gemspec
 
@@ -23,7 +23,11 @@ gem 'carrierwave'
 gem 'fog'
 gem 'slim'
 gem 'money'
-gem 'countries'
+gem 'eu_central_bank', github: 'RubyMoney/eu_central_bank'
+gem 'countries', github: 'challengee/countries'
+
+gem 'tox', github: 'piesync/tox'
+gem 'savon'
 
 group :test do
   gem 'webmock', github: 'bblimke/webmock'
@@ -32,12 +36,12 @@ group :test do
   gem 'rack-test', :require => 'rack/test'
   gem 'capybara'
   gem 'poltergeist'
+  gem 'timecop'
 end
 
 group :development do
   gem 'guard'
   gem 'guard-minitest'
-  gem 'thin'
   gem 'shotgun'
   gem 'choice'
 end

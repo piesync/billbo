@@ -36,6 +36,11 @@ Configuration.db.create_table :invoices do
   Integer :vat_amount_eur
   Integer :total_eur
 
+  # Card used to pay the invoice
+  String  :card_brand
+  String  :card_last4
+  String  :card_country_code
+
   # Snapshot of customer
   String  :customer_email
   String  :customer_name
@@ -45,6 +50,10 @@ Configuration.db.create_table :invoices do
   Boolean :customer_vat_registered
   String  :customer_vat_number
   String  :customer_accounting_id
+
+  # GeoIP information
+  String  :ip_address
+  String  :ip_country_code
 
   # VIES information
   String  :vies_company_name

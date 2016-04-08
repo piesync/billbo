@@ -19,16 +19,6 @@ class Hooks < Base
 
   private
 
-  # This is used to:
-  #   * Add VAT to the invoice.
-  #   * Snapshot customer metadata in the invoice.
-  def invoice_created(object)
-    stripe_invoice = Stripe::Invoice.construct_from(object)
-
-    invoice_service(customer_id: stripe_invoice.customer)
-      .ensure_vat(stripe_invoice_id: stripe_invoice.id)
-  end
-
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(object)
     stripe_invoice = Stripe::Invoice.construct_from(object)

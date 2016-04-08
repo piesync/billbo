@@ -1,0 +1,106 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+quarter = ARGV[0].to_i
+year    = (ARGV[1] || Time.now.year).to_i
+
+from = Date.new(year, (quarter-1)*3+1, 1)
+to = from+3.months
+
+conditions = [
+  'finalized_at IS NOT NULL',
+  'reserved_at is NULL',
+  "finalized_at >= '#{from.strftime}'",
+  "finalized_at < '#{to.strftime}'"
+].join(' AND ')
+
+def vat_code(invoice)
+  # Check info on the original invoice if this is a refund.
+  invoice = invoice.reference || invoice
+
+  # The vat code is calculated as follows:
+  #   E    - Customers outside the EU - no vat charged
+  #   F    - Businesses in the EU (not belgium) - reverse charged
+  #   5    - Customers in Belgium
+  #   M**  - Individuals in the EU (not belgium) - vat charged
+  vat_code = if !invoice.eu?
+    'E'
+  elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
+    'F'
+  elsif invoice.customer_country_code == 'BE'
+    '5'
+  else
+    "M#{invoice.customer_country_code}"
+  end
+end
+
+# Get all customer ids that have a paid invoice in this quarter for the first time.
+# We order all invoices chronologically and check for which customers (accounting id) their first invoice was in this quarter.
+customer_ids = Configuration.db[:invoices] \
+  .where('finalized_at IS NOT NULL AND reserved_at is NULL') \
+  .order(Sequel.asc(:finalized_at)) \
+  .to_a \
+  .group_by { |r| r[:customer_accounting_id] } \
+  .select { |accounting_id, rs| rs.first[:finalized_at] > from && rs.first[:finalized_at] < to } \
+  .values \
+  .map(&:first) \
+  .map { |r| r[:stripe_customer_id] } \
+  .compact
+
+vat = []
+no_vat = []
+
+customer_ids.each do |customer_id|
+  # Get a random invoice of the customer.
+  invoice = Invoice.where(stripe_customer_id: customer_id).where(conditions).limit(1).first
+  vat_code = vat_code(invoice)
+
+  if invoice.customer_vat_number
+    # If a company has a VAT number (could be from code F or S) add it to vat
+    vat << "#{invoice.customer_company_name || invoice.customer_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}, #{invoice.customer_vat_number}"
+  else
+    # Add companies without vat number to another array
+    no_vat << "#{invoice.customer_name}, #{invoice.customer_accounting_id}, 400000, 700000, #{vat_code}"
+  end
+end
+
+invoices = []
+
+Invoice \
+  .where(conditions) \
+  .order(Sequel.asc(:number)) \
+  .each do |invoice|
+    begin
+      date = invoice.finalized_at.strftime('%d-%m-%Y')
+
+      # Negative amounts if it is a refund.
+      amount, vat_amount_eur, accounting_id = if invoice.credit_note?
+        reference = invoice.reference if invoice.credit_note
+
+        [-reference.total_eur+reference.vat_amount_eur, -reference.vat_amount_eur, reference.customer_accounting_id]
+      else
+        [invoice.total_eur-invoice.vat_amount_eur, invoice.vat_amount_eur, invoice.customer_accounting_id]
+      end
+
+      invoices <<  "0| #{accounting_id}| 700| #{date}| #{invoice.number}"
+      invoices <<  "1| 700000| #{vat_code(invoice)}| #{amount/100.0}| #{vat_amount_eur/100.0}| #{invoice.number}"
+
+    rescue StandardError => e
+      puts "invoice #{invoice} could not be exported"
+      puts e.message, *e.backtrace
+    end
+end
+
+# Print customers.
+puts 'VAT CUSTOMERS'
+puts 'Naam, Code, Klantenrekening, Grootboekrekening: Verkoop, BTW-code: Verkoop, BTW / Ondernemingsnummer'
+puts vat.join("\n")
+puts
+puts
+puts 'NO VAT CUSTOMERS'
+puts 'Naam, Code, Klantenrekening, Grootboekrekening: Verkoop, BTW-code: Verkoop'
+puts no_vat.join("\n")
+puts
+puts
+puts 'INVOICES'
+puts invoices.join("\n")

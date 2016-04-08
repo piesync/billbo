@@ -4,7 +4,7 @@ class Invoice < Sequel::Model
   def self.find_or_create_from_stripe(stripe_id:, **attributes)
     # Wrapped in a safe transaction so we do not generate multiple invoices
     # associated with the same Stripe invoice.
-    safe_transaction do
+    transaction do
       attributes = attributes.merge(stripe_id: stripe_id)
       # Check if an invoice exists already with that stripe id.
       invoice = Invoice.first(stripe_id: stripe_id)
@@ -13,13 +13,29 @@ class Invoice < Sequel::Model
     end
   end
 
-  # TK what about finalizing 2 invoices at the same time?
-  # TK only finalize when vat was added?
+  def self.quarter(year, quarter)
+    from = Date.new(year, (quarter-1)*3+1, 1)
+
+    between(from, from+3.months)
+  end
+
+  # Returns all finalized invoices from a given period.
+  def self.between(from, to)
+    where(
+      conditions = [
+        'finalized_at IS NOT NULL',
+        'reserved_at is NULL',
+        "finalized_at >= '#{from.strftime}'",
+        "finalized_at < '#{to.strftime}'"
+      ].join(' AND ')
+    )
+  end
+
   def finalize!
     raise AlreadyFinalized if finalized?
 
     # Wrapped in a safe transaction so we do not generate the same invoice number twice.
-    self.class.safe_transaction do
+    transaction do
       # update the invoice.
       update self.class.next_sequence
     end
@@ -28,7 +44,7 @@ class Invoice < Sequel::Model
   end
 
   def self.reserve!
-    safe_transaction do
+    transaction do
       reserved_info = next_sequence.merge!(reserved_at: Time.now)
       # create the reserved slot.
       create reserved_info
@@ -54,9 +70,18 @@ class Invoice < Sequel::Model
   def finalized?
     !finalized_at.nil?
   end
+  alias :paid? :finalized?
+
+  def credit_note?
+    !!credit_note
+  end
 
   def due_at
     finalized_at + Configuration.due_days.days
+  end
+
+  def customer_vat_registered?
+    !!customer_vat_registered
   end
 
   def discount?
@@ -83,12 +108,38 @@ class Invoice < Sequel::Model
     super || vies_address
   end
 
+  def reference
+    reference_number && Invoice.where(number: reference_number).first
+  end
+
   private
 
-  def self.safe_transaction
-    yield
-  rescue Sequel::UniqueConstraintViolation
+  def transaction(&block)
+    self.class.transaction(&block)
+  rescue Sequel::Rollback
+    # We refresh the model here because of a bug in Sequel.
+    # Sequel marks the fields as non-dirty before executing the
+    # actual update. When the transaction fails and we try
+    # to allocate a new sequence number, the year does not change.
+    # This results in the year not being saved.
+    refresh
     retry
+  end
+
+  def self.transaction(&block)
+    execute_transaction(&block)
+  rescue Sequel::Rollback
+    retry
+  end
+
+  def self.execute_transaction(&block)
+    Configuration.db.transaction(isolation: :serializable, rollback: :reraise) do
+      begin
+        block.call
+      rescue Sequel::UniqueConstraintViolation
+        raise Sequel::Rollback
+      end
+    end
   end
 
   def self.next_sequence
@@ -109,7 +160,7 @@ class Invoice < Sequel::Model
     last_invoice = Invoice
       .where('number IS NOT NULL')
       .where(year: year)
-      .order(Sequel.desc(:finalized_at))
+      .order(Sequel.desc(:sequence_number))
       .limit(1)
       .first
 

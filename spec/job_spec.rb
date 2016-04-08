@@ -9,40 +9,62 @@ describe Job do
 
       job = Job.new
 
-      job.expects(:perform_for)
-        .with(instance_of(Invoice)).times(5)
+      job.expects(:perform_for).once.with do |invoices|
+        invoices.to_a.size == 5
+      end
+
       job.perform
 
-      invoices.each(&:pdf_generated!)
+      invoices.take(3).each(&:pdf_generated!)
 
-      job.expects(:perform_for).never
+      job.expects(:perform_for).once.with do |invoices|
+        invoices.to_a.size == 2
+      end
+
       job.perform
     end
   end
 
   describe '#perform_for' do
     it 'loads euro amounts and generates a pdf' do
-      invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
+      VCR.use_cassette('job_exchange_rates') do
+        invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
 
-      VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
-      PdfService.any_instance.expects(:generate_pdf).with(invoice).once
+        VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
+        PdfService.any_instance.expects(:generate_pdf).with(invoice).once
 
-      Job.new.perform_for(invoice)
+        Job.new.perform_for([invoice])
 
-      invoice = invoice.reload
+        invoice = invoice.reload
 
-      invoice.vat_amount_eur.must_equal 78
-      invoice.total_eur.must_equal 780
-      invoice.exchange_rate_eur.must_equal 0.78
+        (invoice.vat_amount_eur > 0).must_equal true
+        (invoice.total_eur > 0).must_equal true
+        (invoice.exchange_rate_eur > 0).must_equal true
+      end
     end
 
     describe 'a vat number is present' do
       it 'loads vies data, euro amounts and generates a pdf' do
-        invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_vat_number: 'something')
+        VCR.use_cassette('job_vat') do
+          invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_vat_number: 'something')
 
-        VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).once
+          PdfService.any_instance.expects(:generate_pdf).with(invoice).once
 
-        Job.new.perform_for(invoice)
+          Job.new.perform_for([invoice])
+        end
+      end
+    end
+
+    describe 'called with a credit note' do
+      it 'generates a pdf' do
+        VCR.use_cassette('job_credit_note') do
+          invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
+          credit_note = Invoice.create(credit_note: true, reference_number: invoice.number)
+
+          PdfService.any_instance.expects(:generate_pdf).with(credit_note).once
+
+          Job.new.perform_for([credit_note])
+        end
       end
     end
   end

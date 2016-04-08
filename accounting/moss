@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+quarter = ARGV[0].to_i
+year    = (ARGV[1] || Time.now.year).to_i
+
+countries = VatService::VAT_RATES.keys - [Configuration.primary_country]
+
+invoices = Invoice.quarter(year, quarter) \
+  .where(customer_vat_number: nil) \
+  .where(customer_country_code: countries) \
+  .order_by(:number)
+
+output = invoices.map do |invoice|
+  subtotal_eur = ((invoice.total_eur - invoice.vat_amount_eur).to_f / 100).round(2)
+  vat_eur      = (invoice.vat_amount_eur.to_f / 100).round(2)
+  total_eur    = (invoice.total_eur.to_f / 100).round(2)
+
+  cols = [
+    invoice.number,
+    subtotal_eur,
+    vat_eur,
+    total_eur,
+    invoice.customer_country_code
+  ]
+
+  raise "No customer country code for #{invoice.number}" unless invoice.customer_country_code
+
+  country_index = countries.index(invoice.customer_country_code)
+
+  offset = cols.size
+
+  cols[offset + country_index*2]     = total_eur
+  cols[offset + country_index*2 + 1] = vat_eur
+
+  cols
+end
+
+puts ([
+  'Number',
+  'Net',
+  'VAT',
+  'Gross',
+  'Country Code'
+] + countries.zip(countries).flatten.zip(['Revenue', 'VAT'].cycle).map { |c| c.join(' ')} ).join("\t")
+
+puts output.map { |i| i.join("\t") }.join("\n")

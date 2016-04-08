@@ -1,59 +1,66 @@
 doctype Strict
 html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
   head
-    title Invoice #{invoice.number}
+    title #{document_type} #{number}
     meta content=("text/html; charset=iso-8859-1") http-equiv="Content-Type" /
     link href="/assets/default.css" rel="stylesheet" type="text/css"
   body
     #invoice
       #invoice-header
-        img.logo.screen alt="Mainlogo_large" src=(Configuration.seller_logo_url || "/assets/logo.png") /
+        img.logo.screen alt="Mainlogo_large" src=(seller_logo_url || "/assets/logo.png") /
 
         #company-address.vcard
           .fn.org
-            strong = Configuration.seller_company_name
+            strong = seller_company_name
           .adr
             .street-address
-              = Configuration.seller_address_line1
+              = seller_address_line1
               br /
-              = Configuration.seller_address_line2
-            .locality = country_name(Configuration.primary_country)
-          .email = Configuration.seller_email
+              = seller_address_line2
+            .locality = country_name(primary_country)
+          .email = seller_email
           p
             br /
             strong
               ' VAT
-              = Configuration.seller_vat_number
+              = seller_vat_number
             br /
-            = Configuration.seller_other_info
+            = seller_other_info
 
       #invoice-info
         h2
-          ' Invoice
-          strong = invoice.number
-        p = format_date(invoice.finalized_at)
-        - if stripe.paid
+          ' #{document_type}
+
+          - if credit_note?
+            strong = credit_note.number
+            |  (of #{number})
+          - else
+            strong = number
+
+        p = format_date(finalized_at)
+        - if paid?
           p
-            b Paid with #{card.brand} #{card.last4}
+            b Paid with #{card_brand} #{card_last4}
         - else
-          p#payment-due Payment due by #{format_date(invoice.due_at)}
-        p#payment-total = format_money(invoice.total, invoice.currency)
+          p#payment-due Payment due by #{format_date(due_at)}
+        p#payment-total = format_money(total, currency)
 
 
       #client-details.vcard
-        .fn = invoice.customer_name
-        .org = invoice.customer_company_name
+        .fn = customer_name
+        .org = customer_company_name
         .adr
           .street-address
-            = invoice.customer_address
+            = customer_address
 
-          .locality = country_name(invoice.customer_country_code)
+          .locality = country_name(customer_country_code)
         p
           br /
-          - if invoice.customer_vat_registered
+
+          - if customer_vat_registered?
             strong
               ' VAT
-              = invoice.customer_vat_number
+              = customer_vat_number
 
 
       br /
@@ -61,33 +68,36 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         thead
           tr#header_row
             th.left.details_th Details
-            th.unitprice_th Price (#{invoice.currency.upcase})
+            th.unitprice_th Price (#{currency.upcase})
             th.subtotal_th Price (EUR)
         tfoot
-          - if invoice.discount?
+          - if discount?
             tr#discount_tr
-              td.item_r #{coupon.percent_off}% Discount
-              td.item_r = format_money(invoice.discount_amount, invoice.currency)
+              td.item_r
+                - if percent_off
+                  ' #{percent_off}%
+                | Discount
+              td.item_r = format_money(discount_amount, currency)
               td.item_r
           tr#net_total_tr
             td.item_r Net Total
-            td.item_r = format_money(invoice.subtotal_after_discount, invoice.currency)
+            td.item_r = format_money(subtotal_after_discount, currency)
             td.item_r
           tr#vat_tr
             td.item_r
-              - if invoice.vat?
-                = "VAT (#{invoice.vat_rate.to_i}%)"
+              - if vat?
+                = "VAT (#{vat_rate.to_i}%)"
               - else
                 | VAT*
-            td.item_r = format_money(invoice.vat_amount, invoice.currency)
-            td.item_r = format_money(invoice.vat_amount_eur, :eur)
+            td.item_r = format_money(vat_amount, currency)
+            td.item_r = format_money(vat_amount_eur, :eur)
           tr#total_tr
             td#total_currency.total
               span.currency Total
-            td.total = format_money(invoice.total, invoice.currency)
-            td.total = format_money(invoice.total_eur, :eur)
+            td.total = format_money(total, currency)
+            td.total = format_money(total_eur, :eur)
         tbody
-          - stripe.lines.each_with_index do |line, i|
+          - lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
               - if line.type == 'subscription'
                 td.item_l #{line.plan.name} (#{format_date(line.period.start)} - #{format_date(line.period.end)})
@@ -101,25 +111,25 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
 
       #payment-details
         h2 Payment Details
-        #bank_name = Configuration.seller_bank_name
+        #bank_name = seller_bank_name
         #sort-code
           strong
             ' BIC Code:
-          = Configuration.seller_bic
+          = seller_bic
         #account-number
           strong
             ' IBAN Number:
-          = Configuration.seller_iban
+          = seller_iban
         #payment-reference
           strong
             ' Payment Reference:
-          = invoice.number
+          = number
 
       #footnote
         p
-          - if !invoice.vat?
+          - if !vat?
             // we need to show a reason for not charging vat.
-            - if invoice.eu?
+            - if eu?
               | * VAT Reverse-charged
             - else
               | * No EU VAT applicable - Article 59 Directive 2006/112/EC

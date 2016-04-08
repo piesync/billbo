@@ -3,20 +3,29 @@ class Job
 
   def perform
     # Iterate over all invoice we did not generate a PDF for yet.
-    # TK For now we do not generate credit notes automatically.
-    Invoice.where(pdf_generated_at: nil,reserved_at: nil, credit_note: false)
+    invoices = Invoice.where(pdf_generated_at: nil,reserved_at: nil)
       .where('finalized_at IS NOT NULL')
-      .each do |invoice|
-        perform_for(invoice)
+
+    perform_for(invoices)
+  end
+
+  def perform_for(invoices)
+    # Update Exchange rates from ECB
+    Money.default_bank.update_rates
+
+    invoices.each do |invoice|
+      perform_for_single(invoice)
     end
   end
 
-  def perform_for(invoice)
-    # First load VIES data into the invoice.
-    load_vies_data(invoice)
+  def perform_for_single(invoice)
+    if !invoice.credit_note?
+      # First load VIES data into the invoice.
+      load_vies_data(invoice)
 
-    # Calculate total and vat amount in euro.
-    calculate_eur_amounts(invoice)
+      # Calculate total and vat amount in euro.
+      calculate_eur_amounts(invoice)
+    end
 
     # Now generate an invoice.
     pdf = generate_pdf(invoice)
@@ -28,9 +37,13 @@ class Job
     # Just wait until it's up again...
 
   rescue StandardError => e
-    Raven.capture_exception(e, extra: {
-      invoice: invoice.id
-    }) if Configuration.sentry?
+    if Configuration.sentry?
+      Raven.capture_exception(e, extra: {
+        invoice: invoice.id
+      })
+    else
+      raise e
+    end
   end
 
   private
