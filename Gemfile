@@ -26,6 +26,9 @@ gem 'money'
 gem 'eu_central_bank'
 gem 'countries', github: 'challengee/countries'
 
+gem 'tox', github: 'piesync/tox'
+gem 'savon'
+
 group :test do
   gem 'webmock', github: 'bblimke/webmock'
   gem 'vcr'

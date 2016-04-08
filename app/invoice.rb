@@ -13,8 +13,24 @@ class Invoice < Sequel::Model
     end
   end
 
-  # TK what about finalizing 2 invoices at the same time?
-  # TK only finalize when vat was added?
+  def self.quarter(year, quarter)
+    from = Date.new(year, (quarter-1)*3+1, 1)
+
+    between(from, from+3.months)
+  end
+
+  # Returns all finalized invoices from a given period.
+  def self.between(from, to)
+    where(
+      conditions = [
+        'finalized_at IS NOT NULL',
+        'reserved_at is NULL',
+        "finalized_at >= '#{from.strftime}'",
+        "finalized_at < '#{to.strftime}'"
+      ].join(' AND ')
+    )
+  end
+
   def finalize!
     raise AlreadyFinalized if finalized?
 
