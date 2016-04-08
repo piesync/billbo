@@ -70,7 +70,7 @@ administration_id = client.call(:administration_id, message: {
 start = Date.new(year, month, day)
 stop  = start + 1.day
 
-invoices = Invoice.between(start, stop)
+invoices = Invoice.between(start, stop).order_by(:number)
 
 lines = invoices.map do |invoice|
   vat_desc, vat_type = vat_code(invoice)
@@ -96,7 +96,7 @@ end
 xml_date = '%d-%02d-%02d' % [year, month, day]
 
 xml = template.render([{
-  reference: '%02d%02d' % [month, day],
+  reference: 'D%02d%02d' % [month, day],
   subject: 'Dagtotaal %02d/%02d/%d' % [day, month, year],
   process: 'true',
   date: xml_date,
