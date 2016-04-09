@@ -26,16 +26,39 @@ describe Job do
   end
 
   describe '#perform_for' do
+    before do
+      path = File.expand_path('../test.pdf', __FILE__)
+
+      PdfService
+        .any_instance
+        .expects(:generate_pdf)
+        .with(invoice)
+        .once
+        .returns(File.open(path))
+
+      MailService
+        .any_instance
+        .expects(:mail)
+        .with(invoice, path)
+        .once
+    end
+
+    let(:invoice) do
+      Invoice.create(
+        vat_amount: 100,
+        total: 1000,
+        currency: 'usd',
+        customer_email: 'john.doe@customer.com'
+      )
+    end
+
     it 'loads euro amounts and generates a pdf' do
       VCR.use_cassette('job_exchange_rates') do
-        invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
-
-        VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
-        PdfService.any_instance.expects(:generate_pdf).with(invoice).once
+        VatService.any_instance.expects(:load_vies_data).never
 
         Job.new.perform_for([invoice])
 
-        invoice = invoice.reload
+        invoice.reload
 
         (invoice.vat_amount_eur > 0).must_equal true
         (invoice.total_eur > 0).must_equal true
@@ -44,26 +67,50 @@ describe Job do
     end
 
     describe 'a vat number is present' do
+      let(:invoice) do
+        Invoice.create(
+          vat_amount: 100,
+          total: 1000,
+          currency: 'usd',
+          customer_vat_number: 'LU21416127',
+          customer_email: 'john.doe@customer.com'
+        )
+      end
+
       it 'loads vies data, euro amounts and generates a pdf' do
         VCR.use_cassette('job_vat') do
-          invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_vat_number: 'something')
-
-          PdfService.any_instance.expects(:generate_pdf).with(invoice).once
-
           Job.new.perform_for([invoice])
+
+          invoice.reload
+
+          invoice.vies_company_name.must_equal 'EBAY EUROPE S.A R.L.'
+          invoice.vies_address.must_equal "22, BOULEVARD ROYAL\nL-2449  LUXEMBOURG"
+          invoice.vies_request_identifier.wont_be_nil
         end
       end
     end
 
     describe 'called with a credit note' do
+      let(:original) do
+        Invoice.create(
+          vat_amount: 100,
+          total: 1000,
+          currency: 'usd'
+        )
+      end
+
+      let(:invoice) do
+        Invoice.create(
+          credit_note: true,
+          reference_number: original.number,
+          customer_email: 'john.doe@customer.com'
+        )
+      end
+
       it 'generates a pdf' do
         VCR.use_cassette('job_credit_note') do
-          invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd')
-          credit_note = Invoice.create(credit_note: true, reference_number: invoice.number)
-
-          PdfService.any_instance.expects(:generate_pdf).with(credit_note).once
-
-          Job.new.perform_for([credit_note])
+          VatService.any_instance.expects(:load_vies_data).never
+          Job.new.perform_for([invoice])
         end
       end
     end

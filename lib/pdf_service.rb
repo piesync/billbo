@@ -13,9 +13,9 @@ class PdfService
 
     generated = File.open("tmp/#{invoice.number}.pdf")
 
-    invoice.pdf_generated! if uploader.store!(file)
+    invoice.pdf_generated! if uploader.store!(generated)
 
-    file
+    generated
   end
 
   def retrieve_pdf(invoice)

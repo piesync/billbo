@@ -29,6 +29,8 @@ gem 'countries', github: 'challengee/countries'
 gem 'tox', github: 'piesync/tox'
 gem 'savon'
 
+gem 'mail'
+
 group :test do
   gem 'webmock', github: 'bblimke/webmock'
   gem 'vcr'

@@ -31,7 +31,7 @@ class Job
     pdf = generate_pdf(invoice)
 
     # And mail it to the customer.
-    mail_invoice(invoice, pdf)
+    mail_invoice(invoice, pdf.path)
 
   rescue VatService::ViesDown => e
     # Just wait until it's up again...
@@ -74,5 +74,9 @@ class Job
 
   def pdf_service
     @pdf_service ||= PdfService.new
+  end
+
+  def mail_service
+    @mail_service ||= MailService.new
   end
 end

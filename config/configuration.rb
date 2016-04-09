@@ -90,6 +90,8 @@ class Configuration
     attr_accessor :s3_bucket
     attr_accessor :s3_region
 
+    attr_accessor :mail_from, :mail_subject
+
     def due_days
       @due_days.to_i
     end
@@ -136,6 +138,10 @@ class Configuration
 
     def s3?
       !s3_key_id.nil?
+    end
+
+    def smtp_uri
+      URI.parse(ENV['SMTP_URI'])
     end
 
     def mailing?

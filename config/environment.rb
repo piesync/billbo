@@ -43,6 +43,10 @@ end
 # Configure Money
 Money.default_bank = EuCentralBank.new
 
+Mail.defaults do
+  delivery_method :smtp, address: Configuration.smtp_uri.host, port: Configuration.smtp_uri.port || 25
+end
+
 # Configure Rumor
 require 'rumor/async/sucker_punch'
 
@@ -61,6 +65,7 @@ require 'vat_service'
 require 'stripe_service'
 require 'invoice_service'
 require 'pdf_service'
+require 'mail_service'
 
 # The Apis
 require 'base'

@@ -28,15 +28,21 @@ VCR.use_cassette('configuration_preload') do
   require './config/environment'
 end
 
+Mail.defaults do
+  delivery_method :test
+end
+
 # Minitest clear db hook
 module MiniTestHooks
   def setup
     Configuration.db[:invoices].delete
+    Mail::TestMailer.deliveries.clear
   end
 end
 
 # Include these hooks in every testcase.
 MiniTest::Spec.send :include, MiniTestHooks
+MiniTest::Spec.send :include, Mail::Matchers
 
 # Configure Billbo
 Billbo.host = 'billbo.test'
