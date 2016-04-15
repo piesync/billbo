@@ -14,6 +14,7 @@ Configuration.db.create_table :invoices do
   Boolean :added_vat
   Time    :finalized_at
   Time    :reserved_at
+  String  :interval
 
   # Credit notes
   Boolean :credit_note, default: false

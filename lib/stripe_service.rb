@@ -19,6 +19,10 @@ class StripeService
     }.merge(options))
   end
 
+  def subscription(id)
+    customer.subscriptions.retrieve(id)
+  end
+
   # Gets metadata for the customer.
   def customer_metadata
     customer.metadata.to_h.merge!(email: customer.email)

@@ -31,7 +31,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Wed, 20 Jan 2016 17:44:09 GMT
+      - Fri, 15 Apr 2016 14:48:49 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -49,7 +49,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_7kvrBt9cnotl9r
+      - req_8H6SMwT76nsxa2
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -72,7 +72,7 @@ http_interactions:
           "trial_period_days": null
         }
     http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:44:12 GMT
+  recorded_at: Wed, 20 Jan 2016 00:00:00 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/plans/test
@@ -104,7 +104,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Wed, 20 Jan 2016 17:44:10 GMT
+      - Fri, 15 Apr 2016 14:48:49 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -122,7 +122,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_7kvrkjDL1vbdds
+      - req_8H6S46wXd34cfn
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -145,5 +145,5 @@ http_interactions:
           "trial_period_days": null
         }
     http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:44:13 GMT
+  recorded_at: Wed, 20 Jan 2016 00:00:00 GMT
 recorded_with: VCR 2.9.2

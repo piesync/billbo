@@ -88,6 +88,13 @@ class InvoiceService
     invoice.vat_amount = stripe_invoice.tax.to_i
     invoice.vat_rate = stripe_invoice.tax_percent
     invoice.currency = stripe_invoice.currency
+
+    # The invoice interval (month/year) is the current interval
+    # of the subscription attached to the invoice.
+    invoice.interval = if subscription_id = stripe_invoice.subscription
+      stripe_service.subscription(subscription_id)
+        .plan.interval
+    end
   end
 
   def snapshot_card(card, invoice)

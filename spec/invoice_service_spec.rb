@@ -73,6 +73,33 @@ describe InvoiceService do
           invoice.card_brand.must_equal 'Visa'
           invoice.card_last4.must_equal '4242'
           invoice.card_country_code.must_equal 'US'
+          invoice.interval.must_equal 'month'
+        end
+      end
+
+      describe 'when the plan is yearly' do
+        let(:plan) do
+          begin
+            Stripe::Plan.retrieve('test_yearly')
+          rescue
+            Stripe::Plan.create \
+              id: 'test_yearly',
+              name: 'Test Yearly Plan',
+              amount: 10000,
+              currency: 'usd',
+              interval: 'year'
+          end
+        end
+
+        it 'finalizes the invoice' do
+          VCR.use_cassette('process_payment_yearly') do
+            service.create_subscription(plan: plan.id)
+
+            invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+
+            invoice.finalized?.must_equal true
+            invoice.interval.must_equal 'year'
+          end
         end
       end
     end
@@ -100,6 +127,7 @@ describe InvoiceService do
           invoice.card_brand.must_equal 'Visa'
           invoice.card_last4.must_equal '4242'
           invoice.card_country_code.must_equal 'US'
+          invoice.interval.must_equal 'month'
         end
       end
     end
