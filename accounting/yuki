@@ -5,6 +5,7 @@ now   = Time.now
 year  = ARGV[0].to_i || now.year
 month = ARGV[1].to_i || now.month
 day   = ARGV[2].to_i || now.day
+yday  = Time.new(year, month, day).yday
 
 def vat_code(invoice)
   # Check info on the original invoice if this is a refund.
@@ -96,7 +97,7 @@ end
 xml_date = '%d-%02d-%02d' % [year, month, day]
 
 xml = template.render([{
-  reference: 'D%02d%02d' % [month, day],
+  reference: 'M%03d' % [yday],
   subject: 'Dagtotaal %02d/%02d/%d' % [day, month, year],
   process: 'true',
   date: xml_date,
