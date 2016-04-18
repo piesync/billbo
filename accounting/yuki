@@ -84,7 +84,7 @@ lines = invoices.map do |invoice|
       reference: '',
       category: '13',
       amount: (invoice.total_eur.to_f / 100).round(2).to_s,
-      vat_rate: invoice.vat_rate.round(2).to_f.to_s,
+      vat_rate: (invoice.vat_rate || 0).round(2).to_f.to_s,
       vat_included: 'true',
       vat_type: vat_type,
       vat_description: vat_desc,
