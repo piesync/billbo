@@ -110,11 +110,13 @@ describe App do
       Capybara.reset_sessions!
     end
 
+    let(:vat_number) { nil }
+
     let(:metadata) {{
       country_code: country_code,
       vat_registered: vat_registered,
       name: 'John Doe',
-      vat_number: 'NL1234',
+      vat_number: vat_number,
       address: 'Doestreet'
     }}
 
@@ -164,6 +166,7 @@ describe App do
 
     describe 'subscription without VAT (reverse)' do
       let(:country_code) { 'NL' }
+      let(:vat_number) { 'NL1234' }
       let(:vat_registered) { true }
 
       it 'generates an invoice without VAT' do
