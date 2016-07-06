@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 require 'analytics_channel'
 
 describe AnalyticsChannel do
