@@ -61,6 +61,26 @@ class App < Base
     body pdf.read
   end
 
+  # List invoices
+  #
+  # by_account_id     - customer account identifier
+  # finalized_before  - finalized before given timestamp
+  # finalized_after   - finalized after given timestamp
+  #
+  # Returns a JSON array of {number: .., finalized_at: ..}.
+  get '/invoices' do
+    invoices = %w(by_account_id finalized_before finalized_after).reduce(
+      Invoice.finalized.newest_first
+    ) do |scope,key|
+      params.has_key?(key) ? scope.public_send(key, params[key]) : scope
+    end
+
+    json(
+      invoices.
+        map{|record| record.values.slice(:number, :finalized_at)}
+    )
+  end
+
   # Fetches a preview breakdown of the costs of a subscription.
   #
   # plan         - Stripe plan ID.
