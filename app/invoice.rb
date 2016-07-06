@@ -19,16 +19,36 @@ class Invoice < Sequel::Model
     between(from, from+3.months)
   end
 
+  def_dataset_method(:finalized) do
+    exclude(finalized_at: nil)
+  end
+
+  def_dataset_method(:not_reserved) do
+    where(reserved_at: nil)
+  end
+
+  def_dataset_method(:newest_first) do
+    order(:finalized_at).reverse
+  end
+
+  def_dataset_method(:by_account_id) do |account_id|
+    where(customer_accounting_id: account_id)
+  end
+
+  def_dataset_method(:finalized_before) do |before|
+    where{finalized_at < before}
+  end
+
+  def_dataset_method(:finalized_after) do |after|
+    where{finalized_at >= after}
+  end
+
   # Returns all finalized invoices from a given period.
   def self.between(from, to)
-    where(
-      conditions = [
-        'finalized_at IS NOT NULL',
-        'reserved_at is NULL',
-        "finalized_at >= '#{from.strftime}'",
-        "finalized_at < '#{to.strftime}'"
-      ].join(' AND ')
-    )
+    finalized.
+      not_reserved.
+      finalized_after(from).
+      finalized_before(to)
   end
 
   def finalize!
