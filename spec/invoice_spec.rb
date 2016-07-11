@@ -5,10 +5,10 @@ describe Invoice do
 
   describe '#find_or_create' do
     it 'does not create duplicate invoices' do
-      invoice1 = Invoice.find_or_create_from_stripe(stripe_id: '1')
+      invoice1 = Invoice.find_or_create_by_stripe_id('1')
       Invoice.count.must_equal 1
 
-      invoice2 = Invoice.find_or_create_from_stripe(stripe_id: '1')
+      invoice2 = Invoice.find_or_create_by_stripe_id('1')
       invoice2.must_equal invoice1
       Invoice.count.must_equal 1
     end
@@ -37,7 +37,7 @@ describe Invoice do
 
     it 'can not be finalized twice (idempotent)' do
       proc do
-        Invoice.new.finalize!.finalize!
+        invoice.finalize!.finalize!
       end.must_raise Invoice::AlreadyFinalized
     end
 
@@ -49,6 +49,20 @@ describe Invoice do
 
         invoice1.number.must_equal "#{year}000001"
         invoice2.number.must_equal "#{year}000002"
+    end
+
+    # Note: sqlite does not allow multi threaded access, the Ruby
+    # adapter protects access with a lock.  Use postgres or other to
+    # run these tests.
+    it 'handles concurrency' do
+      invoices = 25.times.map { Invoice.create }
+
+      invoices.map do |invoice|
+        Thread.new { invoice.finalize! }
+      end.each(&:join)
+
+      invoices.map(&:number).uniq.size.must_equal invoices.size
+      invoices.map(&:year).uniq.size.must_equal 1
     end
   end
 
