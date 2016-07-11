@@ -51,9 +51,6 @@ describe Invoice do
         invoice2.number.must_equal "#{year}000002"
     end
 
-    # Note: sqlite does not allow multi threaded access, the Ruby
-    # adapter protects access with a lock.  Use postgres or other to
-    # run these tests.
     it 'handles concurrency' do
       invoices = 25.times.map { Invoice.create }
 

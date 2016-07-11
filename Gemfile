@@ -11,11 +11,11 @@ gem 'valvat'
 gem 'multi_json'
 gem 'oj'
 gem 'sequel'
+gem 'pg'
 gem 'rumor', github: 'piesync/rumor'
 gem 'sucker_punch'
 gem 'analytics-ruby', :require => 'segment'
 
-gem 'sqlite3', group: [:test, :development]
 gem 'rake', group: [:test, :development]
 
 gem 'shrimp'
@@ -47,7 +47,6 @@ group :development do
 end
 
 group :production do
-  gem 'pg'
   gem 'puma'
   gem 'sentry-raven', :git => "https://github.com/getsentry/raven-ruby.git", :require => 'raven'
 end

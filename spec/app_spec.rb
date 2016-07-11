@@ -334,7 +334,7 @@ describe App do
         end
       end
 
-      let(:params) { {finalized_before: (now + 4.days).iso8601} }
+      let(:params) { {finalized_before: (now + 4.5.days).iso8601} }
       before { invoices }
 
       it 'only returns the first invoices' do
@@ -353,7 +353,7 @@ describe App do
         end
       end
 
-      let(:params) { {finalized_after: (now + 5.days).iso8601} }
+      let(:params) { {finalized_after: (now + 5.5.days).iso8601} }
       before { invoices }
 
       it 'only returns the last invoices' do
@@ -383,8 +383,8 @@ describe App do
       let(:params) do
         {
           by_account_id: account_id,
-          finalized_after: (now + 5.days).iso8601,
-          finalized_before: (now + 8.days).iso8601
+          finalized_after: (now + 5.5.days).iso8601,
+          finalized_before: (now + 8.5.days).iso8601
         }
       end
 
