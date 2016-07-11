@@ -226,7 +226,7 @@ GEM
     i18n_data (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.2)
-    json (1.8.1)
+    json (1.8.3)
     listen (2.7.9)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -380,5 +380,8 @@ DEPENDENCIES
   vcr
   webmock!
 
+RUBY VERSION
+   ruby 2.3.1p112
+
 BUNDLED WITH
-   1.11.2
+   1.12.5
