@@ -38,6 +38,10 @@ class Invoice < Sequel::Model
     where{finalized_at >= after}
   end
 
+  def_dataset_method(:with_pdf_generated) do
+    exclude(pdf_generated_at: nil)
+  end
+
   # Returns all finalized invoices from a given period.
   def self.between(from, to)
     finalized.
