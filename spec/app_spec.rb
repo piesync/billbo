@@ -287,7 +287,7 @@ describe App do
       before do
         (0..99).to_a.shuffle.map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -301,13 +301,13 @@ describe App do
     describe 'by account id' do
       let(:account_invoices) do
         10.times.map do |i|
-          Invoice.create(customer_accounting_id: account_id).finalize!
+          Invoice.create(customer_accounting_id: account_id).finalize!.pdf_generated!
         end
       end
 
       let(:other_invoices) do
         10.times.map do |i|
-          Invoice.create.finalize!
+          Invoice.create.finalize!.pdf_generated!
         end
       end
 
@@ -329,7 +329,7 @@ describe App do
       let(:invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -348,7 +348,7 @@ describe App do
       let(:invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -367,7 +367,7 @@ describe App do
       let(:account_invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create(customer_accounting_id: account_id).finalize!
+            Invoice.create(customer_accounting_id: account_id).finalize!.pdf_generated!
           end
         end
       end
@@ -375,7 +375,7 @@ describe App do
       let(:other_invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end

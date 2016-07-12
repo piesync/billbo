@@ -70,7 +70,7 @@ class App < Base
   # Returns a JSON array of {number: .., finalized_at: ..}.
   get '/invoices' do
     invoices = %w(by_account_id finalized_before finalized_after).reduce(
-      Invoice.finalized.newest_first
+      Invoice.finalized.with_pdf_generated.newest_first
     ) do |scope,key|
       params.has_key?(key) ? scope.public_send(key, params[key]) : scope
     end
