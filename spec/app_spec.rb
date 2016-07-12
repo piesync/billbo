@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 
 describe App do
   include Rack::Test::Methods
@@ -267,6 +267,139 @@ describe App do
           visit "/invoices/#{number}"
           page.save_screenshot('spec/visual/refund.png', :full => true)
         end
+      end
+    end
+  end
+
+  describe 'get /invoices' do
+    let(:now) { Time.now }
+    let(:params) { {} }
+    let(:account_id) { SecureRandom.hex }
+
+    subject { get '/invoices', params }
+
+    it 'responds with OK' do
+      subject.status.must_equal 200
+    end
+
+    it 'responds with JSON' do
+      subject.content_type.must_equal 'application/json'
+    end
+
+    describe 'ordering' do
+      before do
+        (0..99).to_a.shuffle.map do |i|
+          Timecop.freeze(now + i.days) do
+            Invoice.create.finalize!
+          end
+        end
+      end
+
+      it 'lists newest first' do
+        result = JSON.parse(subject.body)
+        result.first['finalized_at'].must_be :>, result.last['finalized_at']
+      end
+    end
+
+    describe 'by account id' do
+      let(:account_invoices) do
+        10.times.map do |i|
+          Invoice.create(customer_accounting_id: account_id).finalize!
+        end
+      end
+
+      let(:other_invoices) do
+        10.times.map do |i|
+          Invoice.create.finalize!
+        end
+      end
+
+      let(:params) { {by_account_id: account_id} }
+
+      before do
+        account_invoices
+        other_invoices
+      end
+
+      it 'include all invoice for given account newest first' do
+        JSON.parse(subject.body).map do |invoice|
+          invoice["number"]
+        end.to_set.must_equal account_invoices.map(&:number).to_set
+      end
+    end
+
+    describe 'finalized before' do
+      let(:invoices) do
+        (0..9).map do |i|
+          Timecop.freeze(now + i.days) do
+            Invoice.create.finalize!
+          end
+        end
+      end
+
+      let(:params) { {finalized_before: (now + 4.5.days).iso8601} }
+      before { invoices }
+
+      it 'only returns the first invoices' do
+        JSON.parse(subject.body).map do |invoice|
+          invoice["number"]
+        end.to_set.must_equal invoices[0..4].map(&:number).to_set
+      end
+    end
+
+    describe 'finalized after' do
+      let(:invoices) do
+        (0..9).map do |i|
+          Timecop.freeze(now + i.days) do
+            Invoice.create.finalize!
+          end
+        end
+      end
+
+      let(:params) { {finalized_after: (now + 5.5.days).iso8601} }
+      before { invoices }
+
+      it 'only returns the last invoices' do
+        JSON.parse(subject.body).map do |invoice|
+          invoice["number"]
+        end.to_set.must_equal invoices[6..-1].map(&:number).to_set
+      end
+    end
+
+    describe 'combined filters' do
+      let(:account_invoices) do
+        (0..9).map do |i|
+          Timecop.freeze(now + i.days) do
+            Invoice.create(customer_accounting_id: account_id).finalize!
+          end
+        end
+      end
+
+      let(:other_invoices) do
+        (0..9).map do |i|
+          Timecop.freeze(now + i.days) do
+            Invoice.create.finalize!
+          end
+        end
+      end
+
+      let(:params) do
+        {
+          by_account_id: account_id,
+          finalized_after: (now + 5.5.days).iso8601,
+          finalized_before: (now + 8.5.days).iso8601
+        }
+      end
+
+      before do
+        account_invoices
+        other_invoices
+      end
+
+      it 'only returns the last invoices' do
+        JSON.parse(subject.body).map do |invoice|
+          invoice["number"]
+        end.to_set.must_equal account_invoices[6..-2].map(&:number).to_set
       end
     end
   end

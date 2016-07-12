@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 
 describe Hooks do
   include Rack::Test::Methods
@@ -105,12 +105,12 @@ describe Hooks do
 
           Invoice.count.must_equal 2
 
-          invoice = Invoice.first
+          invoice = Invoice.order(:sequence_number).first
           invoice.sequence_number.must_equal 1
           invoice.finalized_at.wont_be_nil
           invoice.credit_note.must_equal false
 
-          credit_note = Invoice.last
+          credit_note = Invoice.order(:sequence_number).last
           credit_note.sequence_number.must_equal 2
           credit_note.finalized_at.wont_be_nil
           credit_note.credit_note.must_equal true

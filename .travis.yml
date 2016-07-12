@@ -1,14 +1,24 @@
 language: ruby
+
 rvm:
-  - 2.2.3
+  - 2.3.1
+
 install: bundle install --without development --deployment
+
 cache:
   directories:
     - vendor/bundle
-before_script: mkdir tmp
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'CREATE DATABASE travis;' -U postgres
+
 addons:
   code_climate:
     repo_token:
       secure: "c8ZzZa0NJycJ/uJZw8XG2CgHwBzkBOG17ZIFFXqvARmCJHgpu5Qkt4oSG9RUQOV4AaOMLzVjY7ry1ptGgxHi0nMGwQ8R65Xtq9jM6EfGmNrA0VpEGra8JQ5pYCaFi49zMjmFthEwm14EiSnIm2+OzfWbwSwYvwAapVG6YaR9gwI="
+
 notifications:
   email: false

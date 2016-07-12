@@ -44,11 +44,7 @@ class InvoiceService
     invoice = Invoice.first(stripe_id: stripe_invoice_id)
 
     if invoice
-      credit_note = Invoice.create \
-        credit_note: true,
-        reference_number: invoice.number
-
-      credit_note.finalize!
+      Invoice.create(credit_note: true, reference_number: invoice.number).finalize!
     else
       raise OrphanRefund
     end
@@ -106,7 +102,7 @@ class InvoiceService
   end
 
   def ensure_invoice(stripe_id)
-    Invoice.find_or_create_from_stripe(stripe_id: stripe_id)
+    Invoice.find_or_create_by_stripe_id(stripe_id)
   end
 
   def stripe_service

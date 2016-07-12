@@ -1,5 +1,5 @@
 $environment = :test
-require './config/boot'
+require_relative '../config/boot'
 
 require 'minitest/spec'
 require 'minitest/autorun'
@@ -9,7 +9,7 @@ require 'capybara/poltergeist'
 
 # Configure VCR
 VCR.configure do |c|
-  c.cassette_library_dir = 'spec/cassettes'
+  c.cassette_library_dir = (Pathname.new(__FILE__) + '../../spec/cassettes').to_s
   c.hook_into :webmock
   c.default_cassette_options = {
     record: :once,
@@ -25,7 +25,7 @@ VCR.configure do |c|
 end
 
 VCR.use_cassette('configuration_preload') do
-  require './config/environment'
+  require_relative '../config/environment'
 end
 
 # Minitest clear db hook
