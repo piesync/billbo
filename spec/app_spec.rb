@@ -271,7 +271,7 @@ describe App do
   describe 'get /invoices' do
     let(:now) { Time.now }
     let(:params) { {} }
-    let(:account_id) { SecureRandom.hex }
+    let(:accounting_id) { SecureRandom.hex }
 
     subject { get '/invoices', params }
 
@@ -301,7 +301,7 @@ describe App do
     describe 'by account id' do
       let(:account_invoices) do
         10.times.map do |i|
-          Invoice.create(customer_accounting_id: account_id).finalize!
+          Invoice.create(customer_accounting_id: accounting_id).finalize!
         end
       end
 
@@ -311,7 +311,7 @@ describe App do
         end
       end
 
-      let(:params) { {by_account_id: account_id} }
+      let(:params) { {by_accounting_id: accounting_id} }
 
       before do
         account_invoices
@@ -367,7 +367,7 @@ describe App do
       let(:account_invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create(customer_accounting_id: account_id).finalize!
+            Invoice.create(customer_accounting_id: accounting_id).finalize!
           end
         end
       end
@@ -382,7 +382,7 @@ describe App do
 
       let(:params) do
         {
-          by_account_id: account_id,
+          by_accounting_id: accounting_id,
           finalized_after: (now + 5.5.days).iso8601,
           finalized_before: (now + 8.5.days).iso8601
         }
