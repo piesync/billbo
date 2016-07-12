@@ -36,39 +36,33 @@ describe Billbo do
 
   describe '#preview' do
     it 'returns a preview price calculation' do
-      stub_request(:get, "https://X:TOKEN@billbo.test/preview/basic")
-        .with(query: { country_code: 'BE', vat_registered: 'false' })
-        .to_return(body: MultiJson.dump(preview))
+      stub_app(:get, 'preview/basic', {query: {country_code: 'BE', vat_registered: 'false'}}, json: preview)
 
-      _preview = Billbo.preview(plan: 'basic', country_code: 'BE',
-        vat_registered: false)
-
-      _preview.must_equal(preview)
+      Billbo.preview(
+        plan: 'basic',
+        country_code: 'BE',
+        vat_registered: false
+      ).must_equal preview
     end
   end
 
   describe '#reserve' do
     it 'reserves an empty invoice slot' do
-      stub_request(:post, "https://X:TOKEN@billbo.test/reserve")
-        .to_return(body: MultiJson.dump(reservation))
+      stub_app(:post, 'reserve', {}, json: reservation)
 
-      _reservation = Billbo.reserve
-
-      _reservation.must_equal(reservation)
+      Billbo.reserve.must_equal reservation
     end
   end
 
   describe '#vat' do
     it 'returns the number itself if it exists' do
-      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123")
-        .to_return(status: 200)
+      stub_app(:get, 'vat/BE123', {}, status: 200)
 
       Billbo.vat('BE123').must_equal number: 'BE123'
     end
 
     it 'returns nil if the vat number does not exist' do
-      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123")
-        .to_return(status: 404)
+      stub_app(:get, 'vat/BE123', {}, status: 404)
 
       Billbo.vat('BE123').must_be_nil
     end
@@ -84,15 +78,13 @@ describe Billbo do
     }}
 
     it 'returns details about the number if it exists' do
-      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123/details?own_vat=")
-        .to_return(body: MultiJson.dump(details))
+      stub_app(:get, 'vat/BE123/details?own_vat=', {}, json: details)
 
       Billbo.vat_details('BE123').must_equal details
     end
 
     it 'returns nil if the vat number does not exist' do
-      stub_request(:get, "https://X:TOKEN@billbo.test/vat/BE123/details?own_vat=")
-        .to_return(status: 404)
+      stub_app(:get, 'vat/BE123/details?own_vat=', {}, status: 404)
 
       Billbo.vat_details('BE123').must_be_nil
     end
@@ -100,12 +92,16 @@ describe Billbo do
 
   describe '#create_subscription' do
     it 'returns the created subscription' do
-      stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
-        .with(body: { plan: 'basic', customer: 'x', other: 'things', metadata: { one: 'two' } })
-        .to_return(body: MultiJson.dump(subscription))
+      stub_app(:post, 'subscriptions', {body: {plan: 'basic', customer: 'x', other: 'things', metadata: {one: 'two'}}}, json: subscription)
 
-      sub = Billbo.create_subscription(plan: 'basic',
-        customer: 'x', other: 'things', metadata: { one: 'two' })
+      sub = Billbo.create_subscription(
+        plan: 'basic',
+        customer: 'x',
+        other: 'things',
+        metadata: {
+          one: 'two'
+        }
+      )
 
       sub.must_be_kind_of(Stripe::Subscription)
       sub.to_h.must_equal subscription
@@ -113,15 +109,59 @@ describe Billbo do
 
     describe 'a Stripe error occurs' do
       it 'raises the error' do
-        stub_request(:post, "https://X:TOKEN@billbo.test/subscriptions")
-          .with(body: { plan: 'basic', customer: 'x', other: 'things' })
-          .to_return(body: MultiJson.dump(error), status: 402)
+        stub_app(:post, 'subscriptions', {body: {plan: 'basic', customer: 'x', other: 'things'}}, status: 402, json: error)
 
         proc do
-          sub = Billbo.create_subscription(plan: 'basic',
-            customer: 'x', other: 'things')
+          Billbo.create_subscription(
+            plan: 'basic',
+            customer: 'x',
+            other: 'things'
+          )
         end.must_raise(Stripe::CardError)
       end
     end
+  end
+
+  describe '#invoices' do
+    let(:account_id) { 'wilma' }
+    let(:result) { ['fred', 'barney'] }
+
+    before do
+      stub_app(:get, 'invoices', {query: {by_account_id: account_id}}, json: result)
+    end
+
+    it 'returns result' do
+      Billbo.invoices(by_account_id: account_id).
+        must_equal(result)
+    end
+  end
+
+  describe '#pdf' do
+    let(:number) { 31415 }
+    let(:data) { 'yabadabadoo!' }
+
+    before do
+      stub_app(:get, "invoices/#{number}.pdf", {}, body: data)
+    end
+
+    it 'returns data' do
+      Billbo.pdf(number).
+        must_equal(data)
+    end
+  end
+
+  def stub_app(method, path, with, response)
+    response = response.dup
+    response[:status] ||= 200
+    if json = response.delete(:json)
+      response.merge!(
+        headers: {content_type: 'application/json'},
+        body: JSON.dump(json)
+      )
+    end
+
+    stub_request(method, "https://X:TOKEN@billbo.test/#{path}")
+      .with(with)
+      .to_return(response)
   end
 end
