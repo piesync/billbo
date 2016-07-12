@@ -16,7 +16,7 @@ gem 'rumor', github: 'piesync/rumor'
 gem 'sucker_punch'
 gem 'analytics-ruby', :require => 'segment'
 
-gem 'rake', group: [:test, :development]
+gem 'rake'
 
 gem 'shrimp'
 gem 'carrierwave'
