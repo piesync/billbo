@@ -268,6 +268,50 @@ describe App do
     end
   end
 
+  describe 'get /invoices/NUMBER.pdf' do
+    let(:invoice) { Invoice.create.finalize!.pdf_generated! }
+    let(:data) { 'yabadabadoo!' }
+    let(:number) { invoice.number }
+
+    subject { get "/invoices/#{number}.pdf" }
+
+    before do
+      PdfService.
+        any_instance.
+        stubs(:retrieve_pdf).
+        with(invoice).
+        returns(stub(content_type: 'application/pdf', read: data))
+    end
+
+    it 'respond with OK' do
+      subject.status.must_equal 200
+    end
+
+    it 'respond with PDF' do
+      subject.content_type.must_equal 'application/pdf'
+    end
+
+    it 'respond with data' do
+      subject.body.must_equal data
+    end
+
+    describe 'non existing PDF' do
+      let(:number) { 'yadayada' }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+
+    describe 'without PDF' do
+      let(:invoice) { Invoice.create.finalize! }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+  end
+
   describe 'get /invoices' do
     let(:now) { Time.now }
     let(:params) { {} }
