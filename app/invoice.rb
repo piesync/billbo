@@ -1,15 +1,10 @@
 class Invoice < Sequel::Model
   AlreadyFinalized = Class.new(StandardError)
 
-  def self.find_or_create_from_stripe(stripe_id:, **attributes)
-    # Wrapped in a safe transaction so we do not generate multiple invoices
-    # associated with the same Stripe invoice.
-    transaction do
-      attributes = attributes.merge(stripe_id: stripe_id)
-      # Check if an invoice exists already with that stripe id.
-      invoice = Invoice.first(stripe_id: stripe_id)
-
-      invoice || create(attributes)
+  def self.find_or_create_by_stripe_id(stripe_id)
+    transaction(isolation: :serializable,
+                retry_on: [Sequel::SerializationFailure]) do
+      find_or_create(stripe_id: stripe_id)
     end
   end
 
@@ -54,32 +49,28 @@ class Invoice < Sequel::Model
   def finalize!
     raise AlreadyFinalized if finalized?
 
-    # Wrapped in a safe transaction so we do not generate the same invoice number twice.
-    transaction do
-      # update the invoice.
-      update self.class.next_sequence
+    self.class.with_next_sequence do |next_sequence|
+      update_always(next_sequence)
     end
 
     self
   end
 
   def self.reserve!
-    transaction do
-      reserved_info = next_sequence.merge!(reserved_at: Time.now)
-      # create the reserved slot.
-      create reserved_info
+    with_next_sequence do |next_sequence|
+      create.tap do |invoice|
+        invoice.update_always(next_sequence.merge(reserved_at: Time.now))
+      end
     end
   end
 
   def added_vat!
     update added_vat: true
-
     self
   end
 
   def pdf_generated!
     update pdf_generated_at: Time.now
-
     self
   end
 
@@ -132,33 +123,24 @@ class Invoice < Sequel::Model
     reference_number && Invoice.where(number: reference_number).first
   end
 
-  private
-
-  def transaction(&block)
-    self.class.transaction(&block)
-  rescue Sequel::Rollback
-    # We refresh the model here because of a bug in Sequel.
-    # Sequel marks the fields as non-dirty before executing the
-    # actual update. When the transaction fails and we try
-    # to allocate a new sequence number, the year does not change.
-    # This results in the year not being saved.
-    refresh
-    retry
+  # Update record with given attributes regardless of the current
+  # values thus overriding the sequel model logic which only saves
+  # "changes".
+  def update_always(attrs)
+    attrs.keys.each{|k| modified!(k)}
+    update(attrs)
   end
 
-  def self.transaction(&block)
-    execute_transaction(&block)
-  rescue Sequel::Rollback
-    retry
+  def self.transaction(options = {}, &block)
+    Configuration.db.transaction(options, &block)
   end
 
-  def self.execute_transaction(&block)
-    Configuration.db.transaction(isolation: :serializable, rollback: :reraise) do
-      begin
-        block.call
-      rescue Sequel::UniqueConstraintViolation
-        raise Sequel::Rollback
-      end
+  def self.with_next_sequence(&block)
+    transaction(isolation: :serializable,
+                retry_on: [Sequel::UniqueConstraintViolation,
+                           Sequel::SerializationFailure],
+                num_retries: nil) do
+      block.call(next_sequence)
     end
   end
 
