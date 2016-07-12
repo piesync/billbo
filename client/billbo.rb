@@ -94,6 +94,22 @@ module Billbo
     Stripe::Subscription.construct_from(body)
   end
 
+  # List invoices
+  #
+  # by_account_id     - customer account identifier
+  # finalized_before  - finalized before given timestamp
+  # finalized_after   - finalized after given timestamp
+  #
+  # Returns an array of {number: .., finalized_at: ..}.
+  def self.invoices(options)
+    get("/invoices", params: options)
+  end
+
+  # Return PDF data of given invoice by number.
+  def self.pdf(number)
+    get("/invoices/#{number}.pdf")
+  end
+
   class << self
 
     attr_accessor :host, :token
@@ -104,10 +120,17 @@ module Billbo
       define_method(verb) do |path, *args|
         raise 'Billbo host is not configured' unless Billbo.host
 
-        response = RestClient.send(verb,
-          "https://X:#{Billbo.token}@#{Billbo.host}#{path}", *args)
+        response = RestClient.public_send(
+          verb,
+          "https://X:#{Billbo.token}@#{Billbo.host}#{path}",
+          *args
+        )
 
-        MultiJson.decode(response.body, symbolize_keys: true) if response.body && !response.body.empty?
+        if response.body.present? && response.headers[:content_type] == 'application/json'
+          MultiJson.decode(response.body, symbolize_keys: true)
+        else
+          response
+        end
       end
     end
   end

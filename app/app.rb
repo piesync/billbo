@@ -20,6 +20,17 @@ class App < Base
     json(subscription)
   end
 
+  get '/invoices/:number.pdf' do
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice && invoice.pdf_generated_at
+
+    pdf = pdf_service.retrieve_pdf(invoice)
+
+    content_type pdf.content_type
+    body pdf.read
+  end
+
   # Populates a template with all invoice data.
   # This should never be used to show to customers, it should
   # only be used to generate PDF's, as information on the invoice
@@ -48,17 +59,6 @@ class App < Base
       stripe_coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
       credit_note: credit_note,
     ))
-  end
-
-  get 'invoices/:number.pdf' do
-    invoice = Invoice.where(number: params[:number]).first
-
-    halt 404 unless invoice
-
-    pdf = pdf_service.retrieve_pdf(invoice)
-
-    content_type pdf.content_type
-    body pdf.read
   end
 
   # List invoices
