@@ -20,6 +20,32 @@ def vat_code(invoice)
   end
 end
 
+def yuki_line(invoice)
+  original_invoice = invoice.reference || invoice
+  vat_desc, vat_type = vat_code(original_invoice)
+
+  total = (original_invoice.total_eur.to_f / 100).round(2)
+
+  total = -total if invoice.credit_note?
+
+  {
+    description: invoice.number,
+    quantity: '1',
+    product: {
+      description: 'invoice',
+      reference: '',
+      category: '13',
+      amount: total.to_s,
+      vat_rate: (original_invoice.vat_rate || 0).round(2).to_f.to_s,
+      vat_included: 'true',
+      vat_type: vat_type,
+      vat_description: vat_desc,
+      account_code: '8000',
+      remarks: 'none'
+    }
+  }
+end
+
 template = Tox.dsl do
   el('SalesInvoices',
     mel('SalesInvoice', {
@@ -68,48 +94,36 @@ administration_id = client.call(:administration_id, message: {
 start = Date.new(year, month, day)
 stop  = start + 1.day
 
-invoices = Invoice.between(start, stop).order_by(:number)
-
-lines = invoices.map do |invoice|
-  real_invoice = invoice.reference || invoice
-  vat_desc, vat_type = vat_code(real_invoice)
-
-  total = (real_invoice.total_eur.to_f / 100).round(2)
-
-  total = -total if invoice.credit_note?
-
-  {
-    description: invoice.number,
-    quantity: '1',
-    product: {
-      description: 'invoice',
-      reference: '',
-      category: '13',
-      amount: total.to_s,
-      vat_rate: (real_invoice.vat_rate || 0).round(2).to_f.to_s,
-      vat_included: 'true',
-      vat_type: vat_type,
-      vat_description: vat_desc,
-      account_code: '8000',
-      remarks: 'none'
-    }
-  }
-end
-
 xml_date = '%d-%02d-%02d' % [year, month, day]
 
-xml = template.render([{
-  reference: 'M%03d' % [yday],
-  subject: 'Dagtotaal %02d/%02d/%d' % [day, month, year],
-  process: 'true',
-  date: xml_date,
-  due_date: xml_date,
-  contact_code: '1',
-  lines: lines
-}])
+invoices = Invoice.between(start, stop).order_by(:number)
 
-client.call(:process_sales_invoices, message: {
-  'sessionId'        => session_id,
-  'administrationId' => administration_id,
-  "xmlDoc!"          => xml
-}).body
+categories = {
+  'M' => invoices.where('NOT credit_note').where(interval: 'month'),
+  'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
+  'C' => invoices.where('credit_note')
+}
+
+categories.each do |code, invoices|
+  return unless invoices.empty?
+
+  lines = invoices.map do |invoice|
+    yuki_line(invoice)
+  end
+
+  xml = template.render([{
+    reference: '%s%03d' % [code, yday],
+    subject: 'Dagtotaal (%s) %02d/%02d/%d' % [code, day, month, year],
+    process: 'true',
+    date: xml_date,
+    due_date: xml_date,
+    contact_code: '1',
+    lines: lines
+  }])
+
+  client.call(:process_sales_invoices, message: {
+    'sessionId'        => session_id,
+    'administrationId' => administration_id,
+    "xmlDoc!"          => xml
+  }).body
+end
