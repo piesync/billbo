@@ -102,11 +102,9 @@ categories = {
   'M' => invoices.where('NOT credit_note').where(interval: 'month'),
   'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
   'C' => invoices.where('credit_note')
-}
+}.reject { |k, v| v.empty? }
 
 categories.each do |code, invoices|
-  return unless invoices.empty?
-
   lines = invoices.map do |invoice|
     yuki_line(invoice)
   end
