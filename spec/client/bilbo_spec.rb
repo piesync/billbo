@@ -13,8 +13,8 @@ describe Billbo do
     year: 2014,
     sequence_number: 1,
     number: '2014.1',
-    finalized_at: '2014-07-30 17:16:35 +0200',
-    reserved_at: '2014-07-30 17:16:35 +0200'
+    finalized_at: Time.parse('2014-07-30 17:16:35 +0200'),
+    reserved_at: Time.parse('2014-07-30 17:16:35 +0200')
   }}
 
   let(:subscription) {{
@@ -47,10 +47,15 @@ describe Billbo do
   end
 
   describe '#reserve' do
-    it 'reserves an empty invoice slot' do
-      stub_app(:post, 'reserve', {}, json: reservation)
+    subject { Billbo.reserve }
+    before { stub_app(:post, 'reserve', {}, json: reservation) }
 
-      Billbo.reserve.must_equal reservation
+    it 'returns a Billbo::Invoice' do
+      subject.must_be_kind_of Billbo::Invoice
+    end
+
+    it 'reserves an empty invoice slot' do
+      subject.must_equal Billbo::Invoice.new(reservation)
     end
   end
 
@@ -124,15 +129,24 @@ describe Billbo do
 
   describe '#invoices' do
     let(:account_id) { 'wilma' }
-    let(:result) { ['fred', 'barney'] }
+    let(:result) { [{number: 'fred'}, {number: 'barney'}] }
 
     before do
       stub_app(:get, 'invoices', {query: {by_account_id: account_id}}, json: result)
     end
 
+    subject { Billbo.invoices(by_account_id: account_id) }
+
     it 'returns result' do
-      Billbo.invoices(by_account_id: account_id).
-        must_equal(result)
+      subject.size.must_equal(result.size)
+    end
+
+    it 'returns number props' do
+      subject.map(&:number).must_equal(result.map{|v| v[:number]})
+    end
+
+    it 'returns Billbo::Invoice instances' do
+      subject.map(&:class).uniq.must_equal([Billbo::Invoice])
     end
   end
 

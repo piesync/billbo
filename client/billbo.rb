@@ -3,8 +3,11 @@ require 'stripe'
 require 'multi_json'
 require 'uri'
 require 'billbo/stripe_like'
+require 'billbo/json_util'
 
 module Billbo
+  Invoice = Class.new(OpenStruct)
+
   class << self
     attr_accessor :host, :token
 
@@ -70,7 +73,7 @@ module Billbo
     #   reserved_at: '2014-07-30 17:16:35 +0200'
     # }
     def reserve
-      post("/reserve", {})
+      Invoice.new(post("/reserve", {}))
     end
 
     # Creates a new subscription with VAT.
@@ -127,7 +130,9 @@ module Billbo
         )
 
         if response.body.present? && response.headers[:content_type] == 'application/json'
-          MultiJson.decode(response.body, symbolize_keys: true)
+          JsonUtil.parse_attributes(
+            MultiJson.decode(response.body, symbolize_keys: true)
+          )
         else
           response
         end
