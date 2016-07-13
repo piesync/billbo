@@ -51,7 +51,7 @@ module Billbo
   def self.vat_details(number, own_vat = nil)
     get("/vat/#{number}/details", params: {
       own_vat: own_vat
-    })
+    }.compact)
   rescue RestClient::ResourceNotFound
     nil
   end

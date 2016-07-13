@@ -78,13 +78,13 @@ describe Billbo do
     }}
 
     it 'returns details about the number if it exists' do
-      stub_app(:get, 'vat/BE123/details?own_vat=', {}, json: details)
+      stub_app(:get, 'vat/BE123/details', {}, json: details)
 
       Billbo.vat_details('BE123').must_equal details
     end
 
     it 'returns nil if the vat number does not exist' do
-      stub_app(:get, 'vat/BE123/details?own_vat=', {}, status: 404)
+      stub_app(:get, 'vat/BE123/details', {}, status: 404)
 
       Billbo.vat_details('BE123').must_be_nil
     end

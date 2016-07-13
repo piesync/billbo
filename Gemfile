@@ -6,7 +6,7 @@ gemspec
 gem 'dotenv'
 gem 'activesupport'
 gem 'sinatra', :require => 'sinatra/base'
-gem 'stripe'
+gem 'stripe', '>= 1.42'
 gem 'valvat'
 gem 'multi_json'
 gem 'oj'

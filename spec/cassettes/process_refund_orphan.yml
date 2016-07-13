@@ -4,15 +4,15 @@ http_interactions:
     method: post
     uri: https://api.stripe.com/v1/customers
     body:
-      encoding: US-ASCII
-      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=30&card[cvc]=222&metadata[country_code]=NL&metadata[vat_registered]=false&metadata[vat_number]=NL123&metadata[accounting_id]=10001&metadata[other]=random
+      encoding: UTF-8
+      string: card[cvc]=222&card[exp_month]=12&card[exp_year]=30&card[number]=4242424242424242&metadata[accounting_id]=10001&metadata[country_code]=NL&metadata[other]=random&metadata[vat_number]=NL123&metadata[vat_registered]=false
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -20,9 +20,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
       Content-Length:
       - '217'
   response:
@@ -33,11 +33,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:38 GMT
+      - Wed, 13 Jul 2016 09:48:35 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1546'
+      - '1519'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -51,7 +51,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6Sbd2opLq0CZ
+      - req_8oMinePdDbzQyp
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -60,31 +60,30 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "cus_8H6Sy9BqQVmHWj",
+          "id": "cus_8oMi89hIbaHCOb",
           "object": "customer",
           "account_balance": 0,
-          "business_vat_id": null,
-          "created": 1460731717,
+          "created": 1468403314,
           "currency": null,
-          "default_source": "card_180YFN2nHroS7mLXpXAlI9Av",
+          "default_source": "card_18Wjyo2nHroS7mLXZKx2YhfZ",
           "delinquent": false,
           "description": null,
           "discount": null,
           "email": null,
           "livemode": false,
           "metadata": {
-            "country_code": "NL",
-            "vat_registered": "false",
-            "vat_number": "NL123",
             "accounting_id": "10001",
-            "other": "random"
+            "country_code": "NL",
+            "other": "random",
+            "vat_number": "NL123",
+            "vat_registered": "false"
           },
           "shipping": null,
           "sources": {
             "object": "list",
             "data": [
               {
-                "id": "card_180YFN2nHroS7mLXpXAlI9Av",
+                "id": "card_18Wjyo2nHroS7mLXZKx2YhfZ",
                 "object": "card",
                 "address_city": null,
                 "address_country": null,
@@ -96,7 +95,7 @@ http_interactions:
                 "address_zip_check": null,
                 "brand": "Visa",
                 "country": "US",
-                "customer": "cus_8H6Sy9BqQVmHWj",
+                "customer": "cus_8oMi89hIbaHCOb",
                 "cvc_check": "pass",
                 "dynamic_last4": null,
                 "exp_month": 12,
@@ -111,16 +110,16 @@ http_interactions:
             ],
             "has_more": false,
             "total_count": 1,
-            "url": "/v1/customers/cus_8H6Sy9BqQVmHWj/sources"
+            "url": "/v1/customers/cus_8oMi89hIbaHCOb/sources"
           },
           "subscriptions": {
             "object": "list",
             "data": [],
             "has_more": false,
             "total_count": 0,
-            "url": "/v1/customers/cus_8H6Sy9BqQVmHWj/subscriptions"
+            "url": "/v1/customers/cus_8oMi89hIbaHCOb/subscriptions"
           }
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:38 GMT
+  recorded_at: Wed, 13 Jul 2016 09:48:35 GMT
 recorded_with: VCR 2.9.2

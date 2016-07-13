@@ -88,8 +88,7 @@ class InvoiceService
     # The invoice interval (month/year) is the current interval
     # of the subscription attached to the invoice.
     invoice.interval = if subscription_id = stripe_invoice.subscription
-      stripe_service.subscription(subscription_id)
-        .plan.interval
+      Stripe::Subscription.retrieve(subscription_id).plan.interval
     end
   end
 

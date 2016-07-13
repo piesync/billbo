@@ -4,15 +4,15 @@ http_interactions:
     method: post
     uri: https://api.stripe.com/v1/customers
     body:
-      encoding: US-ASCII
-      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=30&card[cvc]=222&metadata[country_code]=NL&metadata[vat_registered]=false&metadata[vat_number]=NL123&metadata[accounting_id]=10001&metadata[other]=random
+      encoding: UTF-8
+      string: card[cvc]=222&card[exp_month]=12&card[exp_year]=30&card[number]=4242424242424242&metadata[accounting_id]=10001&metadata[country_code]=NL&metadata[other]=random&metadata[vat_number]=NL123&metadata[vat_registered]=false
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -20,9 +20,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
       Content-Length:
       - '217'
   response:
@@ -33,11 +33,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:51 GMT
+      - Wed, 13 Jul 2016 09:49:07 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1546'
+      - '1519'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -51,7 +51,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6S4R26CAg8yO
+      - req_8oMibhSHn6YCLW
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -60,31 +60,30 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "cus_8H6S3p2kq8CpDY",
+          "id": "cus_8oMiJPDJMKe6El",
           "object": "customer",
           "account_balance": 0,
-          "business_vat_id": null,
-          "created": 1460731730,
+          "created": 1468403346,
           "currency": null,
-          "default_source": "card_180YFa2nHroS7mLXmzVe8y4c",
+          "default_source": "card_18WjzK2nHroS7mLXhRu4QQxF",
           "delinquent": false,
           "description": null,
           "discount": null,
           "email": null,
           "livemode": false,
           "metadata": {
-            "country_code": "NL",
-            "vat_registered": "false",
-            "vat_number": "NL123",
             "accounting_id": "10001",
-            "other": "random"
+            "country_code": "NL",
+            "other": "random",
+            "vat_number": "NL123",
+            "vat_registered": "false"
           },
           "shipping": null,
           "sources": {
             "object": "list",
             "data": [
               {
-                "id": "card_180YFa2nHroS7mLXmzVe8y4c",
+                "id": "card_18WjzK2nHroS7mLXhRu4QQxF",
                 "object": "card",
                 "address_city": null,
                 "address_country": null,
@@ -96,7 +95,7 @@ http_interactions:
                 "address_zip_check": null,
                 "brand": "Visa",
                 "country": "US",
-                "customer": "cus_8H6S3p2kq8CpDY",
+                "customer": "cus_8oMiJPDJMKe6El",
                 "cvc_check": "pass",
                 "dynamic_last4": null,
                 "exp_month": 12,
@@ -111,18 +110,18 @@ http_interactions:
             ],
             "has_more": false,
             "total_count": 1,
-            "url": "/v1/customers/cus_8H6S3p2kq8CpDY/sources"
+            "url": "/v1/customers/cus_8oMiJPDJMKe6El/sources"
           },
           "subscriptions": {
             "object": "list",
             "data": [],
             "has_more": false,
             "total_count": 0,
-            "url": "/v1/customers/cus_8H6S3p2kq8CpDY/subscriptions"
+            "url": "/v1/customers/cus_8oMiJPDJMKe6El/subscriptions"
           }
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:51 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:07 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/plans/test
@@ -131,11 +130,11 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -143,9 +142,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -154,7 +153,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:52 GMT
+      - Wed, 13 Jul 2016 09:49:07 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -172,7 +171,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6S5xxP5GJnE6
+      - req_8oMiaHzEjemayL
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -195,7 +194,7 @@ http_interactions:
           "trial_period_days": null
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:52 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:07 GMT
 - request:
     method: get
     uri: https://api.stripe.com/v1/coupons/25OFF
@@ -204,11 +203,11 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -216,9 +215,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -227,7 +226,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:52 GMT
+      - Wed, 13 Jul 2016 09:49:08 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -245,7 +244,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6SkOj5DSRoAG
+      - req_8oMiMKCdr279YU
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -266,24 +265,24 @@ http_interactions:
           "metadata": {},
           "percent_off": 25,
           "redeem_by": null,
-          "times_redeemed": 102,
+          "times_redeemed": 110,
           "valid": true
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:52 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:08 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/customers/cus_8H6S3p2kq8CpDY
+    uri: https://api.stripe.com/v1/customers/cus_8oMiJPDJMKe6El
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -291,9 +290,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -302,11 +301,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:53 GMT
+      - Wed, 13 Jul 2016 09:49:09 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1546'
+      - '1519'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -320,7 +319,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6SoUsgmiIKAi
+      - req_8oMifDvCmgRRIy
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -329,31 +328,30 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "cus_8H6S3p2kq8CpDY",
+          "id": "cus_8oMiJPDJMKe6El",
           "object": "customer",
           "account_balance": 0,
-          "business_vat_id": null,
-          "created": 1460731730,
+          "created": 1468403346,
           "currency": null,
-          "default_source": "card_180YFa2nHroS7mLXmzVe8y4c",
+          "default_source": "card_18WjzK2nHroS7mLXhRu4QQxF",
           "delinquent": false,
           "description": null,
           "discount": null,
           "email": null,
           "livemode": false,
           "metadata": {
-            "country_code": "NL",
-            "vat_registered": "false",
-            "vat_number": "NL123",
             "accounting_id": "10001",
-            "other": "random"
+            "country_code": "NL",
+            "other": "random",
+            "vat_number": "NL123",
+            "vat_registered": "false"
           },
           "shipping": null,
           "sources": {
             "object": "list",
             "data": [
               {
-                "id": "card_180YFa2nHroS7mLXmzVe8y4c",
+                "id": "card_18WjzK2nHroS7mLXhRu4QQxF",
                 "object": "card",
                 "address_city": null,
                 "address_country": null,
@@ -365,7 +363,7 @@ http_interactions:
                 "address_zip_check": null,
                 "brand": "Visa",
                 "country": "US",
-                "customer": "cus_8H6S3p2kq8CpDY",
+                "customer": "cus_8oMiJPDJMKe6El",
                 "cvc_check": "pass",
                 "dynamic_last4": null,
                 "exp_month": 12,
@@ -380,31 +378,31 @@ http_interactions:
             ],
             "has_more": false,
             "total_count": 1,
-            "url": "/v1/customers/cus_8H6S3p2kq8CpDY/sources"
+            "url": "/v1/customers/cus_8oMiJPDJMKe6El/sources"
           },
           "subscriptions": {
             "object": "list",
             "data": [],
             "has_more": false,
             "total_count": 0,
-            "url": "/v1/customers/cus_8H6S3p2kq8CpDY/subscriptions"
+            "url": "/v1/customers/cus_8oMiJPDJMKe6El/subscriptions"
           }
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:53 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:09 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/customers/cus_8H6S3p2kq8CpDY/subscriptions
+    uri: https://api.stripe.com/v1/customers/cus_8oMiJPDJMKe6El/subscriptions
     body:
-      encoding: US-ASCII
-      string: tax_percent=21&plan=test&coupon=25OFF
+      encoding: UTF-8
+      string: coupon=25OFF&plan=test&tax_percent=21
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -412,9 +410,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
       Content-Length:
       - '37'
   response:
@@ -425,11 +423,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:55 GMT
+      - Wed, 13 Jul 2016 09:49:10 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1300'
+      - '1346'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -443,7 +441,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6ScbjRceNJRM
+      - req_8oMi5ZIivNADbW
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -452,14 +450,15 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "sub_8H6SzFH8st88Y4",
+          "id": "sub_8oMihF3FfNAMsq",
           "object": "subscription",
           "application_fee_percent": null,
           "cancel_at_period_end": false,
           "canceled_at": null,
-          "current_period_end": 1463323734,
-          "current_period_start": 1460731734,
-          "customer": "cus_8H6S3p2kq8CpDY",
+          "created": 1468403350,
+          "current_period_end": 1471081750,
+          "current_period_start": 1468403350,
+          "customer": "cus_8oMiJPDJMKe6El",
           "discount": {
             "object": "discount",
             "coupon": {
@@ -475,15 +474,16 @@ http_interactions:
               "metadata": {},
               "percent_off": 25,
               "redeem_by": null,
-              "times_redeemed": 103,
+              "times_redeemed": 111,
               "valid": true
             },
-            "customer": "cus_8H6S3p2kq8CpDY",
-            "end": 1468594134,
-            "start": 1460731734,
-            "subscription": "sub_8H6SzFH8st88Y4"
+            "customer": "cus_8oMiJPDJMKe6El",
+            "end": 1476352150,
+            "start": 1468403350,
+            "subscription": "sub_8oMihF3FfNAMsq"
           },
           "ended_at": null,
+          "livemode": false,
           "metadata": {},
           "plan": {
             "id": "test",
@@ -500,27 +500,27 @@ http_interactions:
             "trial_period_days": null
           },
           "quantity": 1,
-          "start": 1460731734,
+          "start": 1468403350,
           "status": "active",
           "tax_percent": 21.0,
           "trial_end": null,
           "trial_start": null
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:55 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:10 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices?customer=cus_8H6S3p2kq8CpDY&limit=1
+    uri: https://api.stripe.com/v1/invoices?customer=cus_8oMiJPDJMKe6El&limit=1
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -528,9 +528,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -539,7 +539,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:56 GMT
+      - Wed, 13 Jul 2016 09:49:11 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -557,7 +557,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6SPKXl4XTjA1
+      - req_8oMiT5McWm9SDR
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -569,17 +569,17 @@ http_interactions:
           "object": "list",
           "data": [
             {
-              "id": "in_180YFe2nHroS7mLXNcunH4WT",
+              "id": "in_18WjzO2nHroS7mLXP4d0uhui",
               "object": "invoice",
               "amount_due": 1360,
               "application_fee": null,
               "attempt_count": 1,
               "attempted": true,
-              "charge": "ch_180YFe2nHroS7mLXpcZV9Mis",
+              "charge": "ch_18WjzO2nHroS7mLXZxbILumm",
               "closed": true,
               "currency": "usd",
-              "customer": "cus_8H6S3p2kq8CpDY",
-              "date": 1460731734,
+              "customer": "cus_8oMiJPDJMKe6El",
+              "date": 1468403350,
               "description": null,
               "discount": {
                 "object": "discount",
@@ -596,13 +596,13 @@ http_interactions:
                   "metadata": {},
                   "percent_off": 25,
                   "redeem_by": null,
-                  "times_redeemed": 103,
+                  "times_redeemed": 111,
                   "valid": true
                 },
-                "customer": "cus_8H6S3p2kq8CpDY",
-                "end": 1468594134,
-                "start": 1460731734,
-                "subscription": "sub_8H6SzFH8st88Y4"
+                "customer": "cus_8oMiJPDJMKe6El",
+                "end": 1476352150,
+                "start": 1468403350,
+                "subscription": "sub_8oMihF3FfNAMsq"
               },
               "ending_balance": 0,
               "forgiven": false,
@@ -610,7 +610,7 @@ http_interactions:
                 "object": "list",
                 "data": [
                   {
-                    "id": "sub_8H6SzFH8st88Y4",
+                    "id": "sub_8oMihF3FfNAMsq",
                     "object": "line_item",
                     "amount": 1499,
                     "currency": "usd",
@@ -619,8 +619,8 @@ http_interactions:
                     "livemode": false,
                     "metadata": {},
                     "period": {
-                      "start": 1460731734,
-                      "end": 1463323734
+                      "start": 1468403350,
+                      "end": 1471081750
                     },
                     "plan": {
                       "id": "test",
@@ -644,18 +644,18 @@ http_interactions:
                 ],
                 "has_more": false,
                 "total_count": 1,
-                "url": "/v1/invoices/in_180YFe2nHroS7mLXNcunH4WT/lines"
+                "url": "/v1/invoices/in_18WjzO2nHroS7mLXP4d0uhui/lines"
               },
               "livemode": false,
               "metadata": {},
               "next_payment_attempt": null,
               "paid": true,
-              "period_end": 1460731734,
-              "period_start": 1460731734,
+              "period_end": 1468403350,
+              "period_start": 1468403350,
               "receipt_number": null,
               "starting_balance": 0,
               "statement_descriptor": null,
-              "subscription": "sub_8H6SzFH8st88Y4",
+              "subscription": "sub_8oMihF3FfNAMsq",
               "subtotal": 1499,
               "tax": 236,
               "tax_percent": 21.0,
@@ -667,20 +667,20 @@ http_interactions:
           "url": "/v1/invoices"
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:56 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:11 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/invoices/in_180YFe2nHroS7mLXNcunH4WT
+    uri: https://api.stripe.com/v1/invoices/in_18WjzO2nHroS7mLXP4d0uhui
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -688,9 +688,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -699,7 +699,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:57 GMT
+      - Wed, 13 Jul 2016 09:49:12 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -717,7 +717,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6StgdCEiIskq
+      - req_8oMir9y7rzVxSt
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -726,17 +726,17 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "in_180YFe2nHroS7mLXNcunH4WT",
+          "id": "in_18WjzO2nHroS7mLXP4d0uhui",
           "object": "invoice",
           "amount_due": 1360,
           "application_fee": null,
           "attempt_count": 1,
           "attempted": true,
-          "charge": "ch_180YFe2nHroS7mLXpcZV9Mis",
+          "charge": "ch_18WjzO2nHroS7mLXZxbILumm",
           "closed": true,
           "currency": "usd",
-          "customer": "cus_8H6S3p2kq8CpDY",
-          "date": 1460731734,
+          "customer": "cus_8oMiJPDJMKe6El",
+          "date": 1468403350,
           "description": null,
           "discount": {
             "object": "discount",
@@ -753,13 +753,13 @@ http_interactions:
               "metadata": {},
               "percent_off": 25,
               "redeem_by": null,
-              "times_redeemed": 103,
+              "times_redeemed": 111,
               "valid": true
             },
-            "customer": "cus_8H6S3p2kq8CpDY",
-            "end": 1468594134,
-            "start": 1460731734,
-            "subscription": "sub_8H6SzFH8st88Y4"
+            "customer": "cus_8oMiJPDJMKe6El",
+            "end": 1476352150,
+            "start": 1468403350,
+            "subscription": "sub_8oMihF3FfNAMsq"
           },
           "ending_balance": 0,
           "forgiven": false,
@@ -767,7 +767,7 @@ http_interactions:
             "object": "list",
             "data": [
               {
-                "id": "sub_8H6SzFH8st88Y4",
+                "id": "sub_8oMihF3FfNAMsq",
                 "object": "line_item",
                 "amount": 1499,
                 "currency": "usd",
@@ -776,8 +776,8 @@ http_interactions:
                 "livemode": false,
                 "metadata": {},
                 "period": {
-                  "start": 1460731734,
-                  "end": 1463323734
+                  "start": 1468403350,
+                  "end": 1471081750
                 },
                 "plan": {
                   "id": "test",
@@ -801,18 +801,18 @@ http_interactions:
             ],
             "has_more": false,
             "total_count": 1,
-            "url": "/v1/invoices/in_180YFe2nHroS7mLXNcunH4WT/lines"
+            "url": "/v1/invoices/in_18WjzO2nHroS7mLXP4d0uhui/lines"
           },
           "livemode": false,
           "metadata": {},
           "next_payment_attempt": null,
           "paid": true,
-          "period_end": 1460731734,
-          "period_start": 1460731734,
+          "period_end": 1468403350,
+          "period_start": 1468403350,
           "receipt_number": null,
           "starting_balance": 0,
           "statement_descriptor": null,
-          "subscription": "sub_8H6SzFH8st88Y4",
+          "subscription": "sub_8oMihF3FfNAMsq",
           "subtotal": 1499,
           "tax": 236,
           "tax_percent": 21.0,
@@ -820,20 +820,20 @@ http_interactions:
           "webhooks_delivered_at": null
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:57 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:12 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/customers/cus_8H6S3p2kq8CpDY/subscriptions/sub_8H6SzFH8st88Y4
+    uri: https://api.stripe.com/v1/subscriptions/sub_8oMihF3FfNAMsq
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -841,9 +841,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -852,11 +852,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:58 GMT
+      - Wed, 13 Jul 2016 09:49:13 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1300'
+      - '1346'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -870,7 +870,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6SyyHYYnu33A
+      - req_8oMiAwFIXjOZLZ
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -879,14 +879,15 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "sub_8H6SzFH8st88Y4",
+          "id": "sub_8oMihF3FfNAMsq",
           "object": "subscription",
           "application_fee_percent": null,
           "cancel_at_period_end": false,
           "canceled_at": null,
-          "current_period_end": 1463323734,
-          "current_period_start": 1460731734,
-          "customer": "cus_8H6S3p2kq8CpDY",
+          "created": 1468403350,
+          "current_period_end": 1471081750,
+          "current_period_start": 1468403350,
+          "customer": "cus_8oMiJPDJMKe6El",
           "discount": {
             "object": "discount",
             "coupon": {
@@ -902,15 +903,16 @@ http_interactions:
               "metadata": {},
               "percent_off": 25,
               "redeem_by": null,
-              "times_redeemed": 103,
+              "times_redeemed": 111,
               "valid": true
             },
-            "customer": "cus_8H6S3p2kq8CpDY",
-            "end": 1468594134,
-            "start": 1460731734,
-            "subscription": "sub_8H6SzFH8st88Y4"
+            "customer": "cus_8oMiJPDJMKe6El",
+            "end": 1476352150,
+            "start": 1468403350,
+            "subscription": "sub_8oMihF3FfNAMsq"
           },
           "ended_at": null,
+          "livemode": false,
           "metadata": {},
           "plan": {
             "id": "test",
@@ -927,27 +929,27 @@ http_interactions:
             "trial_period_days": null
           },
           "quantity": 1,
-          "start": 1460731734,
+          "start": 1468403350,
           "status": "active",
           "tax_percent": 21.0,
           "trial_end": null,
           "trial_start": null
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:58 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:13 GMT
 - request:
     method: get
-    uri: https://api.stripe.com/v1/charges/ch_180YFe2nHroS7mLXpcZV9Mis
+    uri: https://api.stripe.com/v1/charges/ch_18WjzO2nHroS7mLXZxbILumm
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/1.48.0
       Authorization:
       - "<AUTH>"
       Content-Type:
@@ -955,9 +957,9 @@ http_interactions:
       Stripe-Version:
       - '2015-10-16'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
   response:
     status:
       code: 200
@@ -966,7 +968,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 15 Apr 2016 14:48:59 GMT
+      - Wed, 13 Jul 2016 09:49:14 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -984,7 +986,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_8H6SZM9jXXiXsu
+      - req_8oMiu3dytoln2W
       Stripe-Version:
       - '2015-10-16'
       Strict-Transport-Security:
@@ -993,23 +995,23 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "ch_180YFe2nHroS7mLXpcZV9Mis",
+          "id": "ch_18WjzO2nHroS7mLXZxbILumm",
           "object": "charge",
           "amount": 1360,
           "amount_refunded": 0,
           "application_fee": null,
-          "balance_transaction": "txn_180YFe2nHroS7mLXd8mCDWZh",
+          "balance_transaction": "txn_18WjzO2nHroS7mLXj0zOeM0U",
           "captured": true,
-          "created": 1460731734,
+          "created": 1468403350,
           "currency": "usd",
-          "customer": "cus_8H6S3p2kq8CpDY",
+          "customer": "cus_8oMiJPDJMKe6El",
           "description": null,
           "destination": null,
           "dispute": null,
           "failure_code": null,
           "failure_message": null,
           "fraud_details": {},
-          "invoice": "in_180YFe2nHroS7mLXNcunH4WT",
+          "invoice": "in_18WjzO2nHroS7mLXP4d0uhui",
           "livemode": false,
           "metadata": {},
           "order": null,
@@ -1022,11 +1024,11 @@ http_interactions:
             "data": [],
             "has_more": false,
             "total_count": 0,
-            "url": "/v1/charges/ch_180YFe2nHroS7mLXpcZV9Mis/refunds"
+            "url": "/v1/charges/ch_18WjzO2nHroS7mLXZxbILumm/refunds"
           },
           "shipping": null,
           "source": {
-            "id": "card_180YFa2nHroS7mLXmzVe8y4c",
+            "id": "card_18WjzK2nHroS7mLXhRu4QQxF",
             "object": "card",
             "address_city": null,
             "address_country": null,
@@ -1038,7 +1040,7 @@ http_interactions:
             "address_zip_check": null,
             "brand": "Visa",
             "country": "US",
-            "customer": "cus_8H6S3p2kq8CpDY",
+            "customer": "cus_8oMiJPDJMKe6El",
             "cvc_check": "pass",
             "dynamic_last4": null,
             "exp_month": 12,
@@ -1055,5 +1057,5 @@ http_interactions:
           "status": "succeeded"
         }
     http_version: 
-  recorded_at: Fri, 15 Apr 2016 14:48:59 GMT
+  recorded_at: Wed, 13 Jul 2016 09:49:14 GMT
 recorded_with: VCR 2.9.2
