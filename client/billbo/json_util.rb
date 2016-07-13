@@ -5,14 +5,14 @@ module Billbo
       when Hash
         data.map do |(k,v)|
           {
-            k => case k.to_s
-                 when /_at$/
-                   Time.parse(v)
-                 when /_on$/
-                   Date.parse(v)
-                 else
-                   parse_attributes(v)
-                 end
+            k => v && case k.to_s
+                      when /_at$/
+                        Time.parse(v)
+                      when /_on$/
+                        Date.parse(v)
+                      else
+                        parse_attributes(v)
+                      end
           }
         end.reduce(&:merge!)
       when Array

@@ -16,6 +16,11 @@ describe Billbo::JsonUtil do
         must_be_kind_of Date
     end
 
+    it 'handles nil' do
+      parse_attributes(foo_on: nil)[:foo_on].
+        must_be_nil
+    end
+
     it 'pass other attributes' do
       [1, 't', :x, true, false].each do |v|
         parse_attributes(foo: v)[:foo].
