@@ -20,6 +20,17 @@ class App < Base
     json(subscription)
   end
 
+  get '/invoices/:number.pdf' do
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice && invoice.pdf_generated_at
+
+    pdf = pdf_service.retrieve_pdf(invoice)
+
+    content_type pdf.content_type
+    body pdf.read
+  end
+
   # Populates a template with all invoice data.
   # This should never be used to show to customers, it should
   # only be used to generate PDF's, as information on the invoice
@@ -50,27 +61,16 @@ class App < Base
     ))
   end
 
-  get 'invoices/:number.pdf' do
-    invoice = Invoice.where(number: params[:number]).first
-
-    halt 404 unless invoice
-
-    pdf = pdf_service.retrieve_pdf(invoice)
-
-    content_type pdf.content_type
-    body pdf.read
-  end
-
   # List invoices
   #
-  # by_account_id     - customer account identifier
+  # by_accounting_id  - customer account identifier
   # finalized_before  - finalized before given timestamp
   # finalized_after   - finalized after given timestamp
   #
   # Returns a JSON array of {number: .., finalized_at: ..}.
   get '/invoices' do
-    invoices = %w(by_account_id finalized_before finalized_after).reduce(
-      Invoice.finalized.newest_first
+    invoices = %w(by_accounting_id finalized_before finalized_after).reduce(
+      Invoice.finalized.with_pdf_generated.newest_first
     ) do |scope,key|
       params.has_key?(key) ? scope.public_send(key, params[key]) : scope
     end

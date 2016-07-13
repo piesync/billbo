@@ -26,8 +26,8 @@ class Invoice < Sequel::Model
     order(:finalized_at).reverse
   end
 
-  def_dataset_method(:by_account_id) do |account_id|
-    where(customer_accounting_id: account_id)
+  def_dataset_method(:by_accounting_id) do |accounting_id|
+    where(customer_accounting_id: accounting_id)
   end
 
   def_dataset_method(:finalized_before) do |before|
@@ -36,6 +36,10 @@ class Invoice < Sequel::Model
 
   def_dataset_method(:finalized_after) do |after|
     where{finalized_at >= after}
+  end
+
+  def_dataset_method(:with_pdf_generated) do
+    exclude(pdf_generated_at: nil)
   end
 
   # Returns all finalized invoices from a given period.

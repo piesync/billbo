@@ -271,10 +271,54 @@ describe App do
     end
   end
 
+  describe 'get /invoices/NUMBER.pdf' do
+    let(:invoice) { Invoice.create.finalize!.pdf_generated! }
+    let(:data) { 'yabadabadoo!' }
+    let(:number) { invoice.number }
+
+    subject { get "/invoices/#{number}.pdf" }
+
+    before do
+      PdfService.
+        any_instance.
+        stubs(:retrieve_pdf).
+        with(invoice).
+        returns(stub(content_type: 'application/pdf', read: data))
+    end
+
+    it 'respond with OK' do
+      subject.status.must_equal 200
+    end
+
+    it 'respond with PDF' do
+      subject.content_type.must_equal 'application/pdf'
+    end
+
+    it 'respond with data' do
+      subject.body.must_equal data
+    end
+
+    describe 'non existing PDF' do
+      let(:number) { 'yadayada' }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+
+    describe 'without PDF' do
+      let(:invoice) { Invoice.create.finalize! }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+  end
+
   describe 'get /invoices' do
     let(:now) { Time.now }
     let(:params) { {} }
-    let(:account_id) { SecureRandom.hex }
+    let(:accounting_id) { SecureRandom.hex }
 
     subject { get '/invoices', params }
 
@@ -290,7 +334,7 @@ describe App do
       before do
         (0..99).to_a.shuffle.map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -304,17 +348,17 @@ describe App do
     describe 'by account id' do
       let(:account_invoices) do
         10.times.map do |i|
-          Invoice.create(customer_accounting_id: account_id).finalize!
+          Invoice.create(customer_accounting_id: accounting_id).finalize!.pdf_generated!
         end
       end
 
       let(:other_invoices) do
         10.times.map do |i|
-          Invoice.create.finalize!
+          Invoice.create.finalize!.pdf_generated!
         end
       end
 
-      let(:params) { {by_account_id: account_id} }
+      let(:params) { {by_accounting_id: accounting_id} }
 
       before do
         account_invoices
@@ -332,7 +376,7 @@ describe App do
       let(:invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -351,7 +395,7 @@ describe App do
       let(:invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
@@ -370,7 +414,7 @@ describe App do
       let(:account_invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create(customer_accounting_id: account_id).finalize!
+            Invoice.create(customer_accounting_id: accounting_id).finalize!.pdf_generated!
           end
         end
       end
@@ -378,14 +422,14 @@ describe App do
       let(:other_invoices) do
         (0..9).map do |i|
           Timecop.freeze(now + i.days) do
-            Invoice.create.finalize!
+            Invoice.create.finalize!.pdf_generated!
           end
         end
       end
 
       let(:params) do
         {
-          by_account_id: account_id,
+          by_accounting_id: accounting_id,
           finalized_after: (now + 5.5.days).iso8601,
           finalized_before: (now + 8.5.days).iso8601
         }
