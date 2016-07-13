@@ -11,7 +11,7 @@ def vat_code(invoice)
   vat_code = if !invoice.eu?
     ['TRMExport outside the EU', '6']
   elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_country_code != 'BE'
-    ['TRMVAT reverse-charged', '17']
+    ['TRMExport inside the EU (services)', '20']
   elsif invoice.customer_country_code == 'BE'
     ['TRMVAT 21%', '1']
   else
