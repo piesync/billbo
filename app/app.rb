@@ -75,10 +75,7 @@ class App < Base
       params.has_key?(key) ? scope.public_send(key, params[key]) : scope
     end
 
-    json(
-      invoices.
-        map{|record| record.values.slice(:number, :finalized_at)}
-    )
+    json(invoices.all)
   end
 
   # Fetches a preview breakdown of the costs of a subscription.
