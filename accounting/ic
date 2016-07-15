@@ -4,19 +4,26 @@ require './config/environment'
 quarter = ARGV[0].to_i
 year    = (ARGV[1] || Time.now.year).to_i
 
-customers = Invoice
-  .quarter(year, quarter)
-  .exclude(customer_vat_number: nil)
-  .exclude(customer_country_code: [Configuration.primary_country])
-  .group_by(:customer_vat_number)
-  .select{[
-    customer_vat_number.as(vat_number),
-    min(stripe_customer_id).as(stripe_id),
-    sum(total_eur).as(total)
-  ]}
-  .order_by(Sequel.desc(:total))
-  .to_a
-  .map(&:values)
+query = %{
+WITH complete AS (
+  SELECT *, COALESCE(invoices.reference_number, invoices.number) AS original_number, CASE invoices.credit_note WHEN true THEN -1 ELSE 1 END AS multiplier
+  FROM invoices
+)
+SELECT i.customer_vat_number AS vat_number, SUM(i.total_eur*c.multiplier) AS total
+FROM complete c
+LEFT JOIN invoices AS i ON c.original_number = i.number
+WHERE i.customer_vat_number IS NOT NULL
+AND c.finalized_at >= ?
+AND c.finalized_at < ?
+AND i.customer_country_code != 'BE'
+GROUP BY i.customer_vat_number
+ORDER BY total DESC
+}
+
+from = Date.new(year, (quarter-1)*3+1, 1)
+to   = from + 3.months
+
+customers = Configuration.db[query, from, to]
 
 template = Tox.dsl do
   el('IntraConsignment', {
