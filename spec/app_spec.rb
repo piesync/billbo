@@ -15,6 +15,7 @@ describe App do
     Timecop.return
   end
 
+  let(:stripe_event_id) { 'xxx' }
   let(:vat_service) { mock }
 
   let(:plan) do
@@ -130,7 +131,9 @@ describe App do
         VCR.use_cassette('invoice_template_sub_no_vat_export') do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
-            stripe_invoice_id: customer.invoices.first.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: customer.invoices.first.id
+          )
 
           invoice = Invoice.first
           complete_invoice(invoice)
@@ -151,7 +154,10 @@ describe App do
 
             id = customer.invoices.first.id
 
-            invoice_service.process_payment(stripe_invoice_id: id)
+            invoice_service.process_payment(
+              stripe_event_id: stripe_event_id,
+              stripe_invoice_id: id
+            )
 
             invoice = Invoice.last
             complete_invoice(invoice)
@@ -173,7 +179,9 @@ describe App do
         VCR.use_cassette('invoice_template_sub_no_vat_reverse') do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
+            stripe_event_id: stripe_event_id,
             stripe_invoice_id: customer.invoices.first.id)
+
 
           invoice = Invoice.first
           complete_invoice(invoice)
@@ -193,7 +201,9 @@ describe App do
         VCR.use_cassette('invoice_template_sub_vat') do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
-            stripe_invoice_id: customer.invoices.first.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: customer.invoices.first.id
+          )
 
           invoice = Invoice.first
           complete_invoice(invoice)
@@ -213,7 +223,9 @@ describe App do
         VCR.use_cassette('invoice_template_sub_no_vat_discount') do
           invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
           invoice_service.process_payment(
-            stripe_invoice_id: customer.invoices.first.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: customer.invoices.first.id
+          )
 
           invoice = Invoice.first
           complete_invoice(invoice)
@@ -233,7 +245,9 @@ describe App do
         VCR.use_cassette('invoice_template_sub_vat_discount') do
           invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
           invoice_service.process_payment(
-            stripe_invoice_id: customer.invoices.first.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: customer.invoices.first.id
+          )
 
           invoice = Invoice.first
           complete_invoice(invoice)
@@ -254,11 +268,15 @@ describe App do
           invoice_service.create_subscription(plan: plan.id)
           stripe_invoice = customer.invoices.first
           invoice_service.process_payment(
-            stripe_invoice_id: stripe_invoice.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
 
           Stripe::Charge.retrieve(stripe_invoice.charge).refund
           invoice_service.process_refund(
-            stripe_invoice_id: stripe_invoice.id)
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
 
           invoice = Invoice.last
           complete_invoice(invoice)

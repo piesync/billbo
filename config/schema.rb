@@ -1,3 +1,4 @@
+# version 0
 Configuration.db.create_table :invoices do
 
   # Ids
@@ -61,4 +62,9 @@ Configuration.db.create_table :invoices do
   String  :vies_address
   String  :vies_request_identifier
 
-end unless Configuration.db.tables.include?(:invoices)
+end unless Configuration.db.table_exists?(:invoices)
+
+# version 1
+Configuration.db.add_column(
+  :invoices, :stripe_event_id, String
+) unless Configuration.db[:invoices].columns.include?(:stripe_event_id)

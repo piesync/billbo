@@ -7,6 +7,8 @@ describe Hooks do
     Hooks
   end
 
+  let(:stripe_event_id) { 'xxx' }
+
   let(:metadata) {{
     country_code: 'NL',
     vat_registered: 'false',
@@ -53,8 +55,12 @@ describe Hooks do
           rumor.subject == 1
       end
 
-      post '/', json(type: 'charge.succeeded',
-          data: { object: 1 })
+      post '/',
+           json(
+             id: stripe_event_id,
+             type: 'charge.succeeded',
+             data: {object: 1}
+           )
     end
   end
 
@@ -68,8 +74,12 @@ describe Hooks do
         VCR.use_cassette('hook_invoice_payment_succeeded') do
           stripe_invoice.pay
 
-          post '/', json(type: 'invoice.payment_succeeded',
-            data: { object: stripe_invoice})
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'invoice.payment_succeeded',
+                 data: { object: stripe_invoice}
+               )
 
           last_response.ok?.must_equal true
           last_response.body.must_be_empty
@@ -90,15 +100,23 @@ describe Hooks do
           stripe_invoice = customer.invoices.first
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
-          post '/', json(type: 'invoice.payment_succeeded',
-            data: { object: stripe_invoice})
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'invoice.payment_succeeded',
+                 data: {object: stripe_invoice}
+               )
 
           refund = stripe_charge.refund
 
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
-          post '/', json(type: 'charge.refunded',
-            data: { object: stripe_charge})
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'charge.refunded',
+                 data: {object: stripe_charge}
+               )
 
           last_response.ok?.must_equal true
           last_response.body.must_be_empty
@@ -126,16 +144,24 @@ describe Hooks do
           stripe_invoice = customer.invoices.first
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
-          post '/', json(type: 'invoice.payment_succeeded',
-            data: { object: stripe_invoice})
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'invoice.payment_succeeded',
+                 data: {object: stripe_invoice}
+               )
 
           refund = stripe_charge.refund amount: 100
 
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
           before_count = Invoice.count
 
-          post '/', json(type: 'charge.refunded',
-            data: { object: stripe_charge})
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'charge.refunded',
+                 data: {object: stripe_charge}
+               )
 
           last_response.ok?.must_equal true
           Invoice.count.must_equal before_count
@@ -153,8 +179,12 @@ describe Hooks do
         invoice_service.expects(:process_payment)
           .raises(Stripe::CardError.new('not good', :test, 1))
 
-        post '/', json(type: 'invoice.payment_succeeded',
-          data: { object: { id: '1', customer: '10'} })
+        post '/',
+             json(
+               id: stripe_event_id,
+               type: 'invoice.payment_succeeded',
+               data: {object: {id: '1', customer: '10'}}
+             )
 
         last_response.ok?.must_equal false
         last_response.status.must_equal 402
@@ -169,8 +199,12 @@ describe Hooks do
         VCR.use_cassette('hook_invoice_created_no_meta') do
           stripe_invoice.pay
 
-          post '/', json(type: 'invoice.payment_succeeded',
-            data: { object: Stripe::Invoice.retrieve(stripe_invoice.id) })
+          post '/',
+               json(
+                 id: stripe_event_id,
+                 type: 'invoice.payment_succeeded',
+                 data: {object: Stripe::Invoice.retrieve(stripe_invoice.id)}
+               )
 
           last_response.ok?.must_equal true
           invoice = Invoice.first

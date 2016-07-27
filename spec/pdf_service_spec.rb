@@ -2,6 +2,7 @@ require_relative 'spec_helper'
 
 describe PdfService do
 
+  let(:stripe_event_id) { 'xxx' }
   let(:service) { PdfService.new }
   let(:invoice_service) { InvoiceService.new(customer_id: customer.id) }
 
@@ -32,7 +33,10 @@ describe PdfService do
     it 'generates a pdf representiation of an invoice and stores it' do
       VCR.use_cassette('pdf_generation') do
         invoice_service.create_subscription(plan: plan.id)
-        invoice_service.process_payment(stripe_invoice_id: invoice_service.last_stripe_invoice.id)
+        invoice_service.process_payment(
+          stripe_event_id: stripe_event_id,
+          stripe_invoice_id: invoice_service.last_stripe_invoice.id
+        )
 
         invoice = Invoice.first
 
