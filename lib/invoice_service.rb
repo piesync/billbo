@@ -24,7 +24,7 @@ class InvoiceService
 
     # Take snapshots for immutable invoice.
     snapshot_invoice(stripe_invoice, invoice)
-    snapshot_customer(invoice)
+    invoice.update(customer_metadata(invoice))
 
     # Take a snapshot of the card used to make payment.
     # Note: There will be no charge in two cases:
@@ -44,7 +44,13 @@ class InvoiceService
     invoice = Invoice.first(stripe_id: stripe_invoice_id)
 
     if invoice
-      Invoice.create(credit_note: true, reference_number: invoice.number).finalize!
+      Invoice.create(
+        customer_metadata(invoice).
+          merge(
+            credit_note: true,
+            reference_number: invoice.number
+          )
+      ).finalize!
     else
       raise OrphanRefund
     end
@@ -54,9 +60,9 @@ class InvoiceService
     Stripe::Invoice.all(customer: @customer_id, limit: 1).first
   end
 
-  private
+private
 
-  def snapshot_customer(invoice)
+  def customer_metadata(invoice)
     metadata = stripe_service.customer_metadata.slice(
       :email, :name, :company_name, :country_code, :address, :vat_registered, :vat_number, :accounting_id, :ip_address)
 
@@ -71,8 +77,7 @@ class InvoiceService
     # Add the customer id
     customer_metadata[:stripe_customer_id] = @customer_id
 
-    # Save to invoice
-    invoice.update(customer_metadata)
+    customer_metadata
   end
 
   def snapshot_invoice(stripe_invoice, invoice)
