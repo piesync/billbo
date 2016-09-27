@@ -26,6 +26,14 @@ class TemplateViewModel
     :primary_country, :seller_email, :seller_vat_number, :seller_other_info,
     :seller_bank_name, :seller_bic, :seller_iban
 
+  def finalized_at
+    (credit_note || invoice).finalized_at
+  end
+
+  def due_at
+    (credit_note || invoice).due_at
+  end
+
   def credit_note?
     @credit_note
   end
