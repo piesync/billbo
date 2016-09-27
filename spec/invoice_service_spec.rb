@@ -2,6 +2,8 @@ require_relative 'spec_helper'
 
 describe InvoiceService do
 
+  let(:stripe_event_id) { 'xxx' }
+
   let(:metadata) {{
     country_code: 'NL',
     vat_registered: 'false',
@@ -55,7 +57,10 @@ describe InvoiceService do
         VCR.use_cassette('process_payment_new') do
           service.create_subscription(plan: plan.id)
 
-          invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+          invoice = service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: service.last_stripe_invoice.id
+          )
 
           invoice.finalized?.must_equal true
           invoice.subtotal.must_equal 1499
@@ -67,6 +72,7 @@ describe InvoiceService do
           invoice.currency.must_equal 'usd'
           invoice.customer_country_code.must_equal 'NL'
           invoice.customer_vat_number.must_equal 'NL123'
+          invoice.stripe_event_id.must_equal stripe_event_id
           invoice.stripe_customer_id.must_equal customer.id
           invoice.customer_accounting_id.must_equal '10001'
           invoice.customer_vat_registered.must_equal false
@@ -95,7 +101,10 @@ describe InvoiceService do
           VCR.use_cassette('process_payment_yearly') do
             service.create_subscription(plan: plan.id)
 
-            invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+            invoice = service.process_payment(
+              stripe_event_id: stripe_event_id,
+              stripe_invoice_id: service.last_stripe_invoice.id
+            )
 
             invoice.finalized?.must_equal true
             invoice.interval.must_equal 'year'
@@ -109,7 +118,10 @@ describe InvoiceService do
         VCR.use_cassette('process_payment_new_discount') do
           service.create_subscription(plan: plan.id, coupon: coupon.id)
 
-          invoice = service.process_payment(stripe_invoice_id: service.last_stripe_invoice.id)
+          invoice = service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: service.last_stripe_invoice.id
+          )
 
           invoice.finalized?.must_equal true
           invoice.subtotal.must_equal 1499
@@ -121,6 +133,7 @@ describe InvoiceService do
           invoice.currency.must_equal 'usd'
           invoice.customer_country_code.must_equal 'NL'
           invoice.customer_vat_number.must_equal 'NL123'
+          invoice.stripe_event_id.must_equal stripe_event_id
           invoice.stripe_customer_id.must_equal customer.id
           invoice.customer_accounting_id.must_equal '10001'
           invoice.customer_vat_registered.must_equal false
@@ -137,7 +150,10 @@ describe InvoiceService do
         VCR.use_cassette('process_payment_zero') do
           customer.subscriptions.create(plan: plan.id, trial_end: (Time.now.to_i + 1000))
           stripe_invoice = customer.invoices.first
-          invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+          invoice = service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
           invoice.finalized?.must_equal false
         end
       end
@@ -147,27 +163,41 @@ describe InvoiceService do
   describe '#process_refund' do
     it 'is an orphan refund' do
       VCR.use_cassette('process_refund_orphan') do
-        proc { service.process_refund(stripe_invoice_id: 'xyz') }.must_raise InvoiceService::OrphanRefund
+        proc do
+          service.process_refund(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: 'xyz'
+          )
+        end.must_raise InvoiceService::OrphanRefund
       end
     end
 
     describe 'when it is a real refund' do
       it 'creates a credit note' do
         VCR.use_cassette('process_refund') do
-          Stripe::InvoiceItem.create \
+          Stripe::InvoiceItem.create(
             customer: customer.id,
             amount: 100,
             currency: 'usd'
+          )
 
-        stripe_invoice = Stripe::Invoice.create(customer: customer.id)
+          stripe_invoice = Stripe::Invoice.create(customer: customer.id)
 
-        # Pay the invoice before processing the payment.
-        stripe_invoice.pay
+          # Pay the invoice before processing the payment.
+          stripe_invoice.pay
 
-        invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+          service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
 
-        credit_note = service.process_refund(stripe_invoice_id: stripe_invoice.id)
-        credit_note.finalized?.must_equal true
+          credit_note = service.process_refund(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
+          credit_note.finalized?.must_equal true
+          credit_note.stripe_event_id.must_equal stripe_event_id
+          credit_note.customer_accounting_id.must_equal metadata[:accounting_id]
         end
       end
     end
