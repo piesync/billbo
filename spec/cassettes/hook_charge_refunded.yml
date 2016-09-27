@@ -1049,6 +1049,160 @@ http_interactions:
     http_version: 
   recorded_at: Wed, 13 Jul 2016 09:50:34 GMT
 - request:
+    method: get
+    uri: https://api.stripe.com/v1/customers/cus_8oMkzQOE404KtJ
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.48.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Stripe-Version:
+      - '2015-10-16'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.48.0","lang":"ruby","lang_version":"2.3.1 p112 (2016-04-26)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Mattiass-MacBook-Pro.local 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29
+        02:26:53 PDT 2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"Mattiass-MacBook-Pro.local"}'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Wed, 13 Jul 2016 09:50:33 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2482'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_8oMkUmsemqvFcp
+      Stripe-Version:
+      - '2015-10-16'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "cus_8oMkzQOE404KtJ",
+          "object": "customer",
+          "account_balance": 0,
+          "created": 1468403426,
+          "currency": "usd",
+          "default_source": "card_18Wk0c2nHroS7mLXCuSTdMla",
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": null,
+          "livemode": false,
+          "metadata": {
+            "country_code": "NL",
+            "other": "random",
+            "vat_registered": "false"
+          },
+          "shipping": null,
+          "sources": {
+            "object": "list",
+            "data": [
+              {
+                "id": "card_18Wk0c2nHroS7mLXCuSTdMla",
+                "object": "card",
+                "address_city": null,
+                "address_country": null,
+                "address_line1": null,
+                "address_line1_check": null,
+                "address_line2": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_zip_check": null,
+                "brand": "Visa",
+                "country": "US",
+                "customer": "cus_8oMkzQOE404KtJ",
+                "cvc_check": "pass",
+                "dynamic_last4": null,
+                "exp_month": 12,
+                "exp_year": 2030,
+                "fingerprint": "0K7oMWAQAFG7TEob",
+                "funding": "credit",
+                "last4": "4242",
+                "metadata": {},
+                "name": null,
+                "tokenization_method": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_8oMkzQOE404KtJ/sources"
+          },
+          "subscriptions": {
+            "object": "list",
+            "data": [
+              {
+                "id": "sub_8oMkqFBHUZIgVU",
+                "object": "subscription",
+                "application_fee_percent": null,
+                "cancel_at_period_end": false,
+                "canceled_at": null,
+                "created": 1468403428,
+                "current_period_end": 1471081828,
+                "current_period_start": 1468403428,
+                "customer": "cus_8oMkzQOE404KtJ",
+                "discount": null,
+                "ended_at": null,
+                "livemode": false,
+                "metadata": {},
+                "plan": {
+                  "id": "test",
+                  "object": "plan",
+                  "amount": 1499,
+                  "created": 1406556583,
+                  "currency": "usd",
+                  "interval": "month",
+                  "interval_count": 1,
+                  "livemode": false,
+                  "metadata": {},
+                  "name": "Test Plan",
+                  "statement_descriptor": null,
+                  "trial_period_days": null
+                },
+                "quantity": 1,
+                "start": 1468403428,
+                "status": "active",
+                "tax_percent": null,
+                "trial_end": null,
+                "trial_start": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_8oMkzQOE404KtJ/subscriptions"
+          }
+        }
+    http_version:
+  recorded_at: Wed, 13 Jul 2016 09:50:34 GMT
+- request:
     method: post
     uri: https://api.stripe.com/v1/charges/ch_18Wk0e2nHroS7mLXBXtT00Cc/refunds
     body:

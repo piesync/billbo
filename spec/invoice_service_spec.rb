@@ -163,11 +163,11 @@ describe InvoiceService do
 
         # Pay the invoice before processing the payment.
         stripe_invoice.pay
-
-        invoice = service.process_payment(stripe_invoice_id: stripe_invoice.id)
+        service.process_payment(stripe_invoice_id: stripe_invoice.id)
 
         credit_note = service.process_refund(stripe_invoice_id: stripe_invoice.id)
         credit_note.finalized?.must_equal true
+        credit_note.customer_accounting_id.must_equal metadata[:accounting_id]
         end
       end
     end
