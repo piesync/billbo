@@ -12,9 +12,12 @@ class InvoiceService
     stripe_service.create_subscription(options)
   end
 
-  def process_payment(stripe_invoice_id:)
+  def process_payment(stripe_event_id:, stripe_invoice_id:)
     # Get/create an internal invoice and a Stripe invoice.
-    invoice = ensure_invoice(stripe_invoice_id)
+    invoice = ensure_invoice(
+      stripe_event_id,
+      stripe_invoice_id
+    )
     stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
     # Finalize the invoice.
@@ -40,15 +43,16 @@ class InvoiceService
   rescue Invoice::AlreadyFinalized
   end
 
-  def process_refund(stripe_invoice_id:)
+  def process_refund(stripe_event_id:, stripe_invoice_id:)
     invoice = Invoice.first(stripe_id: stripe_invoice_id)
 
     if invoice
       Invoice.create(
         customer_metadata(invoice).
           merge(
-            credit_note: true,
-            reference_number: invoice.number
+            stripe_event_id: stripe_event_id,
+            reference_number: invoice.number,
+            credit_note: true
           )
       ).finalize!
     else
@@ -105,8 +109,15 @@ private
     )
   end
 
-  def ensure_invoice(stripe_id)
-    Invoice.find_or_create_by_stripe_id(stripe_id)
+  def ensure_invoice(stripe_event_id, stripe_invoice_id)
+    if invoice = Invoice.find(stripe_id: stripe_invoice_id)
+      invoice
+    else
+      Invoice.create(
+        stripe_id: stripe_invoice_id,
+        stripe_event_id: stripe_event_id
+      )
+    end
   end
 
   def stripe_service
