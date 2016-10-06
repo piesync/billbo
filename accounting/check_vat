@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+Invoice.quarter(ARGV[0].to_i, ARGV[1].to_i).each do |invoice|
+  exp_vat_rate = VatService.new.vat_rate(
+    country_code: invoice.customer_country_code,
+    vat_registered: invoice.customer_vat_registered
+  ).to_i
+
+  vat_rate = (invoice.vat_rate || 0).to_i
+
+  if exp_vat_rate != vat_rate
+    puts "#{invoice.number}: #{exp_vat_rate} != #{vat_rate} ($#{invoice.total/100})"
+  end
+end
