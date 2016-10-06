@@ -99,7 +99,7 @@ xml_date = '%d-%02d-%02d' % [year, month, day]
 invoices = Invoice.between(start, stop).order_by(:number)
 
 categories = {
-  'M' => invoices.where('NOT credit_note').where(interval: 'month'),
+  'M' => invoices.where('NOT credit_note').where(interval: 'month').or('interval is null'),
   'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
   'C' => invoices.where('credit_note')
 }.reject { |k, v| v.empty? }
