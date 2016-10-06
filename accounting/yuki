@@ -1,11 +1,42 @@
 #!/usr/bin/env ruby
 require './config/environment'
 
+$debug = !!ARGV[4]
+
 now   = Time.now
-year  = ARGV[0].to_i || now.year
-month = ARGV[1].to_i || now.month
-day   = ARGV[2].to_i || now.day
-yday  = Time.new(year, month, day).yday
+year  = ARGV[0].to_i
+month = ARGV[1].to_i
+day   = ARGV[2].to_i
+days  = (ARGV[3] || 1).to_i
+
+TEMPLATE = Tox.dsl do
+  el('SalesInvoices',
+    mel('SalesInvoice', {
+      reference: el('Reference', text),
+      subject: el('Subject', text),
+      process: el('Process', text),
+      date: el('Date', text),
+      due_date: el('DueDate', text),
+      contact_code: el('Contact', el('ContactCode', text)),
+      lines: el('InvoiceLines', mel('InvoiceLine', {
+        description: el('Description', text),
+        quantity: el('ProductQuantity', text),
+        product: el('Product', {
+          description: el('Description', text),
+          reference: el('Reference', text),
+          category: el('Category', text),
+          amount: el('SalesPrice', text),
+          vat_rate: el('VATPercentage', text),
+          vat_included: el('VATIncluded', text),
+          vat_type: el('VATType', text),
+          vat_description: el('VATDescription', text),
+          account_code: el('GLAccountCode', text),
+          remarks: el('Remarks', text)
+        })
+      }))
+    })
+  )
+end
 
 def vat_code(invoice)
   vat_code = if !invoice.eu?
@@ -46,39 +77,52 @@ def yuki_line(invoice)
   }
 end
 
-template = Tox.dsl do
-  el('SalesInvoices',
-    mel('SalesInvoice', {
-      reference: el('Reference', text),
-      subject: el('Subject', text),
-      process: el('Process', text),
-      date: el('Date', text),
-      due_date: el('DueDate', text),
-      contact_code: el('Contact', el('ContactCode', text)),
-      lines: el('InvoiceLines', mel('InvoiceLine', {
-        description: el('Description', text),
-        quantity: el('ProductQuantity', text),
-        product: el('Product', {
-          description: el('Description', text),
-          reference: el('Reference', text),
-          category: el('Category', text),
-          amount: el('SalesPrice', text),
-          vat_rate: el('VATPercentage', text),
-          vat_included: el('VATIncluded', text),
-          vat_type: el('VATType', text),
-          vat_description: el('VATDescription', text),
-          account_code: el('GLAccountCode', text),
-          remarks: el('Remarks', text)
-        })
-      }))
+def upload_day!(client, session_id, administration_id, date)
+  year, month, day, yday = date.year, date.month, date.day, date.yday
+  xml_date = '%d-%02d-%02d' % [year, month, day]
+
+  invoices = Invoice.between(date, date + 1.day).order_by(:number)
+
+  categories = {
+    'M' => invoices.where('NOT credit_note').where("interval = 'month' or interval is null"),
+    'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
+    'C' => invoices.where('credit_note')
+  }.reject { |k, v| v.empty? }
+
+  categories.each do |code, invoices|
+    lines = invoices.map do |invoice|
+      yuki_line(invoice)
+    end
+
+    xml = TEMPLATE.render([{
+      reference: '%s%03d' % [code, yday],
+      subject: 'Dagtotaal (%s) %02d/%02d/%d' % [code, day, month, year],
+      process: 'true',
+      date: xml_date,
+      due_date: xml_date,
+      contact_code: '1',
+      lines: lines
+    }])
+
+    response = client.call(:process_sales_invoices, message: {
+      'sessionId'        => session_id,
+      'administrationId' => administration_id,
+      "xmlDoc!"          => xml
     })
-  )
+
+    result = response.body[:process_sales_invoices_response][:process_sales_invoices_result][:sales_invoices_import_response][:invoice]
+
+    if result[:succeeded]
+      puts "\033[32m✓\033[0m #{result[:subject]} succeeded"
+    else
+      puts "\033[31m✗\033[0m #{result[:subject]} failed: #{result[:message]}"
+      puts xml if $debug
+    end
+  end
 end
 
 client = Savon.client(
-  wsdl: 'https://api.yukiworks.nl/ws/Sales.asmx?wsdl',
-  log: true,
-  log_level: :debug
+  wsdl: 'https://api.yukiworks.nl/ws/Sales.asmx?wsdl'
 )
 
 session_id = client.call(:authenticate_by_user_name, message: {
@@ -92,36 +136,7 @@ administration_id = client.call(:administration_id, message: {
 }).body[:administration_id_response][:administration_id_result]
 
 start = Date.new(year, month, day)
-stop  = start + 1.day
 
-xml_date = '%d-%02d-%02d' % [year, month, day]
-
-invoices = Invoice.between(start, stop).order_by(:number)
-
-categories = {
-  'M' => invoices.where('NOT credit_note').where("interval = 'month' or interval is null"),
-  'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
-  'C' => invoices.where('credit_note')
-}.reject { |k, v| v.empty? }
-
-categories.each do |code, invoices|
-  lines = invoices.map do |invoice|
-    yuki_line(invoice)
-  end
-
-  xml = template.render([{
-    reference: '%s%03d' % [code, yday],
-    subject: 'Dagtotaal (%s) %02d/%02d/%d' % [code, day, month, year],
-    process: 'true',
-    date: xml_date,
-    due_date: xml_date,
-    contact_code: '1',
-    lines: lines
-  }])
-
-  client.call(:process_sales_invoices, message: {
-    'sessionId'        => session_id,
-    'administrationId' => administration_id,
-    "xmlDoc!"          => xml
-  }).body
+days.times.each do |i|
+  upload_day!(client, session_id, administration_id, start + i.days)
 end
