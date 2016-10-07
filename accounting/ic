@@ -17,6 +17,7 @@ AND c.finalized_at >= ?
 AND c.finalized_at < ?
 AND i.customer_country_code != 'BE'
 GROUP BY i.customer_vat_number
+HAVING SUM(i.total_eur*c.multiplier) > 0
 ORDER BY total DESC
 }
 
