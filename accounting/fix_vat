@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require './config/environment'
+
+ARGV.each do |number|
+  invoice = Invoice.where(number: number).first
+  raise 'No invoice with that number' unless invoice
+
+  exp_vat_rate = VatService.new.vat_rate(
+    country_code: invoice.customer_country_code,
+    vat_registered: invoice.customer_vat_registered
+  ).to_i
+
+  exp_vat_amount = invoice.subtotal_after_discount * exp_vat_rate / 100.0
+
+  invoice.update(
+    vat_rate: exp_vat_rate,
+    vat_amount: exp_vat_amount,
+    total: invoice.total + exp_vat_amount,
+    pdf_generated_at: nil
+  )
+end
