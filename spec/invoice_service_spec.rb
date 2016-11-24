@@ -146,7 +146,7 @@ describe InvoiceService do
     end
 
     describe 'when the total amount is zero' do
-      it 'does not finalize the invoice' do
+      it 'does not create an invoice' do
         VCR.use_cassette('process_payment_zero') do
           customer.subscriptions.create(plan: plan.id, trial_end: (Time.now.to_i + 1000))
           stripe_invoice = customer.invoices.first
@@ -154,7 +154,30 @@ describe InvoiceService do
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
           )
-          invoice.finalized?.must_equal false
+
+          invoice.must_be_nil
+        end
+      end
+    end
+
+    describe 'when the invoice is used for balance' do
+      it 'does not create an invoice' do
+        VCR.use_cassette('process_payment_balance') do
+          Stripe::InvoiceItem.create(
+            customer: customer.id,
+            amount: -100,
+            currency: 'usd'
+          )
+          stripe_invoice = Stripe::Invoice.create(customer: customer.id, metadata: { balance: 'true' })
+          stripe_invoice.pay
+
+          stripe_invoice = customer.invoices.first
+          invoice = service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: stripe_invoice.id
+          )
+
+          invoice.must_be_nil
         end
       end
     end

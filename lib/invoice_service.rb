@@ -13,27 +13,30 @@ class InvoiceService
   end
 
   def process_payment(stripe_event_id:, stripe_invoice_id:)
+    stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
+
+    # If the invoice's total amount is 0, then we don't
+    # need to make an invoice for it. If the invoice has balance: true
+    # in its metadata, we ignore it as well. These invoices are
+    # used to manipulate the balance and shouldn't be actual
+    # invoices
+    return if stripe_invoice.total.zero? || stripe_invoice.metadata[:balance] == 'true'
+
     # Get/create an internal invoice and a Stripe invoice.
     invoice = ensure_invoice(
       stripe_event_id,
       stripe_invoice_id
     )
-    stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
-    # Finalize the invoice.
-    # Unless if the invoice's total amount is 0, then we don't
-    # need to make an invoice for it.
-    invoice.finalize! unless stripe_invoice.total.zero?
+    invoice.finalize!
 
     # Take snapshots for immutable invoice.
     snapshot_invoice(stripe_invoice, invoice)
     invoice.update(customer_metadata(invoice))
 
     # Take a snapshot of the card used to make payment.
-    # Note: There will be no charge in two cases:
-    #   1. The invoice total is 0 so no charge is needed.
-    #   2. The invoice could be paid with credit.
-    #
+    # Note: There will be no charge when the invoice was
+    # paid with the balance.
     if stripe_invoice.charge
       charge = Stripe::Charge.retrieve(stripe_invoice.charge)
       snapshot_card(charge.source, invoice)
