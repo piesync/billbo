@@ -145,9 +145,9 @@ describe InvoiceService do
       end
     end
 
-    describe 'when the total amount is zero' do
+    describe 'when all the invoice lines are zero' do
       it 'does not create an invoice' do
-        VCR.use_cassette('process_payment_zero') do
+        VCR.use_cassette('process_payment_zero_lines') do
           customer.subscriptions.create(plan: plan.id, trial_end: (Time.now.to_i + 1000))
           stripe_invoice = customer.invoices.first
           invoice = service.process_payment(
@@ -160,15 +160,12 @@ describe InvoiceService do
       end
     end
 
-    describe 'when the invoice is used for balance' do
-      it 'does not create an invoice' do
-        VCR.use_cassette('process_payment_balance') do
-          Stripe::InvoiceItem.create(
-            customer: customer.id,
-            amount: -100,
-            currency: 'usd'
-          )
-          stripe_invoice = Stripe::Invoice.create(customer: customer.id, metadata: { balance: 'true' })
+    describe 'when the invoice total is zero' do
+      it 'does create an invoice if some lines are not zero' do
+        VCR.use_cassette('process_payment_zero') do
+          Stripe::InvoiceItem.create(customer: customer.id, amount: -100, currency: 'usd')
+          Stripe::InvoiceItem.create(customer: customer.id, amount: 100, currency: 'usd')
+          stripe_invoice = Stripe::Invoice.create(customer: customer.id)
           stripe_invoice.pay
 
           stripe_invoice = customer.invoices.first
@@ -177,7 +174,8 @@ describe InvoiceService do
             stripe_invoice_id: stripe_invoice.id
           )
 
-          invoice.must_be_nil
+          invoice.wont_be_nil
+          invoice.total.must_equal 0
         end
       end
     end

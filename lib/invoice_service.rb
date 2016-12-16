@@ -15,12 +15,9 @@ class InvoiceService
   def process_payment(stripe_event_id:, stripe_invoice_id:)
     stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
-    # If the invoice's total amount is 0, then we don't
-    # need to make an invoice for it. If the invoice has balance: true
-    # in its metadata, we ignore it as well. These invoices are
-    # used to manipulate the balance and shouldn't be actual
-    # invoices
-    return if stripe_invoice.total.zero? || stripe_invoice.metadata[:balance] == 'true'
+    # If the invoice only has zero total invoice lines, do not include it for
+    # bookkeeping. This happens when a customer subscribes when still in trial.
+    return if stripe_invoice.lines.map(&:amount).all?(&:zero?)
 
     # Get/create an internal invoice and a Stripe invoice.
     invoice = ensure_invoice(
