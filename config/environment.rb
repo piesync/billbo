@@ -43,6 +43,14 @@ end
 # Configure Money
 Money.default_bank = EuCentralBank.new
 
+# Configure Timeouts for VIES checks
+{
+  open_timeout: 5,
+  read_timeout: 5
+}.each do |key, d|
+  Valvat::Lookup.client.globals[key] = d
+end
+
 # Configure Rumor
 require 'rumor/async/sucker_punch'
 
