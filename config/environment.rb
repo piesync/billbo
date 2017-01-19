@@ -45,8 +45,8 @@ Money.default_bank = EuCentralBank.new
 
 # Configure Timeouts for VIES checks
 {
-  open_timeout: 5,
-  read_timeout: 5
+  open_timeout: 10,
+  read_timeout: 10
 }.each do |key, d|
   Valvat::Lookup.client.globals[key] = d
 end

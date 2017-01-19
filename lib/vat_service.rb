@@ -60,6 +60,10 @@ class VatService
     else
       vies_valid
     end
+  rescue Savon::Error => e
+    puts "Failed checking VAT validity of #{var_number}: #{e.to_s}"
+
+    Valvat.new(vat_number).valid_checksum?
   end
 
   # returns extra info about the given vat_number
