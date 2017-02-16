@@ -60,7 +60,7 @@ def yuki_line(invoice)
   total = -total if invoice.credit_note?
 
   {
-    description: invoice.number,
+    description: "#{invoice.number} - #{invoice.stripe_subscription_id}",
     quantity: '1',
     product: {
       description: 'invoice',
@@ -95,7 +95,7 @@ def upload_day!(client, session_id, administration_id, date)
     end
 
     xml = TEMPLATE.render([{
-      reference: '%s%03d' % [code, yday],
+      reference: '%s%s%03d' % [code, year, yday],
       subject: 'Dagtotaal (%s) %02d/%02d/%d' % [code, day, month, year],
       process: 'true',
       date: xml_date,
