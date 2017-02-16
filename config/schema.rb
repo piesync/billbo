@@ -5,6 +5,7 @@ Configuration.db.create_table :invoices do
   primary_key :id
   String  :stripe_id, unique: true
   String  :stripe_customer_id
+  String  :stripe_subscription_id
 
   # Numbering
   Integer :year
@@ -68,3 +69,8 @@ end unless Configuration.db.table_exists?(:invoices)
 Configuration.db.add_column(
   :invoices, :stripe_event_id, String
 ) unless Configuration.db[:invoices].columns.include?(:stripe_event_id)
+
+# version 2
+Configuration.db.add_column(
+  :invoices, :stripe_subscription_id, String
+) unless Configuration.db[:invoices].columns.include?(:stripe_subscription_id)

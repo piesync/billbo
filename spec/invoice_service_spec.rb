@@ -80,6 +80,7 @@ describe InvoiceService do
           invoice.card_last4.must_equal '4242'
           invoice.card_country_code.must_equal 'US'
           invoice.interval.must_equal 'month'
+          invoice.stripe_subscription_id.wont_be_nil
         end
       end
 

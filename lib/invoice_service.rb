@@ -96,8 +96,11 @@ private
 
     # The invoice interval (month/year) is the current interval
     # of the subscription attached to the invoice.
-    invoice.interval = if subscription_id = stripe_invoice.subscription
-      Stripe::Subscription.retrieve(subscription_id).plan.interval
+    if subscription_id = stripe_invoice.subscription
+      subscription = Stripe::Subscription.retrieve(subscription_id)
+
+      invoice.interval = subscription.plan.interval
+      invoice.stripe_subscription_id = subscription.id
     end
   end
 
