@@ -60,7 +60,7 @@ def yuki_line(invoice)
   total = -total if invoice.credit_note?
 
   {
-    description: "#{invoice.number} - #{invoice.stripe_subscription_id}",
+    description: "#{invoice.number} - #{original_invoice.stripe_subscription_id}",
     quantity: '1',
     product: {
       description: 'invoice',
