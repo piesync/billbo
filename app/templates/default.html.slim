@@ -100,7 +100,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           - lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
               - if line.type == 'subscription'
-                td.item_l #{line.plan.name} (#{format_date(line.period.start)} - #{format_date(line.period.end)})
+                td.item_l = subscription_line_description(line)
                 td.item_r = format_money(line.amount, line.currency)
                 td.item_r
               - elsif line.type == 'invoiceitem' && line.metadata[:type] != 'vat'

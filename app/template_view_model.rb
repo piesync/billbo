@@ -58,6 +58,13 @@ class TemplateViewModel
     Money.new(amount, currency).format(sign_before_symbol: true)
   end
 
+  def subscription_line_description(line)
+    # If line item has type subscription, then the line metadata is the subscription metadata (version > 2014-11-20)
+    description = line.metadata[:description] || line.plan.name
+
+    "#{description} (#{format_date(line.period.start)} - #{format_date(line.period.end)})"
+  end
+
   def percent_off
     stripe_coupon.try(:percent_off)
   end
