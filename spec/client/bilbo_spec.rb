@@ -9,6 +9,13 @@ describe Billbo do
     vat_rate: '21'
   }}
 
+  let(:preview_quantity) {{
+    subtotal: 30,
+    currency: 'eur',
+    vat: 6.3,
+    vat_rate: '21'
+  }}
+
   let(:reservation) {{
     year: 2014,
     sequence_number: 1,
@@ -43,6 +50,17 @@ describe Billbo do
         country_code: 'BE',
         vat_registered: false
       ).must_equal preview
+    end
+
+    it 'returns a preview price calculation (with quantity)' do
+      stub_app(:get, 'preview/basic', {query: {country_code: 'BE', quantity: 3, vat_registered: 'false'}}, json: preview_quantity)
+
+      Billbo.preview(
+        plan: 'basic',
+        country_code: 'BE',
+        quantity: 3,
+        vat_registered: false
+      ).must_equal preview_quantity
     end
   end
 

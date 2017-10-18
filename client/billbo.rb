@@ -31,8 +31,9 @@ module Billbo
 
       get("/preview/#{options[:plan]}", params: {
             country_code: options[:country_code],
-            vat_registered: options[:vat_registered]
-          })
+            vat_registered: options[:vat_registered],
+            quantity: options[:quantity]
+          }.compact)
     end
 
     # validates a VAT number.

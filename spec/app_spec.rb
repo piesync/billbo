@@ -503,6 +503,25 @@ describe App do
           vat_rate: 21
       end
     end
+
+    it 'returns a price breakdown of a plan for a customer (with quantity)' do
+      VCR.use_cassette('preview_quantity_success') do
+        plan
+
+        get '/preview/test', {
+          country_code: 'BE',
+          vat_registered: 'true',
+          quantity: 3
+        }
+
+        last_response.ok?.must_equal true
+        MultiJson.load(last_response.body, symbolize_keys: true).must_equal \
+          subtotal: 4497,
+          currency: 'usd',
+          vat: 944,
+          vat_rate: 21
+      end
+    end
   end
 
   describe 'get /vat/' do

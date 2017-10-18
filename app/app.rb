@@ -93,14 +93,16 @@ class App < Base
   # }
   get '/preview/:plan' do
     plan = Stripe::Plan.retrieve(params[:plan])
+    quantity = (params[:quantity] && params[:quantity].to_i) || 1
+    amount = plan.amount * quantity
 
     vat = vat_service.calculate \
-      amount: plan.amount,
+      amount: amount,
       country_code: params[:country_code],
       vat_registered: (params[:vat_registered] == 'true')
 
     json({
-      subtotal: plan.amount,
+      subtotal: amount,
       currency: plan.currency,
       vat: vat.amount,
       vat_rate: vat.rate
