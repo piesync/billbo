@@ -47,7 +47,7 @@ GIT
 PATH
   remote: .
   specs:
-    billbo (0.0.1)
+    billbo (1.0.0)
       multi_json
       stripe
 
@@ -388,4 +388,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.12.5
+   1.15.3
