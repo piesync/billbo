@@ -168,6 +168,25 @@ describe App do
           end
         end
       end
+
+      describe 'with custom subscription description' do
+        it 'uses the subscription description instead of the plan name' do
+           VCR.use_cassette('invoice_template_custom_description') do
+            invoice_service.create_subscription(plan: plan.id, metadata: { description: 'Custom Subscription'})
+            invoice_service.process_payment(
+              stripe_event_id: stripe_event_id,
+              stripe_invoice_id: customer.invoices.first.id
+            )
+
+            invoice = Invoice.first
+            complete_invoice(invoice)
+            number = invoice.number
+
+            visit "/invoices/#{number}"
+            page.save_screenshot('spec/visual/subscription_custom_description.png', :full => true)
+          end
+        end
+      end
     end
 
     describe 'subscription without VAT (reverse)' do
