@@ -15,7 +15,7 @@ LEFT JOIN invoices AS i ON c.original_number = i.number
 WHERE i.customer_vat_number IS NOT NULL
 AND c.finalized_at >= ?
 AND c.finalized_at < ?
-AND i.customer_country_code != 'BE'
+AND i.customer_vat_number NOT LIKE 'BE%'
 GROUP BY i.customer_vat_number
 HAVING SUM(i.total_eur*c.multiplier) > 0
 ORDER BY total DESC
