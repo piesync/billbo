@@ -267,9 +267,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (2.8.2)
-      rack (>= 1.1, < 2.0)
-    rack (1.6.0)
+    puma (3.12.0)
+    rack (1.6.11)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -385,7 +384,7 @@ DEPENDENCIES
   webmock!
 
 RUBY VERSION
-   ruby 2.3.1p112
+   ruby 2.3.8p459
 
 BUNDLED WITH
-   1.15.4
+   2.0.1
