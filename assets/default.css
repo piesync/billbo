@@ -1,5 +1,5 @@
 #invoice p, #invoice h2, #invoice h3{margin:0}
-#invoice {font-family: Helvetica, Tahoma,  sans-serif; color: #888;line-height:1.5}
+#invoice {font-family: Roboto,  sans-serif; color: #888;line-height:1.5}
 #invoice h1 {margin: 0;color: #000;text-transform: uppercase;}
 #invoice h2, #invoice h3 {color:#000; text-transform: none; line-height:1.2;margin-top:10px}
 
