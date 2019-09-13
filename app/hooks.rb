@@ -11,7 +11,7 @@ class Hooks < Base
     send(method_name, event) if respond_to?(method_name, true)
 
     # Send rumor event.
-    rumor(method_name).on(event.data.object).mention(event: event).spread
+    rumor(method_name).on(event.data.object).mention(event: event).spread(async: false)
 
     status 200
   end
