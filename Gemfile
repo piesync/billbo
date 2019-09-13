@@ -23,7 +23,7 @@ gem 'carrierwave'
 gem 'fog'
 gem 'slim'
 gem 'money'
-gem 'eu_central_bank', github: 'RubyMoney/eu_central_bank'
+gem 'eu_central_bank'
 gem 'countries', github: 'challengee/countries'
 
 gem 'tox', github: 'piesync/tox'
