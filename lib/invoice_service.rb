@@ -36,7 +36,9 @@ class InvoiceService
     # paid with the balance.
     if stripe_invoice.charge
       charge = Stripe::Charge.retrieve(stripe_invoice.charge)
-      snapshot_card(charge.source, invoice)
+      # Old subscription will have a source, however, new subscriptions use payment methods instead
+      card = charge.source || charge.payment_method_details.card
+      snapshot_card(card, invoice)
     end
 
     invoice
