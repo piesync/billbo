@@ -10,7 +10,7 @@ class VatService
     'DK' => 25, # Denmark
     'DE' => 19, # Germany
     'EE' => 20, # Estonia
-    'EL' => 23, # Greece
+    'EL' => 24, # Greece
     'ES' => 21, # Spain
     'FR' => 20, # France
     'HR' => 25, # Croatia
@@ -26,7 +26,7 @@ class VatService
     'AT' => 20, # Austria
     'PL' => 23, # Poland
     'PT' => 23, # Portugal
-    'RO' => 24, # Romania
+    'RO' => 19, # Romania
     'SI' => 22, # Slovenia
     'SK' => 20, # Slovakia
     'FI' => 24, # Finland
