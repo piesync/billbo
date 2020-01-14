@@ -87,7 +87,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
           tr#vat_tr
             td.item_r
               - if vat?
-                = "VAT (#{vat_rate.to_i}%)"
+                = "VAT #{country_name(customer_country_code)} (#{vat_rate.to_i}%)"
               - else
                 | VAT*
             td.item_r = format_money(vat_amount, currency)
