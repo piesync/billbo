@@ -123,6 +123,36 @@ describe App do
 
     let(:invoice_service) { InvoiceService.new(customer_id: customer.id) }
 
+    describe 'subscription for customer with non-Latin characters' do
+      let(:country_code) { 'PL' }
+      let(:vat_registered) { false }
+
+      let(:metadata) {{
+        name: 'Klementyna Dąbrowski-Szymański',
+        address: 'Pasaż pod Błękitnym Słońcem',
+        country_code: country_code,
+        vat_registered: vat_registered,
+        vat_number: vat_number,
+      }}
+
+      it 'generates an invoice with proper characters' do
+        VCR.use_cassette('invoice_template_sub_non_latin') do
+          invoice_service.create_subscription(plan: plan.id)
+          invoice_service.process_payment(
+            stripe_event_id: stripe_event_id,
+            stripe_invoice_id: customer.invoices.first.id
+          )
+
+          invoice = Invoice.first
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/subscription_with_non_latin_characters.png', :full => true)
+        end
+      end
+    end
+
     describe 'subscription without VAT (export)' do
       let(:country_code) { 'US' }
       let(:vat_registered) { false }
