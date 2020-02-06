@@ -1,5 +1,6 @@
 class Invoice < Sequel::Model
   AlreadyFinalized = Class.new(StandardError)
+  ProcessingError = Class.new(StandardError)
 
   def self.find_or_create_by_stripe_id(stripe_id)
     transaction(isolation: :serializable,
@@ -42,6 +43,10 @@ class Invoice < Sequel::Model
     exclude(pdf_generated_at: nil)
   end
 
+  def_dataset_method(:unprocessed) do |_|
+    where(processed_at: nil)
+  end
+
   # Returns all finalized invoices from a given period.
   def self.between(from, to)
     finalized.
@@ -68,6 +73,13 @@ class Invoice < Sequel::Model
     end
   end
 
+  def process!
+    raise ProcessingError if !finalized? || !pdf_generated? || processed?
+
+    update processed_at: Time.now
+    self
+  end
+
   def added_vat!
     update added_vat: true
     self
@@ -89,6 +101,14 @@ class Invoice < Sequel::Model
 
   def credit_note?
     !!credit_note
+  end
+
+  def pdf_generated?
+    !pdf_generated_at.nil?
+  end
+
+  def processed?
+    !processed_at.nil?
   end
 
   def due_at
