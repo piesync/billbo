@@ -9,7 +9,7 @@ class App < Base
   # plan     - ID of plan to subscribe on.
   # any other stripe options.
   #
-  # Returns 200 if succesful
+  # Returns 200 if successful
   post '/subscriptions' do
     customer = params.delete('customer')
 
@@ -44,6 +44,8 @@ class App < Base
 
     invoice = Invoice.where(number: params[:number]).first
 
+    halt 404 unless invoice
+
     if invoice.credit_note?
       credit_note = invoice
       invoice = Invoice.where(number: invoice.reference_number).first
@@ -61,15 +63,31 @@ class App < Base
     ))
   end
 
+  # Marks an invoice as processed
+  # Processing has to be performed externally and can be anything,
+  # e.g. email the invoice to the customer.
+  #
+  # number - The invoice number.
+  #
+  # Returns a JSON representation of the invoice
+  post '/invoices/:number/process' do
+    invoice = Invoice.where(number: params[:number]).first
+
+    halt 404 unless invoice
+
+    json(invoice.process!)
+  end
+
   # List invoices
   #
   # by_accounting_id  - customer account identifier
   # finalized_before  - finalized before given timestamp
   # finalized_after   - finalized after given timestamp
+  # unprocessed       - not yet marked as processed
   #
-  # Returns a JSON array of {number: .., finalized_at: ..}.
+  # Returns a JSON array of {number: …, finalized_at: …, processed_at: …}
   get '/invoices' do
-    invoices = %w(by_accounting_id finalized_before finalized_after).reduce(
+    invoices = %w(by_accounting_id finalized_before finalized_after unprocessed).reduce(
       Invoice.finalized.with_pdf_generated.newest_first
     ) do |scope,key|
       params.has_key?(key) ? scope.public_send(key, params[key]) : scope

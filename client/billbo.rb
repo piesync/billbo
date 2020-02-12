@@ -83,7 +83,7 @@ module Billbo
     # plan     - ID of plan to subscribe on.
     # any other stripe options.
     #
-    # Returns the Stripe::Subscription if succesful.
+    # Returns the Stripe::Subscription if successful.
     def create_subscription(options)
       [:plan, :customer].each do |key|
         raise ArgumentError, "#{key} not provided" if options[key].nil?
@@ -105,6 +105,7 @@ module Billbo
     # by_account_id     - customer account identifier
     # finalized_before  - finalized before given timestamp
     # finalized_after   - finalized after given timestamp
+    # unprocessed       - not yet marked as processed
     #
     # Returns an array of {number: .., finalized_at: ..}.
     def invoices(options)
@@ -116,6 +117,13 @@ module Billbo
     # Return PDF data of given invoice by number.
     def pdf(number)
       get("/invoices/#{number}.pdf")
+    end
+
+    # Mark an invoice as processed
+    def process(number)
+      Invoice.new(post("/invoices/#{number}/process", {}))
+    rescue RestClient::ResourceNotFound
+      nil
     end
 
     private

@@ -126,4 +126,20 @@ describe Invoice do
 
   end
 
+  describe 'process!' do
+    let(:invoice) { Invoice.new }
+
+    it 'sets the processed_at column to the current time if not set' do
+      invoice.process!
+      invoice.processed_at.must_be :>, Time.now - 10
+    end
+
+    it 'leaves the processed_at column to the original time if set' do
+      past_processed_at = 10.days.ago
+      invoice.update processed_at: past_processed_at
+      invoice.process!
+      invoice.processed_at.must_equal past_processed_at
+    end
+  end
+
 end

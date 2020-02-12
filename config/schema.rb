@@ -74,3 +74,8 @@ Configuration.db.add_column(
 Configuration.db.add_column(
   :invoices, :stripe_subscription_id, String
 ) unless Configuration.db[:invoices].columns.include?(:stripe_subscription_id)
+
+# version 3
+Configuration.db.add_column(
+  :invoices, :processed_at, Time
+) unless Configuration.db[:invoices].columns.include?(:processed_at)

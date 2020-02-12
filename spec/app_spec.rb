@@ -382,6 +382,53 @@ describe App do
     end
   end
 
+  describe 'get /invoices/NUMBER/process' do
+    let(:invoice) { Invoice.create.finalize!.pdf_generated! }
+    let(:number) { invoice.number }
+
+    subject { post "/invoices/#{number}/process", {} }
+
+    it 'responds with OK' do
+      subject.status.must_equal 200
+    end
+
+    it 'responds with json' do
+      subject.content_type.must_equal 'application/json'
+    end
+
+    it 'responds with data' do
+      subject.body.must_equal json(invoice.reload)
+    end
+
+    describe 'non existing invoice' do
+      let(:number) { 'yadayada' }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+
+    describe 'not finalized' do
+      let(:invoice) { Invoice.create }
+
+      it 'responds with NOT FOUND' do
+        subject.status.must_equal 404
+      end
+    end
+
+    describe 'already processed' do
+      let(:invoice) { Invoice.create.finalize!.pdf_generated!.process! }
+
+      it 'responds with OK' do
+        subject.status.must_equal 200
+      end
+
+      it 'responds with json' do
+        subject.body.must_equal json(invoice)
+      end
+    end
+  end
+
   describe 'get /invoices' do
     let(:now) { Time.now }
     let(:params) { {} }

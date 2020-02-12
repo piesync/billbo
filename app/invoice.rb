@@ -42,6 +42,10 @@ class Invoice < Sequel::Model
     exclude(pdf_generated_at: nil)
   end
 
+  def_dataset_method(:unprocessed) do |_|
+    where(processed_at: nil)
+  end
+
   # Returns all finalized invoices from a given period.
   def self.between(from, to)
     finalized.
@@ -68,6 +72,11 @@ class Invoice < Sequel::Model
     end
   end
 
+  def process!
+    update processed_at: Time.now if processed_at.nil?
+    self
+  end
+
   def added_vat!
     update added_vat: true
     self
@@ -89,6 +98,14 @@ class Invoice < Sequel::Model
 
   def credit_note?
     !!credit_note
+  end
+
+  def pdf_generated?
+    !pdf_generated_at.nil?
+  end
+
+  def processed?
+    !processed_at.nil?
   end
 
   def due_at

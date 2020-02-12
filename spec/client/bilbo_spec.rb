@@ -182,6 +182,21 @@ describe Billbo do
     end
   end
 
+  describe '#process' do
+    let(:number) { '12345' }
+    let(:result) { {number: '12345'} }
+
+    it 'returns a Billbo::Invoice instance' do
+      stub_app(:post, "invoices/#{number}/process", {}, json: result)
+      Billbo.process(number).class.must_equal Billbo::Invoice
+    end
+
+    it 'returns nil if not found' do
+      stub_app(:post, "invoices/#{number}/process", {}, status: 404)
+      Billbo.process(number).must_be_nil
+    end
+  end
+
   def stub_app(method, path, with, response)
     response = response.dup
     response[:status] ||= 200
