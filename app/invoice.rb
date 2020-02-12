@@ -1,6 +1,5 @@
 class Invoice < Sequel::Model
   AlreadyFinalized = Class.new(StandardError)
-  ProcessingError = Class.new(StandardError)
 
   def self.find_or_create_by_stripe_id(stripe_id)
     transaction(isolation: :serializable,

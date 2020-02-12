@@ -122,8 +122,6 @@ module Billbo
     # Mark an invoice as processed
     def process(number)
       Invoice.new(post("/invoices/#{number}/process", {}))
-    rescue RestClient::BadRequest
-      raise ::Invoice::ProcessingError
     rescue RestClient::ResourceNotFound
       nil
     end

@@ -191,13 +191,6 @@ describe Billbo do
       Billbo.process(number).class.must_equal Billbo::Invoice
     end
 
-    it 'returns a Billbo::Invoice::ProcessingError if invalid' do
-      stub_app(:post, "invoices/#{number}/process", {}, status: 400)
-      proc do
-        Billbo.process(number)
-      end.must_raise(Invoice::ProcessingError)
-    end
-
     it 'returns nil if not found' do
       stub_app(:post, "invoices/#{number}/process", {}, status: 404)
       Billbo.process(number).must_be_nil
