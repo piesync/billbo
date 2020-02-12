@@ -74,9 +74,7 @@ class Invoice < Sequel::Model
   end
 
   def process!
-    raise ProcessingError if !finalized? || !pdf_generated? || processed?
-
-    update processed_at: Time.now
+    update processed_at: Time.now if processed_at.nil?
     self
   end
 

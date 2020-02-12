@@ -416,19 +416,15 @@ describe App do
       end
     end
 
-    describe 'no PDF generated' do
-      let(:invoice) { Invoice.create.finalize! }
-
-      it 'responds with BAD REQUEST' do
-        subject.status.must_equal 400
-      end
-    end
-
     describe 'already processed' do
       let(:invoice) { Invoice.create.finalize!.pdf_generated!.process! }
 
-      it 'responds with BAD REQUEST' do
-        subject.status.must_equal 400
+      it 'responds with OK' do
+        subject.status.must_equal 200
+      end
+
+      it 'responds with json' do
+        subject.body.must_equal json(invoice)
       end
     end
   end

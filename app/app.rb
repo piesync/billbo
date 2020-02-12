@@ -74,7 +74,6 @@ class App < Base
     invoice = Invoice.where(number: params[:number]).first
 
     halt 404 unless invoice
-    halt 400 if !invoice.pdf_generated? || invoice.processed?
 
     json(invoice.process!)
   end
