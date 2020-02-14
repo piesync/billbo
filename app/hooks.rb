@@ -35,7 +35,7 @@ class Hooks < Base
     stripe_charge = Stripe::Charge.construct_from(event.data.object)
 
     # we only handle full refunds for now
-    if stripe_charge.refunded
+    if stripe_charge.refunded && stripe_charge.invoice
       invoice_service(
         customer_id: stripe_charge.customer
       ).process_refund(
