@@ -637,7 +637,7 @@ describe App do
     end
 
     it 'returns details about a valid vat number' do
-      vat_service.expects(:details).with(vat_number: '1').returns(MultiJson.dump(details))
+      vat_service.expects(:details).with(vat_number: '1').returns(details)
 
       get '/vat/1/details'
       last_response.ok?.must_equal true

@@ -151,8 +151,11 @@ class App < Base
       request = { vat_number: params[:number] }
       request.merge!(own_vat: params[:own_vat]) if params[:own_vat]
 
-      vat_service.details(request) || status(404)
+      details = vat_service.details(request)
 
+      halt 404 unless details
+
+      json(details)
     rescue VatService::ViesDown
       status(504)
     end
