@@ -1,31 +1,19 @@
 GIT
-  remote: git://github.com/bblimke/webmock.git
-  revision: a340f830d5ec5af43262856c0d5bde886eff6313
+  remote: https://github.com/bblimke/webmock.git
+  revision: a9cf1b73a7984c2cd79b9868c1093ccc8078ffe5
   specs:
-    webmock (1.18.0)
+    webmock (3.8.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
 
 GIT
-  remote: git://github.com/challengee/countries.git
+  remote: https://github.com/challengee/countries.git
   revision: d983f1a36a9bed32f7a7c8067474447cb16daeec
   specs:
     countries (0.11.5)
       currencies (~> 0.4.2)
       i18n_data (~> 0.7.0)
-
-GIT
-  remote: git://github.com/piesync/rumor.git
-  revision: 7b196c9b586d32edd6164269f1ce843baf79a412
-  specs:
-    rumor (0.2.0)
-
-GIT
-  remote: git://github.com/piesync/tox.git
-  revision: 09de6dfda7371aca5b261b6bed6d5ad87a70a472
-  specs:
-    tox (0.1.0)
-      ox
 
 GIT
   remote: https://github.com/getsentry/raven-ruby.git
@@ -35,6 +23,19 @@ GIT
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
       uuidtools
+
+GIT
+  remote: https://github.com/piesync/rumor.git
+  revision: a0a15078c48e30c0600155b748a8e07ccf3eb2b4
+  specs:
+    rumor (0.3.0)
+
+GIT
+  remote: https://github.com/piesync/tox.git
+  revision: ce34bdccc46971a86b577da503726ecdd22d0e40
+  specs:
+    tox (0.2.1)
+      ox (!= 2.9.3)
 
 PATH
   remote: .
@@ -56,7 +57,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    addressable (2.3.6)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
@@ -79,7 +81,7 @@ GEM
     cliver (0.3.2)
     coderay (1.1.0)
     concurrent-ruby (1.0.5)
-    crack (0.4.2)
+    crack (0.4.3)
       safe_yaml (~> 1.0.0)
     currencies (0.4.2)
     domain_name (0.5.20160615)
@@ -217,6 +219,7 @@ GEM
       minitest (>= 3.0)
     gyoku (1.3.1)
       builder (>= 2.1.2)
+    hashdiff (1.0.0)
     hashie (3.2.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -252,7 +255,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     oj (2.9.9)
-    ox (2.3.0)
+    ox (2.13.2)
     pg (0.17.1)
     poltergeist (1.6.0)
       capybara (~> 2.1)
@@ -263,6 +266,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    public_suffix (4.0.3)
     puma (3.12.0)
     rack (1.6.13)
     rack-protection (1.5.3)
@@ -281,7 +285,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    safe_yaml (1.0.4)
+    safe_yaml (1.0.5)
     savon (2.12.0)
       akami (~> 1.2)
       builder (>= 2.1.2)
