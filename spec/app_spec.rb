@@ -80,6 +80,10 @@ describe App do
       metadata: metadata
   end
 
+  let(:customer_invoices) do
+    Stripe::Invoice.list(customer: customer.id, limit: 1)
+  end
+
   let(:stripe_invoice) do
     Stripe::InvoiceItem.create \
       customer: customer.id,
@@ -94,8 +98,8 @@ describe App do
       VCR.use_cassette('app_create_subscription') do
         post '/subscriptions', subscription
 
-        last_response.ok?.must_equal true
-        MultiJson.load(last_response.body)['customer'].must_equal customer.id
+        _(last_response.ok?).must_equal true
+        _(MultiJson.load(last_response.body)['customer']).must_equal customer.id
       end
     end
   end
@@ -140,7 +144,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id
+            stripe_invoice_id: customer_invoices.first.id
           )
 
           invoice = Invoice.first
@@ -162,7 +166,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id
+            stripe_invoice_id: customer_invoices.first.id
           )
 
           invoice = Invoice.first
@@ -182,7 +186,7 @@ describe App do
             subscription.plan = yearly_plan.id
             subscription.save
 
-            id = customer.invoices.first.id
+            id = customer_invoices.first.id
 
             invoice_service.process_payment(
               stripe_event_id: stripe_event_id,
@@ -205,7 +209,7 @@ describe App do
             invoice_service.create_subscription(plan: plan.id, metadata: { description: 'Custom Subscription'})
             invoice_service.process_payment(
               stripe_event_id: stripe_event_id,
-              stripe_invoice_id: customer.invoices.first.id
+              stripe_invoice_id: customer_invoices.first.id
             )
 
             invoice = Invoice.first
@@ -229,7 +233,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id)
+            stripe_invoice_id: customer_invoices.first.id)
 
 
           invoice = Invoice.first
@@ -251,7 +255,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id
+            stripe_invoice_id: customer_invoices.first.id
           )
 
           invoice = Invoice.first
@@ -273,7 +277,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id
+            stripe_invoice_id: customer_invoices.first.id
           )
 
           invoice = Invoice.first
@@ -295,7 +299,7 @@ describe App do
           invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: customer.invoices.first.id
+            stripe_invoice_id: customer_invoices.first.id
           )
 
           invoice = Invoice.first
@@ -315,13 +319,13 @@ describe App do
       it 'generates a credit note' do
         VCR.use_cassette('invoice_template_refund') do
           invoice_service.create_subscription(plan: plan.id)
-          stripe_invoice = customer.invoices.first
+          stripe_invoice = customer_invoices.first
           invoice_service.process_payment(
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
           )
 
-          Stripe::Charge.retrieve(stripe_invoice.charge).refund
+          Stripe::Refund.create(charge: stripe_invoice.charge)
           invoice_service.process_refund(
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
@@ -354,22 +358,22 @@ describe App do
     end
 
     it 'respond with OK' do
-      subject.status.must_equal 200
+      _(subject.status).must_equal 200
     end
 
     it 'respond with PDF' do
-      subject.content_type.must_equal 'application/pdf'
+      _(subject.content_type).must_equal 'application/pdf'
     end
 
     it 'respond with data' do
-      subject.body.must_equal data
+      _(subject.body).must_equal data
     end
 
     describe 'non existing PDF' do
       let(:number) { 'yadayada' }
 
       it 'responds with NOT FOUND' do
-        subject.status.must_equal 404
+        _(subject.status).must_equal 404
       end
     end
 
@@ -377,7 +381,7 @@ describe App do
       let(:invoice) { Invoice.create.finalize! }
 
       it 'responds with NOT FOUND' do
-        subject.status.must_equal 404
+        _(subject.status).must_equal 404
       end
     end
   end
@@ -389,22 +393,22 @@ describe App do
     subject { post "/invoices/#{number}/process", {} }
 
     it 'responds with OK' do
-      subject.status.must_equal 200
+      _(subject.status).must_equal 200
     end
 
     it 'responds with json' do
-      subject.content_type.must_equal 'application/json'
+      _(subject.content_type).must_equal 'application/json'
     end
 
     it 'responds with data' do
-      subject.body.must_equal json(invoice.reload)
+      _(subject.body).must_equal json(invoice.reload)
     end
 
     describe 'non existing invoice' do
       let(:number) { 'yadayada' }
 
       it 'responds with NOT FOUND' do
-        subject.status.must_equal 404
+        _(subject.status).must_equal 404
       end
     end
 
@@ -412,7 +416,7 @@ describe App do
       let(:invoice) { Invoice.create }
 
       it 'responds with NOT FOUND' do
-        subject.status.must_equal 404
+        _(subject.status).must_equal 404
       end
     end
 
@@ -420,11 +424,11 @@ describe App do
       let(:invoice) { Invoice.create.finalize!.pdf_generated!.process! }
 
       it 'responds with OK' do
-        subject.status.must_equal 200
+        _(subject.status).must_equal 200
       end
 
       it 'responds with json' do
-        subject.body.must_equal json(invoice)
+        _(subject.body).must_equal json(invoice)
       end
     end
   end
@@ -437,11 +441,11 @@ describe App do
     subject { get '/invoices', params }
 
     it 'responds with OK' do
-      subject.status.must_equal 200
+      _(subject.status).must_equal 200
     end
 
     it 'responds with JSON' do
-      subject.content_type.must_equal 'application/json'
+      _(subject.content_type).must_equal 'application/json'
     end
 
     describe 'ordering' do
@@ -455,7 +459,7 @@ describe App do
 
       it 'lists newest first' do
         result = JSON.parse(subject.body)
-        result.first['finalized_at'].must_be :>, result.last['finalized_at']
+        _(result.first['finalized_at']).must_be :>, result.last['finalized_at']
       end
     end
 
@@ -480,9 +484,9 @@ describe App do
       end
 
       it 'include all invoice for given account newest first' do
-        JSON.parse(subject.body).map do |invoice|
+        _(JSON.parse(subject.body).map do |invoice|
           invoice["number"]
-        end.to_set.must_equal account_invoices.map(&:number).to_set
+        end.to_set).must_equal account_invoices.map(&:number).to_set
       end
     end
 
@@ -499,9 +503,9 @@ describe App do
       before { invoices }
 
       it 'only returns the first invoices' do
-        JSON.parse(subject.body).map do |invoice|
+        _(JSON.parse(subject.body).map do |invoice|
           invoice["number"]
-        end.to_set.must_equal invoices[0..4].map(&:number).to_set
+        end.to_set).must_equal invoices[0..4].map(&:number).to_set
       end
     end
 
@@ -518,9 +522,9 @@ describe App do
       before { invoices }
 
       it 'only returns the last invoices' do
-        JSON.parse(subject.body).map do |invoice|
+        _(JSON.parse(subject.body).map do |invoice|
           invoice["number"]
-        end.to_set.must_equal invoices[6..-1].map(&:number).to_set
+        end.to_set).must_equal invoices[6..-1].map(&:number).to_set
       end
     end
 
@@ -555,9 +559,9 @@ describe App do
       end
 
       it 'only returns the last invoices' do
-        JSON.parse(subject.body).map do |invoice|
+        _(JSON.parse(subject.body).map do |invoice|
           invoice["number"]
-        end.to_set.must_equal account_invoices[6..-2].map(&:number).to_set
+        end.to_set).must_equal account_invoices[6..-2].map(&:number).to_set
       end
     end
   end
@@ -572,8 +576,8 @@ describe App do
           vat_registered: 'true'
         }
 
-        last_response.ok?.must_equal true
-        MultiJson.load(last_response.body, symbolize_keys: true).must_equal \
+        _(last_response.ok?).must_equal true
+        _(MultiJson.load(last_response.body, symbolize_keys: true)).must_equal \
           subtotal: 1499,
           currency: 'usd',
           vat: 315,
@@ -591,8 +595,8 @@ describe App do
           quantity: 3
         }
 
-        last_response.ok?.must_equal true
-        MultiJson.load(last_response.body, symbolize_keys: true).must_equal \
+        _(last_response.ok?).must_equal true
+        _(MultiJson.load(last_response.body, symbolize_keys: true)).must_equal \
           subtotal: 4497,
           currency: 'usd',
           vat: 944,
@@ -610,16 +614,16 @@ describe App do
       vat_service.expects(:valid?).with(vat_number: '1').returns(true)
 
       get '/vat/1'
-      last_response.ok?.must_equal true
-      last_response.body.must_be_empty
+      _(last_response.ok?).must_equal true
+      _(last_response.body).must_be_empty
     end
 
     it "doesn't find an invalid vat number" do
       vat_service.expects(:valid?).with(vat_number: '2').returns(false)
 
       get '/vat/2'
-      last_response.ok?.must_equal false
-      last_response.body.must_be_empty
+      _(last_response.ok?).must_equal false
+      _(last_response.body).must_be_empty
     end
   end
 
@@ -640,42 +644,42 @@ describe App do
       vat_service.expects(:details).with(vat_number: '1').returns(details)
 
       get '/vat/1/details'
-      last_response.ok?.must_equal true
+      _(last_response.ok?).must_equal true
 
-      MultiJson.load(last_response.body, symbolize_keys: true).must_equal details
+      _(MultiJson.load(last_response.body, symbolize_keys: true)).must_equal details
     end
 
     it "doesn't find an invalid vat number" do
       vat_service.expects(:details).with(vat_number: '2').returns(false)
 
       get '/vat/2/details'
-      last_response.ok?.must_equal false
-      last_response.status.must_equal 404
-      last_response.body.must_be_empty
+      _(last_response.ok?).must_equal false
+      _(last_response.status).must_equal 404
+      _(last_response.body).must_be_empty
     end
 
     it "returns 504 when VIES is down" do
       vat_service.expects(:details).with(vat_number: '1').raises(VatService::ViesDown)
 
       get '/vat/1/details'
-      last_response.ok?.must_equal false
-      last_response.status.must_equal 504
-      last_response.body.must_be_empty
+      _(last_response.ok?).must_equal false
+      _(last_response.status).must_equal 504
+      _(last_response.body).must_be_empty
     end
   end
 
   describe 'post /reserve/' do
     it 'reserves a slot' do
       post '/reserve'
-      last_response.ok?.must_equal true
+      _(last_response.ok?).must_equal true
 
       response = MultiJson.load(last_response.body, symbolize_keys: true)
 
-      response[:year].wont_be_nil
-      response[:sequence_number].wont_be_nil
-      response[:number].wont_be_nil
-      response[:finalized_at].wont_be_nil
-      response[:reserved_at].wont_be_nil
+      _(response[:year]).wont_be_nil
+      _(response[:sequence_number]).wont_be_nil
+      _(response[:number]).wont_be_nil
+      _(response[:finalized_at]).wont_be_nil
+      _(response[:reserved_at]).wont_be_nil
     end
 
   end

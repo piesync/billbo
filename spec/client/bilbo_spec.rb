@@ -45,22 +45,22 @@ describe Billbo do
     it 'returns a preview price calculation' do
       stub_app(:get, 'preview/basic', {query: {country_code: 'BE', vat_registered: 'false'}}, json: preview)
 
-      Billbo.preview(
+      _(Billbo.preview(
         plan: 'basic',
         country_code: 'BE',
         vat_registered: false
-      ).must_equal preview
+      )).must_equal preview
     end
 
     it 'returns a preview price calculation (with quantity)' do
       stub_app(:get, 'preview/basic', {query: {country_code: 'BE', quantity: 3, vat_registered: 'false'}}, json: preview_quantity)
 
-      Billbo.preview(
+      _(Billbo.preview(
         plan: 'basic',
         country_code: 'BE',
         quantity: 3,
         vat_registered: false
-      ).must_equal preview_quantity
+      )).must_equal preview_quantity
     end
   end
 
@@ -69,11 +69,11 @@ describe Billbo do
     before { stub_app(:post, 'reserve', {}, json: reservation) }
 
     it 'returns a Billbo::Invoice' do
-      subject.must_be_kind_of Billbo::Invoice
+      _(subject).must_be_kind_of Billbo::Invoice
     end
 
     it 'reserves an empty invoice slot' do
-      subject.must_equal Billbo::Invoice.new(reservation)
+      _(subject).must_equal Billbo::Invoice.new(reservation)
     end
   end
 
@@ -81,13 +81,13 @@ describe Billbo do
     it 'returns the number itself if it exists' do
       stub_app(:get, 'vat/BE123', {}, status: 200)
 
-      Billbo.vat('BE123').must_equal number: 'BE123'
+      _(Billbo.vat('BE123')).must_equal number: 'BE123'
     end
 
     it 'returns nil if the vat number does not exist' do
       stub_app(:get, 'vat/BE123', {}, status: 404)
 
-      Billbo.vat('BE123').must_be_nil
+      _(Billbo.vat('BE123')).must_be_nil
     end
   end
 
@@ -103,13 +103,13 @@ describe Billbo do
     it 'returns details about the number if it exists' do
       stub_app(:get, 'vat/BE123/details', {}, json: details)
 
-      Billbo.vat_details('BE123').must_equal details
+      _(Billbo.vat_details('BE123')).must_equal details
     end
 
     it 'returns nil if the vat number does not exist' do
       stub_app(:get, 'vat/BE123/details', {}, status: 404)
 
-      Billbo.vat_details('BE123').must_be_nil
+      _(Billbo.vat_details('BE123')).must_be_nil
     end
   end
 
@@ -126,21 +126,21 @@ describe Billbo do
         }
       )
 
-      sub.must_be_kind_of(Stripe::Subscription)
-      sub.to_h.must_equal subscription
+      _(sub).must_be_kind_of(Stripe::Subscription)
+      _(sub.to_h).must_equal subscription
     end
 
     describe 'a Stripe error occurs' do
       it 'raises the error' do
         stub_app(:post, 'subscriptions', {body: {plan: 'basic', customer: 'x', other: 'things'}}, status: 402, json: error)
 
-        proc do
+        _(proc do
           Billbo.create_subscription(
             plan: 'basic',
             customer: 'x',
             other: 'things'
           )
-        end.must_raise(Stripe::CardError)
+        end).must_raise(Stripe::CardError)
       end
     end
   end
@@ -156,15 +156,15 @@ describe Billbo do
     subject { Billbo.invoices(by_account_id: account_id) }
 
     it 'returns result' do
-      subject.size.must_equal(result.size)
+      _(subject.size).must_equal(result.size)
     end
 
     it 'returns number props' do
-      subject.map(&:number).must_equal(result.map{|v| v[:number]})
+      _(subject.map(&:number)).must_equal(result.map{|v| v[:number]})
     end
 
     it 'returns Billbo::Invoice instances' do
-      subject.map(&:class).uniq.must_equal([Billbo::Invoice])
+      _(subject.map(&:class).uniq).must_equal([Billbo::Invoice])
     end
   end
 
@@ -177,7 +177,7 @@ describe Billbo do
     end
 
     it 'returns data' do
-      Billbo.pdf(number).
+      _(Billbo.pdf(number)).
         must_equal(data)
     end
   end
@@ -188,12 +188,12 @@ describe Billbo do
 
     it 'returns a Billbo::Invoice instance' do
       stub_app(:post, "invoices/#{number}/process", {}, json: result)
-      Billbo.process(number).class.must_equal Billbo::Invoice
+      _(Billbo.process(number).class).must_equal Billbo::Invoice
     end
 
     it 'returns nil if not found' do
       stub_app(:post, "invoices/#{number}/process", {}, status: 404)
-      Billbo.process(number).must_be_nil
+      _(Billbo.process(number)).must_be_nil
     end
   end
 
@@ -207,8 +207,13 @@ describe Billbo do
       )
     end
 
-    stub_request(method, "https://X:TOKEN@billbo.test/#{path}")
-      .with(with)
-      .to_return(response)
+    if with.empty?
+      stub_request(method, "https://billbo.test/#{path}")
+        .to_return(response)
+    else
+      stub_request(method, "https://billbo.test/#{path}")
+        .with(with)
+        .to_return(response)
+    end
   end
 end

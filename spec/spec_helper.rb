@@ -3,9 +3,22 @@ require_relative '../config/boot'
 
 require 'minitest/spec'
 require 'minitest/autorun'
-require 'mocha/mini_test'
+require 'mocha/minitest'
 require 'webmock/minitest'
+require 'capybara/dsl'
 require 'capybara/poltergeist'
+
+# Silence Sequel related warnings (https://github.com/jeremyevans/sequel/issues/1184)
+
+SEQUEL_GEM_PATH = Gem.loaded_specs['sequel'].full_gem_path
+
+Warning.class_eval do
+  alias original_warn warn
+
+  def warn(message)
+    original_warn(message) unless message.match?(SEQUEL_GEM_PATH)
+  end
+end
 
 # Configure VCR
 VCR.configure do |c|

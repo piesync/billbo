@@ -36,10 +36,10 @@ class Configuration
     attr_accessor :database_url
 
     # Primary selling country
-    attr_accessor :primary_country
+    attr_writer :primary_country
 
     # Default currency of the seller
-    attr_accessor :default_currency
+    attr_writer :default_currency
 
     # Address of the seller
     attr_accessor :seller_address_line1
@@ -77,7 +77,7 @@ class Configuration
     attr_accessor :db
 
     # Amount of days until invoice is due
-    attr_accessor :due_days
+    attr_writer :due_days
 
     # configuration for IC listing
     attr_accessor :ic_email,

@@ -37,9 +37,9 @@ describe Job do
 
         invoice = invoice.reload
 
-        (invoice.vat_amount_eur > 0).must_equal true
-        (invoice.total_eur > 0).must_equal true
-        (invoice.exchange_rate_eur > 0).must_equal true
+        _(invoice.vat_amount_eur > 0).must_equal true
+        _(invoice.total_eur > 0).must_equal true
+        _(invoice.exchange_rate_eur > 0).must_equal true
       end
     end
 

@@ -24,8 +24,6 @@ class AnalyticsChannel < Rumor::Channel
   private
 
   def track_revenue(charge:, negative: false)
-    charge = Stripe::Charge.construct_from(charge)
-
     # Get analytics id based on Stripe customer.
     analytics_id = get_analytics_id_for_customer(charge.customer)
 
