@@ -63,7 +63,7 @@ class InvoiceService
   end
 
   def last_stripe_invoice
-    Stripe::Invoice.all(customer: @customer_id, limit: 1).first
+    Stripe::Invoice.list(customer: @customer_id, limit: 1).first
   end
 
 private

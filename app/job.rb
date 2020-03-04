@@ -4,7 +4,7 @@ class Job
   def perform
     # Iterate over all invoice we did not generate a PDF for yet.
     invoices = Invoice.where(pdf_generated_at: nil,reserved_at: nil)
-      .where('finalized_at IS NOT NULL')
+      .exclude(finalized_at: nil)
 
     perform_for(invoices)
   end

@@ -7,43 +7,6 @@ http_interactions:
       encoding: UTF-8
       string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="urn:ec.europa.eu:taxud:vies:services:checkVat"
-        xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins0="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><env:Body><ins0:checkVat><ins0:countryCode>LU</ins0:countryCode><ins0:vatNumber>21416127</ins0:vatNumber></ins0:checkVat></env:Body></env:Envelope>
-    headers:
-      Soapaction:
-      - '"checkVat"'
-      Content-Type:
-      - text/xml;charset=UTF-8
-      Content-Length:
-      - '476'
-  response:
-    status:
-      code: 200
-      message: ''
-    headers:
-      Date:
-      - Wed, 20 Jan 2016 17:30:24 GMT
-      Content-Type:
-      - text/xml; charset=UTF-8
-      Server:
-      - Europa
-      Proxy-Connection:
-      - Keep-Alive
-      Connection:
-      - Keep-Alive
-    body:
-      encoding: UTF-8
-      string: |-
-        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatResponse xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416127</vatNumber><requestDate>2016-01-20+01:00</requestDate><valid>true</valid><name>EBAY EUROPE S.A R.L.</name><address>22, BOULEVARD ROYAL
-        L-2449  LUXEMBOURG</address></checkVatResponse></soap:Body></soap:Envelope>
-    http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:30:27 GMT
-- request:
-    method: post
-    uri: http://ec.europa.eu/taxation_customs/vies/services/checkVatService
-    body:
-      encoding: UTF-8
-      string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="urn:ec.europa.eu:taxud:vies:services:checkVat"
         xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins0="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><env:Body><ins0:checkVat><ins0:countryCode>IE</ins0:countryCode><ins0:vatNumber>6388047V</ins0:vatNumber></ins0:checkVat></env:Body></env:Envelope>
     headers:
       Soapaction:
@@ -55,10 +18,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message: ''
+      message: OK
     headers:
       Date:
-      - Wed, 20 Jan 2016 17:30:24 GMT
+      - Wed, 26 Feb 2020 13:27:11 GMT
       Content-Type:
       - text/xml; charset=UTF-8
       Server:
@@ -68,13 +31,13 @@ http_interactions:
       Connection:
       - Keep-Alive
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatResponse
-        xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>IE</countryCode><vatNumber>6388047V</vatNumber><requestDate>2016-01-20+01:00</requestDate><valid>true</valid><name>GOOGLE
-        IRELAND LIMITED</name><address>3RD FLOOR ,GORDON HOUSE ,BARROW STREET ,DUBLIN
+        xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>IE</countryCode><vatNumber>6388047V</vatNumber><requestDate>2020-02-26+01:00</requestDate><valid>true</valid><name>GOOGLE
+        IRELAND LIMITED</name><address>3RD FLOOR, GORDON HOUSE, BARROW STREET, DUBLIN
         4</address></checkVatResponse></soap:Body></soap:Envelope>
-    http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:30:27 GMT
+    http_version: null
+  recorded_at: Wed, 26 Feb 2020 13:27:11 GMT
 - request:
     method: post
     uri: http://ec.europa.eu/taxation_customs/vies/services/checkVatService
@@ -93,10 +56,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message: ''
+      message: OK
     headers:
       Date:
-      - Wed, 20 Jan 2016 17:30:25 GMT
+      - Wed, 26 Feb 2020 13:27:11 GMT
       Content-Type:
       - text/xml; charset=UTF-8
       Server:
@@ -106,9 +69,9 @@ http_interactions:
       Connection:
       - Keep-Alive
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><checkVatResponse
-        xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416128</vatNumber><requestDate>2016-01-20+01:00</requestDate><valid>false</valid><name>---</name><address>---</address></checkVatResponse></soap:Body></soap:Envelope>
-    http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:30:27 GMT
-recorded_with: VCR 2.9.2
+        xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><countryCode>LU</countryCode><vatNumber>21416128</vatNumber><requestDate>2020-02-26+01:00</requestDate><valid>false</valid><name>---</name><address>---</address></checkVatResponse></soap:Body></soap:Envelope>
+    http_version: null
+  recorded_at: Wed, 26 Feb 2020 13:27:11 GMT
+recorded_with: VCR 5.1.0

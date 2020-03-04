@@ -26,7 +26,7 @@ describe AnalyticsChannel do
 
   let(:amount) { 1210 }
   let(:charge) do
-    { amount: amount, customer: customer_id, invoice: invoice_id }
+    Stripe::Charge.construct_from({ amount: amount, customer: customer_id, invoice: invoice_id })
   end
 
   before do

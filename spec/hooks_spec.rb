@@ -26,6 +26,10 @@ describe Hooks do
       metadata: metadata
   end
 
+  let(:customer_invoices) do
+    Stripe::Invoice.list(customer: customer.id, limit: 1)
+  end
+
   let(:stripe_invoice) do
     Stripe::InvoiceItem.create \
       customer: customer.id,
@@ -81,14 +85,14 @@ describe Hooks do
                  data: { object: stripe_invoice}
                )
 
-          last_response.ok?.must_equal true
-          last_response.body.must_be_empty
+          _(last_response.ok?).must_equal true
+          _(last_response.body).must_be_empty
 
-          Invoice.count.must_equal 1
+          _(Invoice.count).must_equal 1
           invoice = Invoice.first
-          invoice.sequence_number.must_equal 1
-          invoice.finalized_at.wont_be_nil
-          invoice.credit_note.must_equal false
+          _(invoice.sequence_number).must_equal 1
+          _(invoice.finalized_at).wont_be_nil
+          _(invoice.credit_note).must_equal false
         end
       end
     end
@@ -97,7 +101,7 @@ describe Hooks do
       it 'creates a credit note' do
         VCR.use_cassette('hook_charge_refunded') do
           customer.subscriptions.create(plan: plan.id)
-          stripe_invoice = customer.invoices.first
+          stripe_invoice = customer_invoices.first
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
           post '/',
@@ -107,7 +111,7 @@ describe Hooks do
                  data: {object: stripe_invoice}
                )
 
-          refund = stripe_charge.refund
+          refund = Stripe::Refund.create(charge: stripe_charge.id)
 
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
@@ -118,21 +122,21 @@ describe Hooks do
                  data: {object: stripe_charge}
                )
 
-          last_response.ok?.must_equal true
-          last_response.body.must_be_empty
+          _(last_response.ok?).must_equal true
+          _(last_response.body).must_be_empty
 
-          Invoice.count.must_equal 2
+          _(Invoice.count).must_equal 2
 
           invoice = Invoice.order(:sequence_number).first
-          invoice.sequence_number.must_equal 1
-          invoice.finalized_at.wont_be_nil
-          invoice.credit_note.must_equal false
+          _(invoice.sequence_number).must_equal 1
+          _(invoice.finalized_at).wont_be_nil
+          _(invoice.credit_note).must_equal false
 
           credit_note = Invoice.order(:sequence_number).last
-          credit_note.sequence_number.must_equal 2
-          credit_note.finalized_at.wont_be_nil
-          credit_note.credit_note.must_equal true
-          credit_note.reference_number.must_equal invoice.number
+          _(credit_note.sequence_number).must_equal 2
+          _(credit_note.finalized_at).wont_be_nil
+          _(credit_note.credit_note).must_equal true
+          _(credit_note.reference_number).must_equal invoice.number
         end
       end
     end
@@ -141,7 +145,7 @@ describe Hooks do
       it 'does not create a credit note' do
         VCR.use_cassette('hook_charge_refunded_partial') do
           customer.subscriptions.create(plan: plan.id)
-          stripe_invoice = customer.invoices.first
+          stripe_invoice = customer_invoices.first
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
 
           post '/',
@@ -151,7 +155,7 @@ describe Hooks do
                  data: {object: stripe_invoice}
                )
 
-          refund = stripe_charge.refund amount: 100
+          refund = Stripe::Refund.create(charge: stripe_charge.id, amount: 100)
 
           stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
           before_count = Invoice.count
@@ -163,8 +167,8 @@ describe Hooks do
                  data: {object: stripe_charge}
                )
 
-          last_response.ok?.must_equal true
-          Invoice.count.must_equal before_count
+          _(last_response.ok?).must_equal true
+          _(Invoice.count).must_equal before_count
         end
       end
     end
@@ -177,7 +181,7 @@ describe Hooks do
           .with(customer_id: '10').returns(invoice_service)
 
         invoice_service.expects(:process_payment)
-          .raises(Stripe::CardError.new('not good', :test, 1))
+          .raises(Stripe::CardError.new('not good', :test, code: 1))
 
         post '/',
              json(
@@ -186,9 +190,9 @@ describe Hooks do
                data: {object: {id: '1', customer: '10'}}
              )
 
-        last_response.ok?.must_equal false
-        last_response.status.must_equal 402
-        last_response.body.must_equal '{"error":{"message":"not good","type":"card_error","code":1,"param":"test"}}'
+        _(last_response.ok?).must_equal false
+        _(last_response.status).must_equal 402
+        _(last_response.body).must_equal '{"error":{"message":"not good","type":"card_error","code":1,"param":"test"}}'
       end
     end
 
@@ -206,9 +210,9 @@ describe Hooks do
                  data: {object: Stripe::Invoice.retrieve(stripe_invoice.id)}
                )
 
-          last_response.ok?.must_equal true
+          _(last_response.ok?).must_equal true
           invoice = Invoice.first
-          invoice.number.wont_be_nil
+          _(invoice.number).wont_be_nil
         end
       end
     end

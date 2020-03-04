@@ -14,13 +14,14 @@ class StripeService
   # Returns the created Stripe subscription and invoice.
   def create_subscription(options)
     # This call automatically creates an invoice, always.
-    customer.subscriptions.create({
+    Stripe::Subscription.create({
+      customer: customer.id,
       tax_percent: calculate_vat_rate
     }.merge(options))
   end
 
   def subscription(id)
-    customer.subscriptions.retrieve(id)
+    Stripe::Subscription.retrieve(id)
   end
 
   # Gets metadata for the customer.

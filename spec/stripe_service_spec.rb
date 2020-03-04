@@ -48,6 +48,10 @@ describe StripeService do
       metadata: metadata
   end
 
+  let(:customer_invoices) do
+    Stripe::Invoice.list(customer: customer.id, limit: 100)
+  end
+
   let(:coupon) do
     begin
       Stripe::Coupon.retrieve('25OFF')
@@ -68,23 +72,23 @@ describe StripeService do
   describe '#create_subscription' do
     it 'creates a subscription and adds VAT to the first invoice' do
       VCR.use_cassette('create_subscription_success') do
-        subscription = service.create_subscription(plan: plan.id)
+        subscription = service.create_subscription(plan: plan.id, trial_from_plan: true)
 
-        invoices = customer.invoices
-        invoices.to_a.size.must_equal 1
+        invoices = customer_invoices
+        _(invoices.to_a.size).must_equal 1
         invoice = invoices.first
 
-        invoice.must_be_kind_of(Stripe::Invoice)
-        invoice.id.wont_be_nil
+        _(invoice).must_be_kind_of(Stripe::Invoice)
+        _(invoice.id).wont_be_nil
 
-        invoice.total.must_equal 1814
-        invoice.tax.must_equal 315
-        invoice.lines.to_a.size.must_equal 1
+        _(invoice.total).must_equal 1814
+        _(invoice.tax).must_equal 315
+        _(invoice.lines.to_a.size).must_equal 1
 
-        upcoming = customer.upcoming_invoice
-        upcoming.total.must_equal 1814
-        upcoming.tax.must_equal 315
-        upcoming.lines.to_a.size.must_equal 1
+        upcoming = Stripe::Invoice.upcoming(customer: customer.id)
+        _(upcoming.total).must_equal 1814
+        _(upcoming.tax).must_equal 315
+        _(upcoming.lines.to_a.size).must_equal 1
       end
     end
 
@@ -98,9 +102,9 @@ describe StripeService do
 
       it 'uses the VAT country code' do
         VCR.use_cassette('create_subscription_vat_success') do
-          subscription = service.create_subscription(plan: plan.id)
-          invoice = customer.invoices.first
-          invoice.tax.must_equal 300
+          subscription = service.create_subscription(plan: plan.id, trial_from_plan: true)
+          invoice = customer_invoices.first
+          _(invoice.tax).must_equal 300
         end
       end
     end
@@ -108,22 +112,22 @@ describe StripeService do
     describe 'the plan has a trial period' do
       it 'creates a subscription but does not add VAT' do
         VCR.use_cassette('create_subscription_trial_success') do
-          subscription = service.create_subscription(plan: trial_plan.id)
+          subscription = service.create_subscription(plan: trial_plan.id, trial_from_plan: true)
 
-          invoices = customer.invoices
-          invoices.to_a.size.must_equal 1
+          invoices = customer_invoices
+          _(invoices.to_a.size).must_equal 1
           invoice = invoices.first
 
-          invoice.must_be_kind_of(Stripe::Invoice)
-          invoice.id.wont_be_nil
+          _(invoice).must_be_kind_of(Stripe::Invoice)
+          _(invoice.id).wont_be_nil
 
-          invoice.total.must_equal 0
-          invoice.lines.to_a.size.must_equal 1
+          _(invoice.total).must_equal 0
+          _(invoice.lines.to_a.size).must_equal 1
 
-          upcoming = customer.upcoming_invoice
-          upcoming.total.must_equal 1814
-          upcoming.tax.must_equal 315
-          upcoming.lines.to_a.size.must_equal 1
+          upcoming = Stripe::Invoice.upcoming(customer: customer.id)
+          _(upcoming.total).must_equal 1814
+          _(upcoming.tax).must_equal 315
+          _(upcoming.lines.to_a.size).must_equal 1
         end
       end
     end
@@ -133,12 +137,12 @@ describe StripeService do
 
       it 'does not charge VAT' do
         VCR.use_cassette('create_subscription_fail') do
-          proc do
-            service.create_subscription(plan: plan.id)
-          end.must_raise Stripe::CardError
+          _(proc do
+            subscription = service.create_subscription(plan: plan.id, payment_behavior: 'error_if_incomplete')
+          end).must_raise Stripe::CardError
 
-          customer.invoices.to_a.must_be_empty
-          Stripe::InvoiceItem.all(customer: customer.id).to_a.must_be_empty
+          _(customer_invoices.to_a).must_be_empty
+          _(Stripe::InvoiceItem.list(customer: customer.id, limit: 100)).must_be_empty
         end
       end
     end

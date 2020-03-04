@@ -6,11 +6,11 @@ describe Invoice do
   describe '#find_or_create' do
     it 'does not create duplicate invoices' do
       invoice1 = Invoice.find_or_create_by_stripe_id('1')
-      Invoice.count.must_equal 1
+      _(Invoice.count).must_equal 1
 
       invoice2 = Invoice.find_or_create_by_stripe_id('1')
-      invoice2.must_equal invoice1
-      Invoice.count.must_equal 1
+      _(invoice2).must_equal invoice1
+      _(Invoice.count).must_equal 1
     end
 
     it 'accepts extra attributes' do
@@ -22,23 +22,23 @@ describe Invoice do
 
     it 'assigns a number to the invoice and saves it' do
       invoice.finalize!
-      Invoice.count.must_equal 1
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 1
-      invoice.number.must_equal "#{year}000001"
-      invoice.finalized_at.must_be :>, Time.now - 10
+      _(Invoice.count).must_equal 1
+      _(invoice.year).must_equal year
+      _(invoice.sequence_number).must_equal 1
+      _(invoice.number).must_equal "#{year}000001"
+      _(invoice.finalized_at).must_be :>, Time.now - 10
 
       invoice = Invoice.new.finalize!
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 2
-      invoice.number.must_equal "#{year}000002"
-      invoice.finalized_at.must_be :>, Time.now - 10
+      _(invoice.year).must_equal year
+      _(invoice.sequence_number).must_equal 2
+      _(invoice.number).must_equal "#{year}000002"
+      _(invoice.finalized_at).must_be :>, Time.now - 10
     end
 
     it 'can not be finalized twice (idempotent)' do
-      proc do
+      _(proc do
         invoice.finalize!.finalize!
-      end.must_raise Invoice::AlreadyFinalized
+      end).must_raise Invoice::AlreadyFinalized
     end
 
     it 'does not create two invoices with the same number' do
@@ -47,8 +47,8 @@ describe Invoice do
         invoice1 = Invoice.new.finalize!
         invoice2 = Invoice.new.finalize!
 
-        invoice1.number.must_equal "#{year}000001"
-        invoice2.number.must_equal "#{year}000002"
+        _(invoice1.number).must_equal "#{year}000001"
+        _(invoice2.number).must_equal "#{year}000002"
     end
 
     it 'handles concurrency' do
@@ -58,8 +58,8 @@ describe Invoice do
         Thread.new { invoice.finalize! }
       end.each(&:join)
 
-      invoices.map(&:number).uniq.size.must_equal invoices.size
-      invoices.map(&:year).uniq.size.must_equal 1
+      _(invoices.map(&:number).uniq.size).must_equal invoices.size
+      _(invoices.map(&:year).uniq.size).must_equal 1
     end
   end
 
@@ -68,26 +68,26 @@ describe Invoice do
 
     it 'reserves an empty slot for an invoice' do
       invoice1 = Invoice.reserve!
-      Invoice.count.must_equal 1
-      invoice1.year.must_equal year
-      invoice1.sequence_number.must_equal 1
-      invoice1.number.must_equal "#{year}000001"
-      invoice1.finalized_at.must_be :>, Time.now - 10
-      invoice1.reserved_at.must_be :>, Time.now - 10
+      _(Invoice.count).must_equal 1
+      _(invoice1.year).must_equal year
+      _(invoice1.sequence_number).must_equal 1
+      _(invoice1.number).must_equal "#{year}000001"
+      _(invoice1.finalized_at).must_be :>, Time.now - 10
+      _(invoice1.reserved_at).must_be :>, Time.now - 10
 
       invoice2 = Invoice.reserve!
-      invoice2.year.must_equal year
-      invoice2.sequence_number.must_equal 2
-      invoice2.number.must_equal "#{year}000002"
-      invoice2.finalized_at.must_be :>, invoice1.finalized_at
-      invoice2.reserved_at.must_be :>, invoice1.reserved_at
+      _(invoice2.year).must_equal year
+      _(invoice2.sequence_number).must_equal 2
+      _(invoice2.number).must_equal "#{year}000002"
+      _(invoice2.finalized_at).must_be :>, invoice1.finalized_at
+      _(invoice2.reserved_at).must_be :>, invoice1.reserved_at
 
       invoice3 = Invoice.reserve!
-      invoice3.year.must_equal year
-      invoice3.sequence_number.must_equal 3
-      invoice3.number.must_equal "#{year}000003"
-      invoice3.finalized_at.must_be :>, invoice2.finalized_at
-      invoice3.reserved_at.must_be :>, invoice2.reserved_at
+      _(invoice3.year).must_equal year
+      _(invoice3.sequence_number).must_equal 3
+      _(invoice3.number).must_equal "#{year}000003"
+      _(invoice3.finalized_at).must_be :>, invoice2.finalized_at
+      _(invoice3.reserved_at).must_be :>, invoice2.reserved_at
     end
 
     it 'does not reserve two invoices with the same number' do
@@ -96,8 +96,8 @@ describe Invoice do
       invoice1 = Invoice.reserve!
       invoice2 = Invoice.reserve!
 
-      invoice1.number.must_equal "#{year}000003"
-      invoice2.number.must_equal "#{year}000004"
+      _(invoice1.number).must_equal "#{year}000003"
+      _(invoice2.number).must_equal "#{year}000004"
     end
 
     it 'always computes the correct next sequence number' do
@@ -105,23 +105,23 @@ describe Invoice do
       time = Time.now
       Invoice.create(year: year, sequence_number: 1, number: "#{year}000002", finalized_at: time)
       Invoice.create(year: year, sequence_number: 2, number: "#{year}000001", finalized_at: time)
-      Invoice.create.finalize!.number.must_equal "#{year}000003"
+      _(Invoice.create.finalize!.number).must_equal "#{year}000003"
     end
 
     it 'finalizes an invoice and reserves an empty slot for an invoice' do
       invoice.finalize!
-      Invoice.count.must_equal 1
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 1
-      invoice.number.must_equal "#{year}000001"
-      invoice.finalized_at.must_be :>, Time.now - 10
+      _(Invoice.count).must_equal 1
+      _(invoice.year).must_equal year
+      _(invoice.sequence_number).must_equal 1
+      _(invoice.number).must_equal "#{year}000001"
+      _(invoice.finalized_at).must_be :>, Time.now - 10
 
       invoice = Invoice.reserve!
-      invoice.year.must_equal year
-      invoice.sequence_number.must_equal 2
-      invoice.number.must_equal "#{year}000002"
-      invoice.finalized_at.must_be :>, Time.now - 10
-      invoice.reserved_at.must_be :>, Time.now - 10
+      _(invoice.year).must_equal year
+      _(invoice.sequence_number).must_equal 2
+      _(invoice.number).must_equal "#{year}000002"
+      _(invoice.finalized_at).must_be :>, Time.now - 10
+      _(invoice.reserved_at).must_be :>, Time.now - 10
     end
 
   end
@@ -131,14 +131,14 @@ describe Invoice do
 
     it 'sets the processed_at column to the current time if not set' do
       invoice.process!
-      invoice.processed_at.must_be :>, Time.now - 10
+      _(invoice.processed_at).must_be :>, Time.now - 10
     end
 
     it 'leaves the processed_at column to the original time if set' do
       past_processed_at = 10.days.ago
       invoice.update processed_at: past_processed_at
       invoice.process!
-      invoice.processed_at.must_equal past_processed_at
+      _(invoice.processed_at).must_equal past_processed_at
     end
   end
 

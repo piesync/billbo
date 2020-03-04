@@ -20,7 +20,7 @@ class Hooks < Base
 
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(event)
-    stripe_invoice = Stripe::Invoice.construct_from(event.data.object)
+    stripe_invoice = event.data.object
 
     invoice_service(
       customer_id: stripe_invoice.customer
@@ -32,7 +32,7 @@ class Hooks < Base
 
   # Used to handle refunds and create credit notes.
   def charge_refunded(event)
-    stripe_charge = Stripe::Charge.construct_from(event.data.object)
+    stripe_charge = event.data.object
 
     # we only handle full refunds for now
     if stripe_charge.refunded && stripe_charge.invoice

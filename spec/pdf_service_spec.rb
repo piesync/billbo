@@ -16,6 +16,10 @@ describe PdfService do
       }
   end
 
+  let(:customer_invoices) do
+    Stripe::Invoice.list(customer: customer.id, limit: 100)
+  end
+
   let(:plan) do
     begin
       Stripe::Plan.retrieve('test')
@@ -43,7 +47,7 @@ describe PdfService do
         service.generate_pdf(invoice)
 
         invoice = invoice.reload
-        invoice.pdf_generated_at.wont_be_nil
+        _(invoice.pdf_generated_at).wont_be_nil
 
         uploader = Configuration.uploader
         uploader.retrieve_from_store!("#{invoice.number}.pdf")
@@ -51,11 +55,11 @@ describe PdfService do
         exists = File.exists?(
           File.expand_path("../../#{uploader.store_path}/#{uploader.filename}", __FILE__))
 
-        exists.must_equal true
+        _(exists).must_equal true
 
         # Retrieve pdf
         service = PdfService.new
-        service.retrieve_pdf(invoice).filename.must_equal "#{invoice.number}.pdf"
+        _(service.retrieve_pdf(invoice).filename).must_equal "#{invoice.number}.pdf"
       end
     end
   end

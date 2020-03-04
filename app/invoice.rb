@@ -14,36 +14,38 @@ class Invoice < Sequel::Model
     between(from, from+3.months)
   end
 
-  def_dataset_method(:finalized) do
-    exclude(finalized_at: nil)
-  end
+  dataset_module do
+    def finalized
+      exclude(finalized_at: nil)
+    end
 
-  def_dataset_method(:not_reserved) do
-    where(reserved_at: nil)
-  end
+    def not_reserved
+      where(reserved_at: nil)
+    end
 
-  def_dataset_method(:newest_first) do
-    order(:finalized_at).reverse
-  end
+    def newest_first
+      order(:finalized_at).reverse
+    end
 
-  def_dataset_method(:by_accounting_id) do |accounting_id|
-    where(customer_accounting_id: accounting_id)
-  end
+    def by_accounting_id(accounting_id)
+      where(customer_accounting_id: accounting_id)
+    end
 
-  def_dataset_method(:finalized_before) do |before|
-    where{finalized_at < before}
-  end
+    def finalized_before(before)
+      where{finalized_at < before}
+    end
 
-  def_dataset_method(:finalized_after) do |after|
-    where{finalized_at >= after}
-  end
+    def finalized_after(after)
+      where{finalized_at >= after}
+    end
 
-  def_dataset_method(:with_pdf_generated) do
-    exclude(pdf_generated_at: nil)
-  end
+    def with_pdf_generated
+      exclude(pdf_generated_at: nil)
+    end
 
-  def_dataset_method(:unprocessed) do |_|
-    where(processed_at: nil)
+    def unprocessed(_)
+      where(processed_at: nil)
+    end
   end
 
   # Returns all finalized invoices from a given period.
@@ -181,7 +183,7 @@ class Invoice < Sequel::Model
 
   def self.next_sequence_number(year)
     last_invoice = Invoice
-      .where('number IS NOT NULL')
+      .exclude(number: nil)
       .where(year: year)
       .order(Sequel.desc(:sequence_number))
       .limit(1)

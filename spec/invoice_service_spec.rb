@@ -36,6 +36,10 @@ describe InvoiceService do
       metadata: metadata
   end
 
+  let(:customer_invoices) do
+    Stripe::Invoice.list(customer: customer.id, limit: 1)
+  end
+
   let(:coupon) do
     begin
       Stripe::Coupon.retrieve('25OFF')
@@ -62,25 +66,25 @@ describe InvoiceService do
             stripe_invoice_id: service.last_stripe_invoice.id
           )
 
-          invoice.finalized?.must_equal true
-          invoice.subtotal.must_equal 1499
-          invoice.discount_amount.must_equal 0
-          invoice.subtotal_after_discount.must_equal 1499
-          invoice.vat_amount.must_equal 315
-          invoice.vat_rate.must_equal 21
-          invoice.total.must_equal 1814
-          invoice.currency.must_equal 'usd'
-          invoice.customer_country_code.must_equal 'NL'
-          invoice.customer_vat_number.must_equal 'NL123'
-          invoice.stripe_event_id.must_equal stripe_event_id
-          invoice.stripe_customer_id.must_equal customer.id
-          invoice.customer_accounting_id.must_equal '10001'
-          invoice.customer_vat_registered.must_equal false
-          invoice.card_brand.must_equal 'Visa'
-          invoice.card_last4.must_equal '4242'
-          invoice.card_country_code.must_equal 'US'
-          invoice.interval.must_equal 'month'
-          invoice.stripe_subscription_id.wont_be_nil
+          _(invoice.finalized?).must_equal true
+          _(invoice.subtotal).must_equal 1499
+          _(invoice.discount_amount).must_equal 0
+          _(invoice.subtotal_after_discount).must_equal 1499
+          _(invoice.vat_amount).must_equal 315
+          _(invoice.vat_rate).must_equal 21
+          _(invoice.total).must_equal 1814
+          _(invoice.currency).must_equal 'usd'
+          _(invoice.customer_country_code).must_equal 'NL'
+          _(invoice.customer_vat_number).must_equal 'NL123'
+          _(invoice.stripe_event_id).must_equal stripe_event_id
+          _(invoice.stripe_customer_id).must_equal customer.id
+          _(invoice.customer_accounting_id).must_equal '10001'
+          _(invoice.customer_vat_registered).must_equal false
+          _(invoice.card_brand).must_equal 'Visa'
+          _(invoice.card_last4).must_equal '4242'
+          _(invoice.card_country_code).must_equal 'US'
+          _(invoice.interval).must_equal 'month'
+          _(invoice.stripe_subscription_id).wont_be_nil
         end
       end
 
@@ -107,8 +111,8 @@ describe InvoiceService do
               stripe_invoice_id: service.last_stripe_invoice.id
             )
 
-            invoice.finalized?.must_equal true
-            invoice.interval.must_equal 'year'
+            _(invoice.finalized?).must_equal true
+            _(invoice.interval).must_equal 'year'
           end
         end
       end
@@ -124,24 +128,24 @@ describe InvoiceService do
             stripe_invoice_id: service.last_stripe_invoice.id
           )
 
-          invoice.finalized?.must_equal true
-          invoice.subtotal.must_equal 1499
-          invoice.discount_amount.must_equal 375
-          invoice.subtotal_after_discount.must_equal 1499-375
-          invoice.vat_amount.must_equal 236
-          invoice.vat_rate.must_equal 21
-          invoice.total.must_equal 1360
-          invoice.currency.must_equal 'usd'
-          invoice.customer_country_code.must_equal 'NL'
-          invoice.customer_vat_number.must_equal 'NL123'
-          invoice.stripe_event_id.must_equal stripe_event_id
-          invoice.stripe_customer_id.must_equal customer.id
-          invoice.customer_accounting_id.must_equal '10001'
-          invoice.customer_vat_registered.must_equal false
-          invoice.card_brand.must_equal 'Visa'
-          invoice.card_last4.must_equal '4242'
-          invoice.card_country_code.must_equal 'US'
-          invoice.interval.must_equal 'month'
+          _(invoice.finalized?).must_equal true
+          _(invoice.subtotal).must_equal 1499
+          _(invoice.discount_amount).must_equal 375
+          _(invoice.subtotal_after_discount).must_equal 1499-375
+          _(invoice.vat_amount).must_equal 236
+          _(invoice.vat_rate).must_equal 21
+          _(invoice.total).must_equal 1360
+          _(invoice.currency).must_equal 'usd'
+          _(invoice.customer_country_code).must_equal 'NL'
+          _(invoice.customer_vat_number).must_equal 'NL123'
+          _(invoice.stripe_event_id).must_equal stripe_event_id
+          _(invoice.stripe_customer_id).must_equal customer.id
+          _(invoice.customer_accounting_id).must_equal '10001'
+          _(invoice.customer_vat_registered).must_equal false
+          _(invoice.card_brand).must_equal 'Visa'
+          _(invoice.card_last4).must_equal '4242'
+          _(invoice.card_country_code).must_equal 'US'
+          _(invoice.interval).must_equal 'month'
         end
       end
     end
@@ -150,13 +154,13 @@ describe InvoiceService do
       it 'does not create an invoice' do
         VCR.use_cassette('process_payment_zero_lines') do
           customer.subscriptions.create(plan: plan.id, trial_end: (Time.now.to_i + 1000))
-          stripe_invoice = customer.invoices.first
+          stripe_invoice = customer_invoices.first
           invoice = service.process_payment(
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
           )
 
-          invoice.must_be_nil
+          _(invoice).must_be_nil
         end
       end
     end
@@ -169,14 +173,14 @@ describe InvoiceService do
           stripe_invoice = Stripe::Invoice.create(customer: customer.id)
           stripe_invoice.pay
 
-          stripe_invoice = customer.invoices.first
+          stripe_invoice = customer_invoices.first
           invoice = service.process_payment(
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
           )
 
-          invoice.wont_be_nil
-          invoice.total.must_equal 0
+          _(invoice).wont_be_nil
+          _(invoice.total).must_equal 0
         end
       end
     end
@@ -185,12 +189,12 @@ describe InvoiceService do
   describe '#process_refund' do
     it 'is an orphan refund' do
       VCR.use_cassette('process_refund_orphan') do
-        proc do
+        _(proc do
           service.process_refund(
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: 'xyz'
           )
-        end.must_raise InvoiceService::OrphanRefund
+        end).must_raise InvoiceService::OrphanRefund
       end
     end
 
@@ -217,9 +221,9 @@ describe InvoiceService do
             stripe_event_id: stripe_event_id,
             stripe_invoice_id: stripe_invoice.id
           )
-          credit_note.finalized?.must_equal true
-          credit_note.stripe_event_id.must_equal stripe_event_id
-          credit_note.customer_accounting_id.must_equal metadata[:accounting_id]
+          _(credit_note.finalized?).must_equal true
+          _(credit_note.stripe_event_id).must_equal stripe_event_id
+          _(credit_note.customer_accounting_id).must_equal metadata[:accounting_id]
         end
       end
     end

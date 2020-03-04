@@ -7,7 +7,7 @@ describe ConfigurationService do
   describe '#account' do
     it 'returns the Stripe account' do
       VCR.use_cassette('account') do
-        service.account.must_be_kind_of Stripe::Account
+        _(service.account).must_be_kind_of Stripe::Account
       end
     end
   end

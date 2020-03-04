@@ -13,7 +13,7 @@ class TemplateViewModel
 
   # Delegate correct methods to underlaying models.
   def_delegators :invoice,
-    :number, :finalized_at, :paid?, :card_brand, :card_last4, :due_at, :total, :currency,
+    :number, :paid?, :card_brand, :card_last4, :total, :currency,
     :customer_name, :customer_company_name, :customer_address, :customer_country_code,
     :customer_vat_registered?, :customer_vat_number, :discount?, :discount_amount,
     :subtotal_after_discount, :vat?, :vat_rate, :vat_amount, :vat_amount_eur, :total,
@@ -60,7 +60,7 @@ class TemplateViewModel
 
   def subscription_line_description(line)
     # If line item has type subscription, then the line metadata is the subscription metadata (version > 2014-11-20)
-    description = line.metadata[:description] || line.plan.name
+    description = line.metadata[:description] || Stripe::Product.retrieve(line.plan.product)&.name
 
     "#{description} (#{format_date(line.period.start)} - #{format_date(line.period.end)})"
   end

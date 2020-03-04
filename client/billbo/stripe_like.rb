@@ -55,7 +55,7 @@ module Billbo
         error_obj = Stripe::Util.symbolize_names(error_obj)
         error = error_obj[:error] or raise Stripe::StripeError.new # escape from parsing
 
-      rescue JSON::ParserError, Stripe::StripeError => e
+      rescue JSON::ParserError, Stripe::StripeError
         raise general_api_error(rcode, rbody)
       end
 
@@ -73,21 +73,21 @@ module Billbo
     end
 
     def self.invalid_request_error(error, rcode, rbody, error_obj)
-      Stripe::InvalidRequestError.new(error[:message], error[:param], rcode,
-                              rbody, error_obj)
+      Stripe::InvalidRequestError.new(error[:message], error[:param], http_status: rcode,
+                              http_body: rbody, json_body: error_obj)
     end
 
     def self.authentication_error(error, rcode, rbody, error_obj)
-      Stripe::AuthenticationError.new(error[:message], rcode, rbody, error_obj)
+      Stripe::AuthenticationError.new(error[:message], http_status: rcode, http_body: rbody, json_body: error_obj)
     end
 
     def self.card_error(error, rcode, rbody, error_obj)
-      Stripe::CardError.new(error[:message], error[:param], error[:code],
-                    rcode, rbody, error_obj)
+      Stripe::CardError.new(error[:message], error[:param], code: error[:code],
+                    http_status: rcode, http_body: rbody, json_body: error_obj)
     end
 
     def self.api_error(error, rcode, rbody, error_obj)
-      Stripe::APIError.new(error[:message], rcode, rbody, error_obj)
+      Stripe::APIError.new(error[:message], http_status: rcode, http_body: rbody, json_body: error_obj)
     end
 
     def self.handle_restclient_error(e)

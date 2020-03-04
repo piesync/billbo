@@ -7,22 +7,24 @@ http_interactions:
       encoding: US-ASCII
       string: ''
     headers:
-      Accept:
-      - "*/*; q=0.5, application/xml"
-      Accept-Encoding:
-      - gzip, deflate
       User-Agent:
-      - Stripe/v1 RubyBindings/1.14.0
+      - Stripe/v1 RubyBindings/5.15.0
       Authorization:
       - "<AUTH>"
       Content-Type:
       - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_RRYMQgpZWCS7Tq","request_duration_ms":337}}'
       Stripe-Version:
-      - '2015-10-16'
+      - '2019-12-03'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"1.14.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","publisher":"stripe","uname":"Darwin
-        Mattiass-MacBook-Pro.local 14.1.1 Darwin Kernel Version 14.1.1: Fri Feb  6
-        21:06:10 PST 2015; root:xnu-2782.15.4~1/RELEASE_X86_64 x86_64"}'
+      - '{"bindings_version":"5.15.0","lang":"ruby","lang_version":"2.6.4 p104 (2019-08-28)","platform":"x86_64-darwin18","engine":"ruby","publisher":"stripe","uname":"Darwin
+        C02ZG94PLVDL 18.7.0 Darwin Kernel Version 18.7.0: Sun Dec  1 18:59:03 PST
+        2019; root:xnu-4903.278.19~1/RELEASE_X86_64 x86_64","hostname":"C02ZG94PLVDL"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
   response:
     status:
       code: 200
@@ -31,11 +33,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Wed, 20 Jan 2016 17:39:14 GMT
+      - Wed, 26 Feb 2020 13:26:12 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '2084'
+      - '1071'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -44,175 +46,65 @@ http_interactions:
       - GET, POST, HEAD, OPTIONS, DELETE
       Access-Control-Allow-Origin:
       - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
       Access-Control-Max-Age:
       - '300'
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_7kvmItUAFCyeBO
+      - req_jh5wpf4tzatU4P
       Stripe-Version:
-      - '2015-10-16'
+      - '2019-12-03'
       Strict-Transport-Security:
-      - max-age=31556926; includeSubDomains
+      - max-age=31556926; includeSubDomains; preload
     body:
       encoding: UTF-8
       string: |
         {
           "id": "acct_102w3g2nHroS7mLX",
           "object": "account",
-          "business_logo": "https://s3.amazonaws.com/stripe-uploads/acct_102w3g2nHroS7mLXmerchant-icon-121515-avatar-128.png",
-          "business_name": "PieSync",
-          "business_url": "piesync.com",
+          "business_profile": {
+            "mcc": "5734",
+            "name": "PieSync",
+            "support_address": null,
+            "support_email": null,
+            "support_phone": "+32472582979",
+            "support_url": null,
+            "url": "piesync.com"
+          },
+          "capabilities": {
+            "card_payments": "active",
+            "legacy_payments": "inactive",
+            "transfers": "active"
+          },
           "charges_enabled": true,
           "country": "BE",
-          "currencies_supported": [
-            "usd",
-            "aed",
-            "afn",
-            "all",
-            "amd",
-            "ang",
-            "aoa",
-            "ars",
-            "aud",
-            "awg",
-            "azn",
-            "bam",
-            "bbd",
-            "bdt",
-            "bgn",
-            "bif",
-            "bmd",
-            "bnd",
-            "bob",
-            "brl",
-            "bsd",
-            "bwp",
-            "bzd",
-            "cad",
-            "cdf",
-            "chf",
-            "clp",
-            "cny",
-            "cop",
-            "crc",
-            "cve",
-            "czk",
-            "djf",
-            "dkk",
-            "dop",
-            "dzd",
-            "egp",
-            "etb",
-            "eur",
-            "fjd",
-            "fkp",
-            "gbp",
-            "gel",
-            "gip",
-            "gmd",
-            "gnf",
-            "gtq",
-            "gyd",
-            "hkd",
-            "hnl",
-            "hrk",
-            "htg",
-            "huf",
-            "idr",
-            "ils",
-            "inr",
-            "isk",
-            "jmd",
-            "jpy",
-            "kes",
-            "kgs",
-            "khr",
-            "kmf",
-            "krw",
-            "kyd",
-            "kzt",
-            "lak",
-            "lbp",
-            "lkr",
-            "lrd",
-            "lsl",
-            "ltl",
-            "mad",
-            "mdl",
-            "mga",
-            "mkd",
-            "mnt",
-            "mop",
-            "mro",
-            "mur",
-            "mvr",
-            "mwk",
-            "mxn",
-            "myr",
-            "mzn",
-            "nad",
-            "ngn",
-            "nio",
-            "nok",
-            "npr",
-            "nzd",
-            "pab",
-            "pen",
-            "pgk",
-            "php",
-            "pkr",
-            "pln",
-            "pyg",
-            "qar",
-            "ron",
-            "rsd",
-            "rub",
-            "rwf",
-            "sar",
-            "sbd",
-            "scr",
-            "sek",
-            "sgd",
-            "shp",
-            "sll",
-            "sos",
-            "srd",
-            "std",
-            "svc",
-            "szl",
-            "thb",
-            "tjs",
-            "top",
-            "try",
-            "ttd",
-            "twd",
-            "tzs",
-            "uah",
-            "ugx",
-            "uyu",
-            "uzs",
-            "vnd",
-            "vuv",
-            "wst",
-            "xaf",
-            "xcd",
-            "xof",
-            "xpf",
-            "yer",
-            "zar",
-            "zmw"
-          ],
           "default_currency": "eur",
           "details_submitted": true,
-          "display_name": "Piesync",
-          "email": "admin@piesync.com",
-          "managed": false,
-          "statement_descriptor": "PIESYNC.COM",
-          "support_phone": "+32472582979",
-          "timezone": "Etc/UTC",
-          "transfers_enabled": true
+          "email": "jsoloperto@hubspot.com",
+          "payouts_enabled": true,
+          "settings": {
+            "branding": {
+              "icon": "file_1FFj1u2nHroS7mLXXSblc6YN",
+              "logo": "file_1FFj2b2nHroS7mLX8fJK5TMS",
+              "primary_color": "#0077ff"
+            },
+            "card_payments": {
+              "statement_descriptor_prefix": null
+            },
+            "dashboard": {
+              "display_name": "Piesync",
+              "timezone": "Europe/Brussels"
+            },
+            "payments": {
+              "statement_descriptor": "PIESYNC.COM",
+              "statement_descriptor_kana": null,
+              "statement_descriptor_kanji": null
+            }
+          },
+          "type": "standard"
         }
-    http_version: 
-  recorded_at: Wed, 20 Jan 2016 17:39:16 GMT
-recorded_with: VCR 2.9.2
+    http_version: null
+  recorded_at: Wed, 26 Feb 2020 13:26:12 GMT
+recorded_with: VCR 5.1.0

@@ -29,9 +29,12 @@ Configuration.from_env
 # Connect to database
 Configuration.db = Sequel.connect(Configuration.database_url)
 
+# Serialize models into JSON
+Sequel::Model.plugin :json_serializer
+
 # Configure Stripe
 Stripe.api_key = Configuration.stripe_secret_key
-Stripe.api_version = '2015-10-16'
+Stripe.api_version = '2019-12-03'
 
 # Configure Shrimp
 Shrimp.configure do |config|
@@ -41,7 +44,9 @@ Shrimp.configure do |config|
 end
 
 # Configure Money
+Money.locale_backend = :currency
 Money.default_bank = EuCentralBank.new
+Money.rounding_mode= BigDecimal::ROUND_HALF_EVEN
 
 # Configure Timeouts for VIES checks
 {
