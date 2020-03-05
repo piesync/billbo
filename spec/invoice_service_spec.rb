@@ -184,6 +184,24 @@ describe InvoiceService do
         end
       end
     end
+
+    describe 'when an error occurs' do
+      it 'does not finalize the invoice and rolls back the transaction' do
+        VCR.use_cassette('process_failed_finalization') do
+          service.create_subscription(plan: plan.id)
+
+          Stripe::Subscription.expects(:retrieve).raises(Stripe::RateLimitError)
+
+          _(proc do
+            service.process_payment(
+              stripe_event_id: stripe_event_id,
+              stripe_invoice_id: service.last_stripe_invoice.id
+            )
+          end).must_raise Stripe::RateLimitError
+          _(Invoice.where(stripe_id: service.last_stripe_invoice.id).empty?).must_equal true
+        end
+      end
+    end
   end
 
   describe '#process_refund' do
