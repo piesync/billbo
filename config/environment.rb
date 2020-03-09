@@ -46,7 +46,8 @@ end
 # Configure Money
 Money.locale_backend = :currency
 Money.default_bank = EuCentralBank.new
-Money.rounding_mode= BigDecimal::ROUND_HALF_EVEN
+Money.rounding_mode = BigDecimal::ROUND_HALF_EVEN
+Money.default_currency = Configuration.default_currency
 
 # Configure Timeouts for VIES checks
 {
