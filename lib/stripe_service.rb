@@ -20,6 +20,26 @@ class StripeService
     }.merge(options))
   end
 
+
+  # Update all subscriptions to VAT rate based on current customer metadata
+  def update_vat_rate
+    subscriptions = Stripe::Subscription.list({
+      customer: customer.id,
+      limit: 100
+    })
+
+    vat_rate = calculate_vat_rate
+
+    subscriptions.each do |subscription|
+      Stripe::Subscription.update(
+        subscription.id,
+        {
+          tax_percent: vat_rate
+        }
+      )
+    end
+  end
+
   def subscription(id)
     Stripe::Subscription.retrieve(id)
   end

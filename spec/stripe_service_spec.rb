@@ -147,4 +147,27 @@ describe StripeService do
       end
     end
   end
+
+  describe "#update_vat_rate" do
+    let(:updated_metadata) {{
+      country_code: 'DE',
+      vat_number: 'DE1234',
+      vat_registered: 'false'
+    }}
+
+    let(:new_service) { StripeService.new(customer_id: customer.id) }
+
+    it "updates the VAT rate on the subscription" do
+      VCR.use_cassette('update_vat_rate') do
+        subscription = service.create_subscription(plan: plan.id, trial_from_plan: true)
+        old_tax_rate = subscription.default_tax_rates.first.percentage
+        Stripe::Customer.update(customer.id, {metadata: updated_metadata})
+
+        # Simulate a new service with uncached Stripe customer
+        new_service.update_vat_rate
+        new_tax_rate = Stripe::Subscription.retrieve(subscription.id).default_tax_rates.first.percentage
+        _(new_tax_rate).wont_equal old_tax_rate
+      end
+    end
+  end
 end
