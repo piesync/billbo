@@ -18,6 +18,14 @@ class Hooks < Base
 
   private
 
+  def customer_updated(event)
+    if event.data.previous_attributes.to_hash.dig(:metadata, :country_code)
+      # The country code has changed, we need to recalculate the tax percentage
+      # and update it on the subscription
+      StripeService.new(customer_id: event.data.object.id).update_vat_rate
+    end
+  end
+
   # Used to finalize invoices (assign number).
   def invoice_payment_succeeded(event)
     stripe_invoice = event.data.object

@@ -73,6 +73,45 @@ describe Hooks do
       Rumor.stubs(:spread)
     end
 
+    describe 'post customer updated' do
+      it 'does nothing if the metadata country code is unaffected' do
+        VCR.use_cassette('hook_customer_updated') do
+          StripeService.expects(:new).never
+
+          post '/',
+              json(
+                id: stripe_event_id,
+                type: 'customer.updated',
+                data: {object: customer, previous_attributes: Stripe::StripeObject.construct_from({email: 'hello@test.com'})}
+              )
+
+
+          _(last_response.ok?).must_equal true
+          _(last_response.body).must_be_empty
+        end
+      end
+
+      it 'calls for vat rate update if the metadata country code is changed' do
+        VCR.use_cassette('hook_customer_updated') do
+          StripeService.expects(:new).with(customer_id: customer.id).returns(
+            mock.tap do |m|
+              m.expects(:update_vat_rate)
+            end
+          )
+
+          post '/',
+              json(
+                id: stripe_event_id,
+                type: 'customer.updated',
+                data: {object: customer, previous_attributes: Stripe::StripeObject.construct_from({metadata: {country_code: 'DE'}})}
+              )
+
+          _(last_response.ok?).must_equal true
+          _(last_response.body).must_be_empty
+        end
+      end
+    end
+
     describe 'post invoice payment succeeded' do
       it 'finalizes the invoice' do
         VCR.use_cassette('hook_invoice_payment_succeeded') do
