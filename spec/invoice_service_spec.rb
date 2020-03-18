@@ -204,13 +204,19 @@ describe InvoiceService do
     end
   end
 
-  describe '#process_refund' do
+  describe '#process_credit_note' do
     it 'is an orphan refund' do
-      VCR.use_cassette('process_refund_orphan') do
+      VCR.use_cassette('process_credit_note_orphan') do
+        stripe_credit_note = create_stripe_credit_note
+
+        Stripe::CreditNote.expects(:retrieve).returns(stripe_credit_note)
+        stripe_credit_note.expects(:refund).returns(false) # Skip getting the charge, not relevant
+        Invoice.where(stripe_id: stripe_credit_note.invoice).delete # Delete the invoice
+
         _(proc do
-          service.process_refund(
+          service.process_credit_note(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: 'xyz'
+            stripe_credit_note_id: stripe_credit_note.id
           )
         end).must_raise InvoiceService::OrphanRefund
       end
@@ -218,32 +224,58 @@ describe InvoiceService do
 
     describe 'when it is a real refund' do
       it 'creates a credit note' do
-        VCR.use_cassette('process_refund') do
-          Stripe::InvoiceItem.create(
-            customer: customer.id,
-            amount: 100,
-            currency: 'usd'
-          )
+        VCR.use_cassette('process_credit_note') do
+          stripe_credit_note = create_stripe_credit_note
 
-          stripe_invoice = Stripe::Invoice.create(customer: customer.id)
-
-          # Pay the invoice before processing the payment.
-          stripe_invoice.pay
-
-          service.process_payment(
+          credit_note = service.process_credit_note(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
+            stripe_credit_note_id: stripe_credit_note.id
           )
 
-          credit_note = service.process_refund(
-            stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
-          )
           _(credit_note.finalized?).must_equal true
+          _(credit_note.subtotal).must_equal 1499
+          _(credit_note.discount_amount).must_equal 375
+          _(credit_note.subtotal_after_discount).must_equal 1499-375
+          _(credit_note.vat_amount).must_equal 236
+          _(credit_note.vat_rate).must_equal 21
+          _(credit_note.total).must_equal 1360
+          _(credit_note.currency).must_equal 'usd'
+          _(credit_note.customer_country_code).must_equal 'NL'
+          _(credit_note.customer_vat_number).must_equal 'NL123'
           _(credit_note.stripe_event_id).must_equal stripe_event_id
-          _(credit_note.customer_accounting_id).must_equal metadata[:accounting_id]
+          _(credit_note.stripe_customer_id).must_equal customer.id
+          _(credit_note.customer_accounting_id).must_equal '10001'
+          _(credit_note.customer_vat_registered).must_equal false
+          _(credit_note.card_brand).must_equal 'Visa'
+          _(credit_note.card_last4).must_equal '4242'
+          _(credit_note.card_country_code).must_equal 'US'
+          _(credit_note.interval).must_be_nil
         end
       end
+    end
+
+    def create_stripe_credit_note(type: 'refund') # other options are 'credit' and 'out_of_band'
+      service.create_subscription(plan: plan.id, coupon: coupon.id)
+
+      invoice = service.process_payment(
+        stripe_event_id: stripe_event_id,
+        stripe_invoice_id: service.last_stripe_invoice.id
+      )
+
+      stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+
+      Stripe::CreditNote.create(
+        invoice: invoice.stripe_id,
+        reason: 'order_change',
+        :"#{type}_amount" => stripe_invoice.total,
+        lines: stripe_invoice.lines.map do |line|
+          {
+            type: 'invoice_line_item',
+            invoice_line_item: line.id,
+            quantity: 1
+          }
+        end
+      )
     end
   end
 end

@@ -312,23 +312,16 @@ describe App do
       end
     end
 
-    describe 'refund' do
+    describe 'credit note' do
       let(:country_code) { 'US' }
       let(:vat_registered) { false }
 
       it 'generates a credit note' do
         VCR.use_cassette('invoice_template_refund') do
-          invoice_service.create_subscription(plan: plan.id)
-          stripe_invoice = customer_invoices.first
-          invoice_service.process_payment(
+          stripe_credit_note = create_stripe_credit_note
+          invoice_service.process_credit_note(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
-          )
-
-          Stripe::Refund.create(charge: stripe_invoice.charge)
-          invoice_service.process_refund(
-            stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
+            stripe_credit_note_id: stripe_credit_note.id
           )
 
           invoice = Invoice.last
@@ -694,5 +687,29 @@ describe App do
       vat_amount_eur: (invoice.vat_amount.to_i*0.75).round,
       total_eur: (invoice.total.to_i*0.75).round,
       currency: 'usd'
+  end
+
+  def create_stripe_credit_note(type: 'refund') # other options are 'credit' and 'out_of_band'
+    invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+
+    invoice = invoice_service.process_payment(
+      stripe_event_id: stripe_event_id,
+      stripe_invoice_id: invoice_service.last_stripe_invoice.id
+    )
+
+    stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+
+    Stripe::CreditNote.create(
+      invoice: invoice.stripe_id,
+      reason: 'order_change',
+      :"#{type}_amount" => stripe_invoice.total,
+      lines: stripe_invoice.lines.map do |line|
+        {
+          type: 'invoice_line_item',
+          invoice_line_item: line.id,
+          quantity: 1
+        }
+      end
+    )
   end
 end

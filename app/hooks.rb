@@ -38,17 +38,18 @@ class Hooks < Base
     )
   end
 
-  # Used to handle refunds and create credit notes.
-  def charge_refunded(event)
-    stripe_charge = event.data.object
+  # Used to create credit notes. Use the ellipsis on the invoice page in Stripe to issue a credit note
+  # Refunds that happen outside of credit notes are not handled.
+  def credit_note_created(event)
+    credit_note = event.data.object
 
     # we only handle full refunds for now
-    if stripe_charge.refunded && stripe_charge.invoice
+    if credit_note.invoice
       invoice_service(
-        customer_id: stripe_charge.customer
-      ).process_refund(
+        customer_id: credit_note.customer
+      ).process_credit_note(
         stripe_event_id: event.id,
-        stripe_invoice_id: stripe_charge.invoice
+        stripe_credit_note_id: credit_note.id
       )
     end
   end
