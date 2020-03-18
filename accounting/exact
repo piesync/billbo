@@ -75,9 +75,7 @@ Invoice \
 
       # Negative amounts if it is a refund.
       amount, vat_amount_eur, accounting_id = if invoice.credit_note?
-        reference = invoice.reference if invoice.credit_note
-
-        [-reference.total_eur+reference.vat_amount_eur, -reference.vat_amount_eur, reference.customer_accounting_id]
+        [-invoice.total_eur+invoice.vat_amount_eur, -invoice.vat_amount_eur, invoice.customer_accounting_id]
       else
         [invoice.total_eur-invoice.vat_amount_eur, invoice.vat_amount_eur, invoice.customer_accounting_id]
       end
