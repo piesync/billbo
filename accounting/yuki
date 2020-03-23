@@ -84,9 +84,9 @@ def upload_day!(client, session_id, administration_id, date)
   invoices = Invoice.between(date, date + 1.day).order_by(:number)
 
   categories = {
-    'M' => invoices.where('NOT credit_note').where("interval = 'month' or interval is null"),
-    'Y' => invoices.where('NOT credit_note').where(interval: 'year'),
-    'C' => invoices.where('credit_note')
+    'M' => invoices.exclude(:credit_note).where(Sequel[interval:'month'] | Sequel[interval: nil]),
+    'Y' => invoices.exclude(:credit_note).where(interval: 'year'),
+    'C' => invoices.where(:credit_note)
   }.reject { |k, v| v.empty? }
 
   categories.each do |code, invoices|
