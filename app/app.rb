@@ -47,19 +47,18 @@ class App < Base
     halt 404 unless invoice
 
     if invoice.credit_note?
-      credit_note = invoice
-      invoice = Invoice.where(number: invoice.reference_number).first
+      reference = Invoice.where(number: invoice.reference_number).first
     end
 
     halt 404 unless invoice
 
-    stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+    stripe_invoice = invoice.credit_note ? Stripe::CreditNote.retrieve(invoice.stripe_id) : Stripe::Invoice.retrieve(invoice.stripe_id)
 
     TEMPLATE.render(TemplateViewModel.new(
       invoice: invoice,
       stripe_invoice: stripe_invoice,
-      stripe_coupon: stripe_invoice.discount && stripe_invoice.discount.coupon,
-      credit_note: credit_note,
+      stripe_coupon: stripe_invoice.is_a?(Stripe::Invoice).presence && stripe_invoice.discount && stripe_invoice.discount.coupon,
+      reference: reference
     ))
   end
 

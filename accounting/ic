@@ -5,19 +5,14 @@ quarter = ARGV[0].to_i
 year    = (ARGV[1] || Time.now.year).to_i
 
 query = %{
-WITH complete AS (
-  SELECT *, COALESCE(invoices.reference_number, invoices.number) AS original_number, CASE invoices.credit_note WHEN true THEN -1 ELSE 1 END AS multiplier
-  FROM invoices
-)
-SELECT i.customer_vat_number AS vat_number, SUM(i.total_eur*c.multiplier) AS total
-FROM complete c
-LEFT JOIN invoices AS i ON c.original_number = i.number
-WHERE i.customer_vat_number IS NOT NULL
-AND c.finalized_at >= ?
-AND c.finalized_at < ?
-AND i.customer_vat_number NOT LIKE 'BE%'
-GROUP BY i.customer_vat_number
-HAVING SUM(i.total_eur*c.multiplier) > 0
+SELECT customer_vat_number AS vat_number, SUM(total_eur*CASE credit_note WHEN true THEN -1 ELSE 1 END) AS total
+FROM invoices
+WHERE customer_vat_number IS NOT NULL
+AND finalized_at >= ?
+AND finalized_at < ?
+AND customer_vat_number NOT LIKE 'BE%'
+GROUP BY customer_vat_number
+HAVING SUM(total_eur*CASE credit_note WHEN true THEN -1 ELSE 1 END) > 0
 ORDER BY total DESC
 }
 

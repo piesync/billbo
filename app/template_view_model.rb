@@ -2,18 +2,17 @@ require 'forwardable'
 
 class TemplateViewModel
   extend Forwardable
-  attr_reader :credit_note
 
-  def initialize(invoice:, stripe_invoice:, stripe_coupon:, credit_note: nil)
+  def initialize(invoice:, stripe_invoice:, stripe_coupon:, reference: nil)
     @invoice = invoice
     @stripe_invoice = stripe_invoice
     @stripe_coupon = stripe_coupon
-    @credit_note = credit_note
+    @reference = reference
   end
 
   # Delegate correct methods to underlaying models.
   def_delegators :invoice,
-    :number, :paid?, :card_brand, :card_last4, :total, :currency,
+    :number, :paid?, :card_brand, :card_last4, :total, :currency, :finalized_at, :due_at,
     :customer_name, :customer_company_name, :customer_address, :customer_country_code,
     :customer_vat_registered?, :customer_vat_number, :discount?, :discount_amount,
     :subtotal_after_discount, :vat?, :vat_rate, :vat_amount, :vat_amount_eur, :total,
@@ -26,29 +25,29 @@ class TemplateViewModel
     :primary_country, :seller_email, :seller_vat_number, :seller_other_info,
     :seller_bank_name, :seller_bic, :seller_iban
 
-  def finalized_at
-    (credit_note || invoice).finalized_at
-  end
-
-  def due_at
-    (credit_note || invoice).due_at
-  end
-
   def credit_note?
-    @credit_note
+    @invoice.credit_note
+  end
+
+  def negative_invoice?
+    !credit_note? && total.to_i < 0.0
   end
 
   def document_type
-    if @credit_note || total.to_i < 0.0
+    if credit_note? || total.to_i < 0.0
       'Credit Note'
     else
       'Invoice'
     end
   end
 
+  def invoice_number
+    reference.number
+  end
+
   private
 
-  attr_reader :invoice, :stripe_invoice, :stripe_coupon
+  attr_reader :invoice, :reference, :stripe_invoice, :stripe_coupon
 
   def configuration
     Configuration

@@ -32,19 +32,21 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         h2
           ' #{document_type}
 
+
+          strong = number
           - if credit_note?
-            strong = credit_note.number
-            |  (of #{number})
-          - else
-            strong = number
+            |  (of #{invoice_number})
 
         p = format_date(finalized_at)
-        - if paid?
+        - if negative_invoice?
           p
-            b Paid with #{card_brand} #{card_last4}
+            b Applied as balance on next invoice
+        - elsif paid?
+          p
+            b #{credit_note? ? "Refunded to" : "Paid with"} #{card_brand} #{card_last4}
         - else
-          p#payment-due Payment due by #{format_date(due_at)}
-        p#payment-total = format_money(total, currency)
+          p#payment-due #{credit_note? ? "Refund" : "Payment"} due by #{format_date(due_at)}
+        p#payment-total = format_money(total.abs, currency)
 
 
       #client-details.vcard
@@ -82,7 +84,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
               td.item_r
           tr#net_total_tr
             td.item_r Net Total
-            td.item_r = format_money(subtotal_after_discount, currency)
+            td.item_r = format_money(subtotal_after_discount.abs, currency)
             td.item_r
           tr#vat_tr
             td.item_r
@@ -90,23 +92,23 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
                 = "VAT #{country_name(customer_country_code)} (#{vat_rate.to_i}%)"
               - else
                 | VAT*
-            td.item_r = format_money(vat_amount, currency)
-            td.item_r = format_money(vat_amount_eur, :eur)
+            td.item_r = format_money(vat_amount.abs, currency)
+            td.item_r = format_money(vat_amount_eur&.abs, :eur)
           tr#total_tr
             td#total_currency.total
               span.currency Total
-            td.total = format_money(total, currency)
-            td.total = format_money(total_eur, :eur)
+            td.total = format_money(total.abs, currency)
+            td.total = format_money(total_eur&.abs, :eur)
         tbody
           - lines.each_with_index do |line, i|
             tr.item class=('odd' if i % 2 == 0)
               - if line.type == 'subscription'
                 td.item_l = subscription_line_description(line)
-                td.item_r = format_money(line.amount, line.currency)
+                td.item_r = format_money((negative_invoice? ? -1 : 1) * line.amount, line.respond_to?(:currency) ? line.currency : currency)
                 td.item_r
-              - elsif line.type == 'invoiceitem' && line.metadata[:type] != 'vat'
+              - elsif %w(invoiceitem invoice_line_item custom_line_item).include?(line.type) && (!line.respond_to?(:metadata) || line.metadata[:type] != 'vat')
                 td.item_l = line.description
-                td.item_r = format_money(line.amount, line.currency)
+                td.item_r = format_money((negative_invoice? ? -1 : 1) * line.amount, line.respond_to?(:currency) ? line.currency : currency)
                 td.item_r
 
 

@@ -15,56 +15,24 @@ class InvoiceService
   def process_payment(stripe_event_id:, stripe_invoice_id:)
     stripe_invoice = Stripe::Invoice.retrieve(stripe_invoice_id)
 
-    # If the invoice only has zero total invoice lines, do not include it for
-    # bookkeeping. This happens when a customer subscribes when still in trial.
-    return if stripe_invoice.lines.map(&:amount).all?(&:zero?)
-
-    invoice_attributes = {}
-    # Take snapshots for immutable invoice.
-    invoice_attributes.merge!(snapshot_invoice(stripe_invoice))
-    invoice_attributes.merge!(snapshot_customer_metadata)
-
-    # Take a snapshot of the card used to make payment.
-    # Note: There will be no charge when the invoice was
-    # paid with the balance.
-    if stripe_invoice.charge
-      charge = Stripe::Charge.retrieve(stripe_invoice.charge)
-      # Old subscription will have a source, however, new subscriptions use payment methods instead
-      card = charge.source || charge.payment_method_details.card
-      invoice_attributes.merge!(snapshot_card(card))
+    # There will be no charge when the document was paid with the balance.
+    charge = if stripe_invoice.charge
+      Stripe::Charge.retrieve(stripe_invoice.charge)
     end
 
-    # Get/create an internal invoice and a Stripe invoice.
-    invoice = ensure_invoice(
-      stripe_event_id,
-      stripe_invoice_id
-    )
-
-    # Set the invoice attributes we collected.
-    invoice.update(invoice_attributes)
-
-    # Finalize now that we have a complete invoice
-    invoice.finalize!
-
-    invoice
-  rescue Invoice::AlreadyFinalized
+    finalize!(stripe_event_id: stripe_event_id, stripe_object: stripe_invoice, charge: charge)
   end
 
-  def process_refund(stripe_event_id:, stripe_invoice_id:)
-    invoice = Invoice.first(stripe_id: stripe_invoice_id)
+  def process_credit_note(stripe_event_id:, stripe_credit_note_id:)
+    stripe_credit_note = Stripe::CreditNote.retrieve(stripe_credit_note_id)
 
-    if invoice
-      Invoice.create(
-        snapshot_customer_metadata.
-          merge(
-            stripe_event_id: stripe_event_id,
-            reference_number: invoice.number,
-            credit_note: true
-          )
-      ).finalize!
-    else
-      raise OrphanRefund
+    # If the amount was actually refunded, get the charge
+    charge = if stripe_credit_note.refund
+      refund = Stripe::Refund.retrieve(stripe_credit_note.refund)
+      Stripe::Charge.retrieve(refund.charge)
     end
+
+    finalize!(stripe_event_id: stripe_event_id, stripe_object: stripe_credit_note, charge: charge)
   end
 
   def last_stripe_invoice
@@ -72,6 +40,50 @@ class InvoiceService
   end
 
 private
+
+  def finalize!(stripe_event_id:, stripe_object:, charge:)
+    # If the document only has zero total lines, do not include it for bookkeeping.
+    # This happens when a customer subscribes when still in trial or no refund lines were set.
+    return if stripe_object.lines.map(&:amount).all?(&:zero?)
+
+    attributes = {}
+
+    if stripe_object.is_a?(Stripe::CreditNote)
+      invoice = Invoice.first(stripe_id: stripe_object.invoice)
+      raise OrphanRefund unless invoice
+
+      attributes.merge!({
+        reference_number: invoice.number,
+        credit_note: true
+      })
+    end
+
+    # Take snapshots for immutable document.
+    attributes.merge!(snapshot_document(stripe_object))
+    attributes.merge!(snapshot_customer_metadata)
+
+    # Take a snapshot of the card used to make payment.
+    if charge
+      # Old subscription will have a source, however, new subscriptions use payment methods instead
+      card = charge.source || charge.payment_method_details.card
+      attributes.merge!(snapshot_card(card))
+    end
+
+    # Get/create an internal document and a Stripe document.
+    document = ensure_document(
+      stripe_event_id,
+      stripe_object.id
+    )
+
+    # Set the document attributes we collected.
+    document.update(attributes)
+
+    # Finalize now that we have a complete document
+    document.finalize!
+
+    document
+  rescue Invoice::AlreadyFinalized
+  end
 
   def snapshot_customer_metadata
     metadata = stripe_service.customer_metadata.slice(
@@ -91,20 +103,25 @@ private
     customer_metadata
   end
 
-  def snapshot_invoice(stripe_invoice)
+  def snapshot_document(stripe_object)
     props = {}
     # In Stripe: total = subtotal - discount + tax
-    props[:total] = stripe_invoice.total.to_i
-    props[:subtotal] = stripe_invoice.subtotal.to_i
-    props[:subtotal_after_discount] = stripe_invoice.total.to_i - stripe_invoice.tax.to_i
-    props[:discount_amount] = stripe_invoice.tax.to_i + stripe_invoice.subtotal.to_i - stripe_invoice.total.to_i
-    props[:vat_amount] = stripe_invoice.tax.to_i
-    props[:vat_rate] = stripe_invoice.tax_percent
-    props[:currency] = stripe_invoice.currency
+    props[:total] = stripe_object.total.to_i
+    props[:subtotal] = stripe_object.subtotal.to_i
+    props[:vat_amount] = stripe_object.is_a?(Stripe::Invoice) ? stripe_object.tax.to_i : stripe_object.tax_amounts.sum(&:amount).to_i
+    props[:vat_rate] = if stripe_object.is_a?(Stripe::Invoice)
+      stripe_object.tax_percent
+    else
+      invoice = Invoice.first(stripe_id: stripe_object.invoice)
+      invoice.vat_rate
+    end
+    props[:subtotal_after_discount] = props[:total] - props[:vat_amount]
+    props[:discount_amount] = props[:vat_amount] + props[:subtotal] - props[:total]
+    props[:currency] = stripe_object.currency
 
     # The invoice interval (month/year) is the current interval
     # of the subscription attached to the invoice.
-    if subscription_id = stripe_invoice.subscription
+    if stripe_object.is_a?(Stripe::Invoice) && subscription_id = stripe_object.subscription
       subscription = Stripe::Subscription.retrieve(subscription_id)
 
       props[:interval] = subscription.plan.interval
@@ -122,12 +139,12 @@ private
     }
   end
 
-  def ensure_invoice(stripe_event_id, stripe_invoice_id)
-    if invoice = Invoice.find(stripe_id: stripe_invoice_id)
+  def ensure_document(stripe_event_id, stripe_id)
+    if invoice = Invoice.find(stripe_id: stripe_id)
       invoice
     else
       Invoice.create(
-        stripe_id: stripe_invoice_id,
+        stripe_id: stripe_id,
         stripe_event_id: stripe_event_id
       )
     end

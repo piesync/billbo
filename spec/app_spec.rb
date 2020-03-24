@@ -201,6 +201,29 @@ describe App do
             page.save_screenshot('spec/visual/subscription_proration.png', :full => true)
           end
         end
+
+        it 'generates a credit note without VAT with multiple lines if negative amount' do
+          VCR.use_cassette('invoice_template_proration_negative') do
+            subscription, _ = invoice_service.create_subscription(plan: yearly_plan.id)
+
+            subscription.plan = plan.id
+            subscription.save
+
+            id = customer_invoices.first.id
+
+            invoice_service.process_payment(
+              stripe_event_id: stripe_event_id,
+              stripe_invoice_id: id
+            )
+
+            invoice = Invoice.last
+            complete_invoice(invoice)
+            number = invoice.number
+
+            visit "/invoices/#{number}"
+            page.save_screenshot('spec/visual/subscription_proration_negative.png', :full => true)
+          end
+        end
       end
 
       describe 'with custom subscription description' do
@@ -312,23 +335,16 @@ describe App do
       end
     end
 
-    describe 'refund' do
+    describe 'credit note' do
       let(:country_code) { 'US' }
       let(:vat_registered) { false }
 
       it 'generates a credit note' do
-        VCR.use_cassette('invoice_template_refund') do
-          invoice_service.create_subscription(plan: plan.id)
-          stripe_invoice = customer_invoices.first
-          invoice_service.process_payment(
+        VCR.use_cassette('invoice_template_credit_note') do
+          stripe_credit_note = create_stripe_credit_note
+          invoice_service.process_credit_note(
             stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
-          )
-
-          Stripe::Refund.create(charge: stripe_invoice.charge)
-          invoice_service.process_refund(
-            stripe_event_id: stripe_event_id,
-            stripe_invoice_id: stripe_invoice.id
+            stripe_credit_note_id: stripe_credit_note.id
           )
 
           invoice = Invoice.last
@@ -336,7 +352,28 @@ describe App do
           number = invoice.number
 
           visit "/invoices/#{number}"
-          page.save_screenshot('spec/visual/refund.png', :full => true)
+          page.save_screenshot('spec/visual/credit_note.png', :full => true)
+        end
+      end
+
+      it 'generates a partial credit note' do
+        VCR.use_cassette('invoice_template_credit_note_partial') do
+          stripe_credit_note = create_stripe_credit_note(
+            lines: [
+              {unit_amount: 20, description: "Partial refund of subscription"}
+            ]
+          )
+          invoice_service.process_credit_note(
+            stripe_event_id: stripe_event_id,
+            stripe_credit_note_id: stripe_credit_note.id
+          )
+
+          invoice = Invoice.last
+          complete_invoice(invoice)
+          number = invoice.number
+
+          visit "/invoices/#{number}"
+          page.save_screenshot('spec/visual/credit_note_partial.png', :full => true)
         end
       end
     end
@@ -694,5 +731,42 @@ describe App do
       vat_amount_eur: (invoice.vat_amount.to_i*0.75).round,
       total_eur: (invoice.total.to_i*0.75).round,
       currency: 'usd'
+  end
+
+  def create_stripe_credit_note(type: 'refund', lines: nil) # other options are 'credit' and 'out_of_band'
+    invoice_service.create_subscription(plan: plan.id, coupon: coupon.id)
+
+    invoice = invoice_service.process_payment(
+      stripe_event_id: stripe_event_id,
+      stripe_invoice_id: invoice_service.last_stripe_invoice.id
+    )
+
+    stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
+
+    credit_lines = if lines
+      lines.map do |line|
+        {
+          type: 'custom_line_item',
+          unit_amount: line[:unit_amount],
+          quantity: line[:quantity] || 1,
+          description: line[:description] || "Refund"
+        }
+      end
+    else
+      stripe_invoice.lines.map do |line|
+        {
+          type: 'invoice_line_item',
+          invoice_line_item: line.id,
+          quantity: 1
+        }
+      end
+    end
+
+    Stripe::CreditNote.create(
+      invoice: stripe_invoice.id,
+      reason: 'order_change',
+      :"#{type}_amount" => credit_lines.sum{|line| lines ? lines.sum{|line| line[:unit_amount] * (line[:quantity] || 1)} : stripe_invoice.lines.sum(&:amount)}.to_i,
+      lines: credit_lines
+    )
   end
 end

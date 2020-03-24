@@ -136,35 +136,24 @@ describe Hooks do
       end
     end
 
-    describe 'post charge refunded' do
+    describe 'post credit note created' do
       it 'creates a credit note' do
-        VCR.use_cassette('hook_charge_refunded') do
-          customer.subscriptions.create(plan: plan.id)
-          stripe_invoice = customer_invoices.first
-          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+        VCR.use_cassette('hook_credit_note_created') do
+          stripe_credit_note = create_stripe_credit_note
+
+          before_count = Invoice.count
 
           post '/',
                json(
                  id: stripe_event_id,
-                 type: 'invoice.payment_succeeded',
-                 data: {object: stripe_invoice}
-               )
-
-          refund = Stripe::Refund.create(charge: stripe_charge.id)
-
-          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
-
-          post '/',
-               json(
-                 id: stripe_event_id,
-                 type: 'charge.refunded',
-                 data: {object: stripe_charge}
+                 type: 'credit_note.created',
+                 data: {object: stripe_credit_note}
                )
 
           _(last_response.ok?).must_equal true
           _(last_response.body).must_be_empty
 
-          _(Invoice.count).must_equal 2
+          _(Invoice.count).must_equal before_count+1
 
           invoice = Invoice.order(:sequence_number).first
           _(invoice.sequence_number).must_equal 1
@@ -176,38 +165,45 @@ describe Hooks do
           _(credit_note.finalized_at).wont_be_nil
           _(credit_note.credit_note).must_equal true
           _(credit_note.reference_number).must_equal invoice.number
+          _(credit_note.total).must_equal invoice.total
         end
       end
     end
 
-    describe 'post charge refunded partial' do
-      it 'does not create a credit note' do
-        VCR.use_cassette('hook_charge_refunded_partial') do
-          customer.subscriptions.create(plan: plan.id)
-          stripe_invoice = customer_invoices.first
-          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
+    describe 'post credit note created partial' do
+      it 'creates a credit note' do
+        VCR.use_cassette('hook_credit_note_created_partial') do
+          stripe_credit_note = create_stripe_credit_note(
+            lines: [
+              {unit_amount: 10}
+            ]
+          )
 
-          post '/',
-               json(
-                 id: stripe_event_id,
-                 type: 'invoice.payment_succeeded',
-                 data: {object: stripe_invoice}
-               )
-
-          refund = Stripe::Refund.create(charge: stripe_charge.id, amount: 100)
-
-          stripe_charge = Stripe::Charge.retrieve(stripe_invoice.charge)
           before_count = Invoice.count
 
           post '/',
                json(
                  id: stripe_event_id,
-                 type: 'charge.refunded',
-                 data: {object: stripe_charge}
+                 type: 'credit_note.created',
+                 data: {object: stripe_credit_note}
                )
 
           _(last_response.ok?).must_equal true
-          _(Invoice.count).must_equal before_count
+          _(last_response.body).must_be_empty
+
+          _(Invoice.count).must_equal before_count+1
+
+          invoice = Invoice.order(:sequence_number).first
+          _(invoice.sequence_number).must_equal 1
+          _(invoice.finalized_at).wont_be_nil
+          _(invoice.credit_note).must_equal false
+
+          credit_note = Invoice.order(:sequence_number).last
+          _(credit_note.sequence_number).must_equal 2
+          _(credit_note.finalized_at).wont_be_nil
+          _(credit_note.credit_note).must_equal true
+          _(credit_note.reference_number).must_equal invoice.number
+          _(credit_note.total).must_equal 10
         end
       end
     end
@@ -259,5 +255,44 @@ describe Hooks do
 
   def json(object)
     MultiJson.dump(object)
+  end
+
+  def create_stripe_credit_note(type: 'refund', lines: nil) # other options are 'credit' and 'out_of_band'
+    customer.subscriptions.create(plan: plan.id)
+
+    stripe_invoice = customer_invoices.first
+
+    post '/',
+         json(
+           id: stripe_event_id,
+           type: 'invoice.payment_succeeded',
+           data: {object: stripe_invoice}
+         )
+
+     credit_lines = if lines
+       lines.map do |line|
+         {
+           type: 'custom_line_item',
+           unit_amount: line[:unit_amount],
+           quantity: line[:quantity] || 1,
+           description: line[:description] || "Refund"
+         }
+       end
+     else
+       stripe_invoice.lines.map do |line|
+         {
+           type: 'invoice_line_item',
+           invoice_line_item: line.id,
+           quantity: 1
+         }
+       end
+     end
+
+    Stripe::CreditNote.create(
+      invoice: stripe_invoice.id,
+      reason: 'order_change',
+      :"#{type}_amount" => credit_lines.sum{|line| lines ? lines.sum{|line| line[:unit_amount] * (line[:quantity] || 1)} : stripe_invoice.lines.sum(&:amount)}.to_i,
+      lines: credit_lines
+    )
   end
 end
