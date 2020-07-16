@@ -83,6 +83,19 @@ def upload_day!(client, session_id, administration_id, date)
 
   invoices = Invoice.between(date, date + 1.day).order_by(:number)
 
+ # Verify that all invoices have been processed and the EUR amount has been calculated
+  unprocessed_invoices = invoices.where(total_eur: nil)
+  abort(
+    %{
+      UNABLE TO EXPORT #{xml_date} (and later)!
+
+      The following invoices have not been processed yet:
+#{unprocessed_invoices.map{|i| "      - #{i.number}"}.join("\n")}
+
+      Please wait until the job has run and retry the export…
+    }
+  ) if unprocessed_invoices.count > 0
+
   categories = {
     'M' => invoices.exclude(:credit_note).where(Sequel[interval:'month'] | Sequel[interval: nil]),
     'Y' => invoices.exclude(:credit_note).where(interval: 'year'),
