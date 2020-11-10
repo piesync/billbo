@@ -254,13 +254,49 @@ describe InvoiceService do
       end
     end
 
-    def create_stripe_credit_note(type: 'refund') # other options are 'credit' and 'out_of_band'
+    describe 'when the VAT data has changed since the invoice' do
+      let(:metadata) {{
+        country_code: 'BE',
+        vat_registered: 'true',
+        vat_number: 'BE0849451764',
+        accounting_id: '10001',
+        other: 'random'
+      }}
+
+      it 'creates a creditnote with the original VAT data' do
+        VCR.use_cassette('process_credit_note_changed_vat') do
+          stripe_credit_note = create_stripe_credit_note(
+            metadata: {country_code: 'FI', vat_number: 'FI789456', vat_registered: 'false'}
+          )
+
+          credit_note = service.process_credit_note(
+            stripe_event_id: stripe_event_id,
+            stripe_credit_note_id: stripe_credit_note.id
+          )
+
+          invoice = credit_note.reference
+
+          [invoice, credit_note].each do |document|
+            _(document.customer_country_code).must_equal 'BE'
+            _(document.customer_vat_number).must_equal 'BE0849451764'
+            _(document.customer_vat_registered).must_equal true
+          end
+        end
+      end
+    end
+
+    def create_stripe_credit_note(type: 'refund', metadata: nil) # other options are 'credit' and 'out_of_band'
       service.create_subscription(plan: plan.id, coupon: coupon.id)
 
       invoice = service.process_payment(
         stripe_event_id: stripe_event_id,
         stripe_invoice_id: service.last_stripe_invoice.id
       )
+
+      if metadata
+        customer.metadata.update_attributes(metadata)
+        customer.save
+      end
 
       stripe_invoice = Stripe::Invoice.retrieve(invoice.stripe_id)
 

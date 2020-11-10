@@ -54,13 +54,16 @@ private
 
       attributes.merge!({
         reference_number: invoice.number,
-        credit_note: true
+        credit_note: true,
+        customer_country_code: invoice.customer_country_code,       # VAT metadata may have changed since invoice
+        customer_vat_registered: invoice.customer_vat_registered,   # VAT metadata may have changed since invoice
+        customer_vat_number: invoice.customer_vat_number            # VAT metadata may have changed since invoice
       })
     end
 
     # Take snapshots for immutable document.
-    attributes.merge!(snapshot_document(stripe_object))
-    attributes.merge!(snapshot_customer_metadata)
+    attributes.reverse_merge!(snapshot_document(stripe_object))
+    attributes.reverse_merge!(snapshot_customer_metadata)
 
     # Take a snapshot of the card used to make payment.
     if charge

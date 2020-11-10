@@ -1,0 +1,2041 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/customers
+    body:
+      encoding: UTF-8
+      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=30&card[cvc]=222&metadata[country_code]=BE&metadata[vat_registered]=true&metadata[vat_number]=BE0849451764&metadata[accounting_id]=10001&metadata[other]=random
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_ZTz40WmWqvD74R","request_duration_ms":1}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:15 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1975'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_YuTpk1VbuzkBLA
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "cus_IMadJlPDD38bo2",
+          "object": "customer",
+          "address": null,
+          "balance": 0,
+          "created": 1604994015,
+          "currency": null,
+          "default_source": "card_1HlrSd2nHroS7mLX2r488wZE",
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": null,
+          "invoice_prefix": "D306E1AB",
+          "invoice_settings": {
+            "custom_fields": null,
+            "default_payment_method": null,
+            "footer": null
+          },
+          "livemode": false,
+          "metadata": {
+            "country_code": "BE",
+            "vat_registered": "true",
+            "vat_number": "BE0849451764",
+            "accounting_id": "10001",
+            "other": "random"
+          },
+          "name": null,
+          "next_invoice_sequence": 1,
+          "phone": null,
+          "preferred_locales": [
+
+          ],
+          "shipping": null,
+          "sources": {
+            "object": "list",
+            "data": [
+              {
+                "id": "card_1HlrSd2nHroS7mLX2r488wZE",
+                "object": "card",
+                "address_city": null,
+                "address_country": null,
+                "address_line1": null,
+                "address_line1_check": null,
+                "address_line2": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_zip_check": null,
+                "brand": "Visa",
+                "country": "US",
+                "customer": "cus_IMadJlPDD38bo2",
+                "cvc_check": "pass",
+                "dynamic_last4": null,
+                "exp_month": 12,
+                "exp_year": 2030,
+                "fingerprint": "0K7oMWAQAFG7TEob",
+                "funding": "credit",
+                "last4": "4242",
+                "metadata": {
+                },
+                "name": null,
+                "tokenization_method": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/sources"
+          },
+          "subscriptions": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/subscriptions"
+          },
+          "tax_exempt": "none",
+          "tax_ids": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/tax_ids"
+          }
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:15 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/plans/test
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_YuTpk1VbuzkBLA","request_duration_ms":741}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:16 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '475'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_XX2IKrbzOC1Ygl
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "test",
+          "object": "plan",
+          "active": true,
+          "aggregate_usage": null,
+          "amount": 1499,
+          "amount_decimal": "1499",
+          "billing_scheme": "per_unit",
+          "created": 1481892395,
+          "currency": "usd",
+          "interval": "month",
+          "interval_count": 1,
+          "livemode": false,
+          "metadata": {
+          },
+          "nickname": null,
+          "product": "prod_BUgTNAEhjAs7js",
+          "tiers": null,
+          "tiers_mode": null,
+          "transform_usage": null,
+          "trial_period_days": null,
+          "usage_type": "licensed"
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:16 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/coupons/25OFF
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_XX2IKrbzOC1Ygl","request_duration_ms":1065}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:17 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '333'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_ggmCvHaxZqOkjX
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "25OFF",
+          "object": "coupon",
+          "amount_off": null,
+          "created": 1582638654,
+          "currency": null,
+          "duration": "repeating",
+          "duration_in_months": 3,
+          "livemode": false,
+          "max_redemptions": null,
+          "metadata": {
+          },
+          "name": null,
+          "percent_off": 25.0,
+          "redeem_by": null,
+          "times_redeemed": 56,
+          "valid": true
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:17 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/customers/cus_IMadJlPDD38bo2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_ggmCvHaxZqOkjX","request_duration_ms":426}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:17 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1975'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_XXC9NPYL4AAjNL
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "cus_IMadJlPDD38bo2",
+          "object": "customer",
+          "address": null,
+          "balance": 0,
+          "created": 1604994015,
+          "currency": null,
+          "default_source": "card_1HlrSd2nHroS7mLX2r488wZE",
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": null,
+          "invoice_prefix": "D306E1AB",
+          "invoice_settings": {
+            "custom_fields": null,
+            "default_payment_method": null,
+            "footer": null
+          },
+          "livemode": false,
+          "metadata": {
+            "country_code": "BE",
+            "vat_registered": "true",
+            "vat_number": "BE0849451764",
+            "accounting_id": "10001",
+            "other": "random"
+          },
+          "name": null,
+          "next_invoice_sequence": 1,
+          "phone": null,
+          "preferred_locales": [
+
+          ],
+          "shipping": null,
+          "sources": {
+            "object": "list",
+            "data": [
+              {
+                "id": "card_1HlrSd2nHroS7mLX2r488wZE",
+                "object": "card",
+                "address_city": null,
+                "address_country": null,
+                "address_line1": null,
+                "address_line1_check": null,
+                "address_line2": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_zip_check": null,
+                "brand": "Visa",
+                "country": "US",
+                "customer": "cus_IMadJlPDD38bo2",
+                "cvc_check": "pass",
+                "dynamic_last4": null,
+                "exp_month": 12,
+                "exp_year": 2030,
+                "fingerprint": "0K7oMWAQAFG7TEob",
+                "funding": "credit",
+                "last4": "4242",
+                "metadata": {
+                },
+                "name": null,
+                "tokenization_method": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/sources"
+          },
+          "subscriptions": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/subscriptions"
+          },
+          "tax_exempt": "none",
+          "tax_ids": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/tax_ids"
+          }
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:17 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/subscriptions
+    body:
+      encoding: UTF-8
+      string: customer=cus_IMadJlPDD38bo2&tax_percent=21&plan=test&coupon=25OFF
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_XXC9NPYL4AAjNL","request_duration_ms":331}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:19 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '4494'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_2h7xYE0JoDrwFO
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "sub_IMadJT7P9RqoiT",
+          "object": "subscription",
+          "application_fee_percent": null,
+          "billing_cycle_anchor": 1604994017,
+          "billing_thresholds": null,
+          "cancel_at": null,
+          "cancel_at_period_end": false,
+          "canceled_at": null,
+          "collection_method": "charge_automatically",
+          "created": 1604994017,
+          "current_period_end": 1607586017,
+          "current_period_start": 1604994017,
+          "customer": "cus_IMadJlPDD38bo2",
+          "days_until_due": null,
+          "default_payment_method": null,
+          "default_source": null,
+          "default_tax_rates": [
+            {
+              "id": "txr_1CLEj32nHroS7mLXMihnD3UR",
+              "object": "tax_rate",
+              "active": true,
+              "created": 1524766909,
+              "description": null,
+              "display_name": "Tax",
+              "inclusive": false,
+              "jurisdiction": null,
+              "livemode": false,
+              "metadata": {
+              },
+              "percentage": 21.0
+            }
+          ],
+          "discount": {
+            "id": "di_1HlrSf2nHroS7mLXFaPauI1H",
+            "object": "discount",
+            "checkout_session": null,
+            "coupon": {
+              "id": "25OFF",
+              "object": "coupon",
+              "amount_off": null,
+              "created": 1582638654,
+              "currency": null,
+              "duration": "repeating",
+              "duration_in_months": 3,
+              "livemode": false,
+              "max_redemptions": null,
+              "metadata": {
+              },
+              "name": null,
+              "percent_off": 25.0,
+              "redeem_by": null,
+              "times_redeemed": 57,
+              "valid": true
+            },
+            "customer": "cus_IMadJlPDD38bo2",
+            "end": 1612942817,
+            "invoice": null,
+            "invoice_item": null,
+            "promotion_code": null,
+            "start": 1604994017,
+            "subscription": "sub_IMadJT7P9RqoiT"
+          },
+          "ended_at": null,
+          "items": {
+            "object": "list",
+            "data": [
+              {
+                "id": "si_IMadQtFeDPLeDy",
+                "object": "subscription_item",
+                "billing_thresholds": null,
+                "created": 1604994018,
+                "metadata": {
+                },
+                "plan": {
+                  "id": "test",
+                  "object": "plan",
+                  "active": true,
+                  "aggregate_usage": null,
+                  "amount": 1499,
+                  "amount_decimal": "1499",
+                  "billing_scheme": "per_unit",
+                  "created": 1481892395,
+                  "currency": "usd",
+                  "interval": "month",
+                  "interval_count": 1,
+                  "livemode": false,
+                  "metadata": {
+                  },
+                  "nickname": null,
+                  "product": "prod_BUgTNAEhjAs7js",
+                  "tiers": null,
+                  "tiers_mode": null,
+                  "transform_usage": null,
+                  "trial_period_days": null,
+                  "usage_type": "licensed"
+                },
+                "price": {
+                  "id": "test",
+                  "object": "price",
+                  "active": true,
+                  "billing_scheme": "per_unit",
+                  "created": 1481892395,
+                  "currency": "usd",
+                  "livemode": false,
+                  "lookup_key": null,
+                  "metadata": {
+                  },
+                  "nickname": null,
+                  "product": "prod_BUgTNAEhjAs7js",
+                  "recurring": {
+                    "aggregate_usage": null,
+                    "interval": "month",
+                    "interval_count": 1,
+                    "trial_period_days": null,
+                    "usage_type": "licensed"
+                  },
+                  "tiers_mode": null,
+                  "transform_quantity": null,
+                  "type": "recurring",
+                  "unit_amount": 1499,
+                  "unit_amount_decimal": "1499"
+                },
+                "quantity": 1,
+                "subscription": "sub_IMadJT7P9RqoiT",
+                "tax_rates": [
+
+                ]
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/subscription_items?subscription=sub_IMadJT7P9RqoiT"
+          },
+          "latest_invoice": "in_1HlrSg2nHroS7mLXC6hHKYIU",
+          "livemode": false,
+          "metadata": {
+          },
+          "next_pending_invoice_item_invoice": null,
+          "pause_collection": null,
+          "pending_invoice_item_interval": null,
+          "pending_setup_intent": null,
+          "pending_update": null,
+          "plan": {
+            "id": "test",
+            "object": "plan",
+            "active": true,
+            "aggregate_usage": null,
+            "amount": 1499,
+            "amount_decimal": "1499",
+            "billing_scheme": "per_unit",
+            "created": 1481892395,
+            "currency": "usd",
+            "interval": "month",
+            "interval_count": 1,
+            "livemode": false,
+            "metadata": {
+            },
+            "nickname": null,
+            "product": "prod_BUgTNAEhjAs7js",
+            "tiers": null,
+            "tiers_mode": null,
+            "transform_usage": null,
+            "trial_period_days": null,
+            "usage_type": "licensed"
+          },
+          "quantity": 1,
+          "schedule": null,
+          "start_date": 1604994017,
+          "status": "active",
+          "tax_percent": 21.0,
+          "transfer_data": null,
+          "trial_end": null,
+          "trial_start": null
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:19 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/invoices?customer=cus_IMadJlPDD38bo2&limit=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_2h7xYE0JoDrwFO","request_duration_ms":2060}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:20 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '6826'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_nA5fujYZ7a5GrG
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJvYmplY3QiOiAibGlzdCIsCiAgImRhdGEiOiBbCiAgICB7CiAgICAgICJpZCI6ICJpbl8xSGxyU2cybkhyb1M3bUxYQzZoSEtZSVUiLAogICAgICAib2JqZWN0IjogImludm9pY2UiLAogICAgICAiYWNjb3VudF9jb3VudHJ5IjogIkJFIiwKICAgICAgImFjY291bnRfbmFtZSI6ICJQaWVTeW5jIiwKICAgICAgImFjY291bnRfdGF4X2lkcyI6IG51bGwsCiAgICAgICJhbW91bnRfZHVlIjogMTM2MCwKICAgICAgImFtb3VudF9wYWlkIjogMTM2MCwKICAgICAgImFtb3VudF9yZW1haW5pbmciOiAwLAogICAgICAiYXBwbGljYXRpb25fZmVlX2Ftb3VudCI6IG51bGwsCiAgICAgICJhdHRlbXB0X2NvdW50IjogMSwKICAgICAgImF0dGVtcHRlZCI6IHRydWUsCiAgICAgICJhdXRvX2FkdmFuY2UiOiBmYWxzZSwKICAgICAgImJpbGxpbmdfcmVhc29uIjogInN1YnNjcmlwdGlvbl9jcmVhdGUiLAogICAgICAiY2hhcmdlIjogImNoXzFIbHJTZzJuSHJvUzdtTFhXM0piUEwwMyIsCiAgICAgICJjb2xsZWN0aW9uX21ldGhvZCI6ICJjaGFyZ2VfYXV0b21hdGljYWxseSIsCiAgICAgICJjcmVhdGVkIjogMTYwNDk5NDAxOCwKICAgICAgImN1cnJlbmN5IjogInVzZCIsCiAgICAgICJjdXN0b21fZmllbGRzIjogbnVsbCwKICAgICAgImN1c3RvbWVyIjogImN1c19JTWFkSmxQREQzOGJvMiIsCiAgICAgICJjdXN0b21lcl9hZGRyZXNzIjogbnVsbCwKICAgICAgImN1c3RvbWVyX2VtYWlsIjogbnVsbCwKICAgICAgImN1c3RvbWVyX25hbWUiOiBudWxsLAogICAgICAiY3VzdG9tZXJfcGhvbmUiOiBudWxsLAogICAgICAiY3VzdG9tZXJfc2hpcHBpbmciOiBudWxsLAogICAgICAiY3VzdG9tZXJfdGF4X2V4ZW1wdCI6ICJub25lIiwKICAgICAgImN1c3RvbWVyX3RheF9pZHMiOiBbCgogICAgICBdLAogICAgICAiZGVmYXVsdF9wYXltZW50X21ldGhvZCI6IG51bGwsCiAgICAgICJkZWZhdWx0X3NvdXJjZSI6IG51bGwsCiAgICAgICJkZWZhdWx0X3RheF9yYXRlcyI6IFsKICAgICAgICB7CiAgICAgICAgICAiaWQiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIsCiAgICAgICAgICAib2JqZWN0IjogInRheF9yYXRlIiwKICAgICAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAgICAgImNyZWF0ZWQiOiAxNTI0NzY2OTA5LAogICAgICAgICAgImRlc2NyaXB0aW9uIjogbnVsbCwKICAgICAgICAgICJkaXNwbGF5X25hbWUiOiAiVGF4IiwKICAgICAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgICAgICJqdXJpc2RpY3Rpb24iOiBudWxsLAogICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAibWV0YWRhdGEiOiB7CiAgICAgICAgICB9LAogICAgICAgICAgInBlcmNlbnRhZ2UiOiAyMS4wCiAgICAgICAgfQogICAgICBdLAogICAgICAiZGVzY3JpcHRpb24iOiBudWxsLAogICAgICAiZGlzY291bnQiOiB7CiAgICAgICAgImlkIjogImRpXzFIbHJTZjJuSHJvUzdtTFhGYVBhdUkxSCIsCiAgICAgICAgIm9iamVjdCI6ICJkaXNjb3VudCIsCiAgICAgICAgImNoZWNrb3V0X3Nlc3Npb24iOiBudWxsLAogICAgICAgICJjb3Vwb24iOiB7CiAgICAgICAgICAiaWQiOiAiMjVPRkYiLAogICAgICAgICAgIm9iamVjdCI6ICJjb3Vwb24iLAogICAgICAgICAgImFtb3VudF9vZmYiOiBudWxsLAogICAgICAgICAgImNyZWF0ZWQiOiAxNTgyNjM4NjU0LAogICAgICAgICAgImN1cnJlbmN5IjogbnVsbCwKICAgICAgICAgICJkdXJhdGlvbiI6ICJyZXBlYXRpbmciLAogICAgICAgICAgImR1cmF0aW9uX2luX21vbnRocyI6IDMsCiAgICAgICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgICAgICJtYXhfcmVkZW1wdGlvbnMiOiBudWxsLAogICAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgfSwKICAgICAgICAgICJuYW1lIjogbnVsbCwKICAgICAgICAgICJwZXJjZW50X29mZiI6IDI1LjAsCiAgICAgICAgICAicmVkZWVtX2J5IjogbnVsbCwKICAgICAgICAgICJ0aW1lc19yZWRlZW1lZCI6IDU3LAogICAgICAgICAgInZhbGlkIjogdHJ1ZQogICAgICAgIH0sCiAgICAgICAgImN1c3RvbWVyIjogImN1c19JTWFkSmxQREQzOGJvMiIsCiAgICAgICAgImVuZCI6IDE2MTI5NDI4MTcsCiAgICAgICAgImludm9pY2UiOiBudWxsLAogICAgICAgICJpbnZvaWNlX2l0ZW0iOiBudWxsLAogICAgICAgICJwcm9tb3Rpb25fY29kZSI6IG51bGwsCiAgICAgICAgInN0YXJ0IjogMTYwNDk5NDAxNywKICAgICAgICAic3Vic2NyaXB0aW9uIjogInN1Yl9JTWFkSlQ3UDlScW9pVCIKICAgICAgfSwKICAgICAgImRpc2NvdW50cyI6IFsKICAgICAgICAiZGlfMUhsclNmMm5Icm9TN21MWEZhUGF1STFIIgogICAgICBdLAogICAgICAiZHVlX2RhdGUiOiBudWxsLAogICAgICAiZW5kaW5nX2JhbGFuY2UiOiAwLAogICAgICAiZm9vdGVyIjogbnVsbCwKICAgICAgImhvc3RlZF9pbnZvaWNlX3VybCI6ICJodHRwczovL2ludm9pY2Uuc3RyaXBlLmNvbS9pL2FjY3RfMTAydzNnMm5Icm9TN21MWC9pbnZzdF9JTWFkZVl0Y1NWQTI0ZGJxeWhzemhzTlNNbFlBWWd6IiwKICAgICAgImludm9pY2VfcGRmIjogImh0dHBzOi8vcGF5LnN0cmlwZS5jb20vaW52b2ljZS9hY2N0XzEwMnczZzJuSHJvUzdtTFgvaW52c3RfSU1hZGVZdGNTVkEyNGRicXloc3poc05TTWxZQVlnei9wZGYiLAogICAgICAibGFzdF9maW5hbGl6YXRpb25fZXJyb3IiOiBudWxsLAogICAgICAibGluZXMiOiB7CiAgICAgICAgIm9iamVjdCI6ICJsaXN0IiwKICAgICAgICAiZGF0YSI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImlkIjogImlsXzFIbHJTZzJuSHJvUzdtTFhjS2U0cVl0cyIsCiAgICAgICAgICAgICJvYmplY3QiOiAibGluZV9pdGVtIiwKICAgICAgICAgICAgImFtb3VudCI6IDE0OTksCiAgICAgICAgICAgICJjdXJyZW5jeSI6ICJ1c2QiLAogICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiMSDDlyBUZXN0IFBsYW4gKGF0ICQxNC45OSAvIG1vbnRoKSIsCiAgICAgICAgICAgICJkaXNjb3VudF9hbW91bnRzIjogWwogICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAgICAgICAiZGlzY291bnQiOiAiZGlfMUhsclNmMm5Icm9TN21MWEZhUGF1STFIIgogICAgICAgICAgICAgIH0KICAgICAgICAgICAgXSwKICAgICAgICAgICAgImRpc2NvdW50YWJsZSI6IHRydWUsCiAgICAgICAgICAgICJkaXNjb3VudHMiOiBbCgogICAgICAgICAgICBdLAogICAgICAgICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgICB9LAogICAgICAgICAgICAicGVyaW9kIjogewogICAgICAgICAgICAgICJlbmQiOiAxNjA3NTg2MDE3LAogICAgICAgICAgICAgICJzdGFydCI6IDE2MDQ5OTQwMTcKICAgICAgICAgICAgfSwKICAgICAgICAgICAgInBsYW4iOiB7CiAgICAgICAgICAgICAgImlkIjogInRlc3QiLAogICAgICAgICAgICAgICJvYmplY3QiOiAicGxhbiIsCiAgICAgICAgICAgICAgImFjdGl2ZSI6IHRydWUsCiAgICAgICAgICAgICAgImFnZ3JlZ2F0ZV91c2FnZSI6IG51bGwsCiAgICAgICAgICAgICAgImFtb3VudCI6IDE0OTksCiAgICAgICAgICAgICAgImFtb3VudF9kZWNpbWFsIjogIjE0OTkiLAogICAgICAgICAgICAgICJiaWxsaW5nX3NjaGVtZSI6ICJwZXJfdW5pdCIsCiAgICAgICAgICAgICAgImNyZWF0ZWQiOiAxNDgxODkyMzk1LAogICAgICAgICAgICAgICJjdXJyZW5jeSI6ICJ1c2QiLAogICAgICAgICAgICAgICJpbnRlcnZhbCI6ICJtb250aCIsCiAgICAgICAgICAgICAgImludGVydmFsX2NvdW50IjogMSwKICAgICAgICAgICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgICAgICAgICAibWV0YWRhdGEiOiB7CiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAibmlja25hbWUiOiBudWxsLAogICAgICAgICAgICAgICJwcm9kdWN0IjogInByb2RfQlVnVE5BRWhqQXM3anMiLAogICAgICAgICAgICAgICJ0aWVycyI6IG51bGwsCiAgICAgICAgICAgICAgInRpZXJzX21vZGUiOiBudWxsLAogICAgICAgICAgICAgICJ0cmFuc2Zvcm1fdXNhZ2UiOiBudWxsLAogICAgICAgICAgICAgICJ0cmlhbF9wZXJpb2RfZGF5cyI6IG51bGwsCiAgICAgICAgICAgICAgInVzYWdlX3R5cGUiOiAibGljZW5zZWQiCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAiaWQiOiAidGVzdCIsCiAgICAgICAgICAgICAgIm9iamVjdCI6ICJwcmljZSIsCiAgICAgICAgICAgICAgImFjdGl2ZSI6IHRydWUsCiAgICAgICAgICAgICAgImJpbGxpbmdfc2NoZW1lIjogInBlcl91bml0IiwKICAgICAgICAgICAgICAiY3JlYXRlZCI6IDE0ODE4OTIzOTUsCiAgICAgICAgICAgICAgImN1cnJlbmN5IjogInVzZCIsCiAgICAgICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAgICAgImxvb2t1cF9rZXkiOiBudWxsLAogICAgICAgICAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICJuaWNrbmFtZSI6IG51bGwsCiAgICAgICAgICAgICAgInByb2R1Y3QiOiAicHJvZF9CVWdUTkFFaGpBczdqcyIsCiAgICAgICAgICAgICAgInJlY3VycmluZyI6IHsKICAgICAgICAgICAgICAgICJhZ2dyZWdhdGVfdXNhZ2UiOiBudWxsLAogICAgICAgICAgICAgICAgImludGVydmFsIjogIm1vbnRoIiwKICAgICAgICAgICAgICAgICJpbnRlcnZhbF9jb3VudCI6IDEsCiAgICAgICAgICAgICAgICAidHJpYWxfcGVyaW9kX2RheXMiOiBudWxsLAogICAgICAgICAgICAgICAgInVzYWdlX3R5cGUiOiAibGljZW5zZWQiCiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAidGllcnNfbW9kZSI6IG51bGwsCiAgICAgICAgICAgICAgInRyYW5zZm9ybV9xdWFudGl0eSI6IG51bGwsCiAgICAgICAgICAgICAgInR5cGUiOiAicmVjdXJyaW5nIiwKICAgICAgICAgICAgICAidW5pdF9hbW91bnQiOiAxNDk5LAogICAgICAgICAgICAgICJ1bml0X2Ftb3VudF9kZWNpbWFsIjogIjE0OTkiCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJwcm9yYXRpb24iOiBmYWxzZSwKICAgICAgICAgICAgInF1YW50aXR5IjogMSwKICAgICAgICAgICAgInN1YnNjcmlwdGlvbiI6ICJzdWJfSU1hZEpUN1A5UnFvaVQiLAogICAgICAgICAgICAic3Vic2NyaXB0aW9uX2l0ZW0iOiAic2lfSU1hZFF0RmVEUExlRHkiLAogICAgICAgICAgICAidGF4X2Ftb3VudHMiOiBbCiAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgImFtb3VudCI6IDIzNiwKICAgICAgICAgICAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgICAgICAgICAgICJ0YXhfcmF0ZSI6ICJ0eHJfMUNMRWozMm5Icm9TN21MWE1paG5EM1VSIgogICAgICAgICAgICAgIH0KICAgICAgICAgICAgXSwKICAgICAgICAgICAgInRheF9yYXRlcyI6IFsKCiAgICAgICAgICAgIF0sCiAgICAgICAgICAgICJ0eXBlIjogInN1YnNjcmlwdGlvbiIKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJoYXNfbW9yZSI6IGZhbHNlLAogICAgICAgICJ0b3RhbF9jb3VudCI6IDEsCiAgICAgICAgInVybCI6ICIvdjEvaW52b2ljZXMvaW5fMUhsclNnMm5Icm9TN21MWEM2aEhLWUlVL2xpbmVzIgogICAgICB9LAogICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgIm1ldGFkYXRhIjogewogICAgICB9LAogICAgICAibmV4dF9wYXltZW50X2F0dGVtcHQiOiBudWxsLAogICAgICAibnVtYmVyIjogIkQzMDZFMUFCLTAwMDEiLAogICAgICAicGFpZCI6IHRydWUsCiAgICAgICJwYXltZW50X2ludGVudCI6ICJwaV8xSGxyU2cybkhyb1M3bUxYVlRWWG9TOFoiLAogICAgICAicGVyaW9kX2VuZCI6IDE2MDQ5OTQwMTcsCiAgICAgICJwZXJpb2Rfc3RhcnQiOiAxNjA0OTk0MDE3LAogICAgICAicG9zdF9wYXltZW50X2NyZWRpdF9ub3Rlc19hbW91bnQiOiAwLAogICAgICAicHJlX3BheW1lbnRfY3JlZGl0X25vdGVzX2Ftb3VudCI6IDAsCiAgICAgICJyZWNlaXB0X251bWJlciI6IG51bGwsCiAgICAgICJzdGFydGluZ19iYWxhbmNlIjogMCwKICAgICAgInN0YXRlbWVudF9kZXNjcmlwdG9yIjogbnVsbCwKICAgICAgInN0YXR1cyI6ICJwYWlkIiwKICAgICAgInN0YXR1c190cmFuc2l0aW9ucyI6IHsKICAgICAgICAiZmluYWxpemVkX2F0IjogMTYwNDk5NDAxNywKICAgICAgICAibWFya2VkX3VuY29sbGVjdGlibGVfYXQiOiBudWxsLAogICAgICAgICJwYWlkX2F0IjogMTYwNDk5NDAxNywKICAgICAgICAidm9pZGVkX2F0IjogbnVsbAogICAgICB9LAogICAgICAic3Vic2NyaXB0aW9uIjogInN1Yl9JTWFkSlQ3UDlScW9pVCIsCiAgICAgICJzdWJ0b3RhbCI6IDE0OTksCiAgICAgICJ0YXgiOiAyMzYsCiAgICAgICJ0YXhfcGVyY2VudCI6IDIxLjAsCiAgICAgICJ0b3RhbCI6IDEzNjAsCiAgICAgICJ0b3RhbF9kaXNjb3VudF9hbW91bnRzIjogWwogICAgICAgIHsKICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAiZGlzY291bnQiOiAiZGlfMUhsclNmMm5Icm9TN21MWEZhUGF1STFIIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInRvdGFsX3RheF9hbW91bnRzIjogWwogICAgICAgIHsKICAgICAgICAgICJhbW91bnQiOiAyMzYsCiAgICAgICAgICAiaW5jbHVzaXZlIjogZmFsc2UsCiAgICAgICAgICAidGF4X3JhdGUiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJ0cmFuc2Zlcl9kYXRhIjogbnVsbCwKICAgICAgIndlYmhvb2tzX2RlbGl2ZXJlZF9hdCI6IG51bGwKICAgIH0KICBdLAogICJoYXNfbW9yZSI6IGZhbHNlLAogICJ1cmwiOiAiL3YxL2ludm9pY2VzIgp9Cg==
+  recorded_at: Tue, 10 Nov 2020 07:40:20 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/invoices/in_1HlrSg2nHroS7mLXC6hHKYIU
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_nA5fujYZ7a5GrG","request_duration_ms":351}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:20 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '5852'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_kHjs6WJhE5ihjf
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJpbl8xSGxyU2cybkhyb1M3bUxYQzZoSEtZSVUiLAogICJvYmplY3QiOiAiaW52b2ljZSIsCiAgImFjY291bnRfY291bnRyeSI6ICJCRSIsCiAgImFjY291bnRfbmFtZSI6ICJQaWVTeW5jIiwKICAiYWNjb3VudF90YXhfaWRzIjogbnVsbCwKICAiYW1vdW50X2R1ZSI6IDEzNjAsCiAgImFtb3VudF9wYWlkIjogMTM2MCwKICAiYW1vdW50X3JlbWFpbmluZyI6IDAsCiAgImFwcGxpY2F0aW9uX2ZlZV9hbW91bnQiOiBudWxsLAogICJhdHRlbXB0X2NvdW50IjogMSwKICAiYXR0ZW1wdGVkIjogdHJ1ZSwKICAiYXV0b19hZHZhbmNlIjogZmFsc2UsCiAgImJpbGxpbmdfcmVhc29uIjogInN1YnNjcmlwdGlvbl9jcmVhdGUiLAogICJjaGFyZ2UiOiAiY2hfMUhsclNnMm5Icm9TN21MWFczSmJQTDAzIiwKICAiY29sbGVjdGlvbl9tZXRob2QiOiAiY2hhcmdlX2F1dG9tYXRpY2FsbHkiLAogICJjcmVhdGVkIjogMTYwNDk5NDAxOCwKICAiY3VycmVuY3kiOiAidXNkIiwKICAiY3VzdG9tX2ZpZWxkcyI6IG51bGwsCiAgImN1c3RvbWVyIjogImN1c19JTWFkSmxQREQzOGJvMiIsCiAgImN1c3RvbWVyX2FkZHJlc3MiOiBudWxsLAogICJjdXN0b21lcl9lbWFpbCI6IG51bGwsCiAgImN1c3RvbWVyX25hbWUiOiBudWxsLAogICJjdXN0b21lcl9waG9uZSI6IG51bGwsCiAgImN1c3RvbWVyX3NoaXBwaW5nIjogbnVsbCwKICAiY3VzdG9tZXJfdGF4X2V4ZW1wdCI6ICJub25lIiwKICAiY3VzdG9tZXJfdGF4X2lkcyI6IFsKCiAgXSwKICAiZGVmYXVsdF9wYXltZW50X21ldGhvZCI6IG51bGwsCiAgImRlZmF1bHRfc291cmNlIjogbnVsbCwKICAiZGVmYXVsdF90YXhfcmF0ZXMiOiBbCiAgICB7CiAgICAgICJpZCI6ICJ0eHJfMUNMRWozMm5Icm9TN21MWE1paG5EM1VSIiwKICAgICAgIm9iamVjdCI6ICJ0YXhfcmF0ZSIsCiAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAiY3JlYXRlZCI6IDE1MjQ3NjY5MDksCiAgICAgICJkZXNjcmlwdGlvbiI6IG51bGwsCiAgICAgICJkaXNwbGF5X25hbWUiOiAiVGF4IiwKICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAianVyaXNkaWN0aW9uIjogbnVsbCwKICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgfSwKICAgICAgInBlcmNlbnRhZ2UiOiAyMS4wCiAgICB9CiAgXSwKICAiZGVzY3JpcHRpb24iOiBudWxsLAogICJkaXNjb3VudCI6IHsKICAgICJpZCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiLAogICAgIm9iamVjdCI6ICJkaXNjb3VudCIsCiAgICAiY2hlY2tvdXRfc2Vzc2lvbiI6IG51bGwsCiAgICAiY291cG9uIjogewogICAgICAiaWQiOiAiMjVPRkYiLAogICAgICAib2JqZWN0IjogImNvdXBvbiIsCiAgICAgICJhbW91bnRfb2ZmIjogbnVsbCwKICAgICAgImNyZWF0ZWQiOiAxNTgyNjM4NjU0LAogICAgICAiY3VycmVuY3kiOiBudWxsLAogICAgICAiZHVyYXRpb24iOiAicmVwZWF0aW5nIiwKICAgICAgImR1cmF0aW9uX2luX21vbnRocyI6IDMsCiAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAibWF4X3JlZGVtcHRpb25zIjogbnVsbCwKICAgICAgIm1ldGFkYXRhIjogewogICAgICB9LAogICAgICAibmFtZSI6IG51bGwsCiAgICAgICJwZXJjZW50X29mZiI6IDI1LjAsCiAgICAgICJyZWRlZW1fYnkiOiBudWxsLAogICAgICAidGltZXNfcmVkZWVtZWQiOiA1NywKICAgICAgInZhbGlkIjogdHJ1ZQogICAgfSwKICAgICJjdXN0b21lciI6ICJjdXNfSU1hZEpsUEREMzhibzIiLAogICAgImVuZCI6IDE2MTI5NDI4MTcsCiAgICAiaW52b2ljZSI6IG51bGwsCiAgICAiaW52b2ljZV9pdGVtIjogbnVsbCwKICAgICJwcm9tb3Rpb25fY29kZSI6IG51bGwsCiAgICAic3RhcnQiOiAxNjA0OTk0MDE3LAogICAgInN1YnNjcmlwdGlvbiI6ICJzdWJfSU1hZEpUN1A5UnFvaVQiCiAgfSwKICAiZGlzY291bnRzIjogWwogICAgImRpXzFIbHJTZjJuSHJvUzdtTFhGYVBhdUkxSCIKICBdLAogICJkdWVfZGF0ZSI6IG51bGwsCiAgImVuZGluZ19iYWxhbmNlIjogMCwKICAiZm9vdGVyIjogbnVsbCwKICAiaG9zdGVkX2ludm9pY2VfdXJsIjogImh0dHBzOi8vaW52b2ljZS5zdHJpcGUuY29tL2kvYWNjdF8xMDJ3M2cybkhyb1M3bUxYL2ludnN0X0lNYWRlWXRjU1ZBMjRkYnF5aHN6aHNOU01sWUFZZ3oiLAogICJpbnZvaWNlX3BkZiI6ICJodHRwczovL3BheS5zdHJpcGUuY29tL2ludm9pY2UvYWNjdF8xMDJ3M2cybkhyb1M3bUxYL2ludnN0X0lNYWRlWXRjU1ZBMjRkYnF5aHN6aHNOU01sWUFZZ3ovcGRmIiwKICAibGFzdF9maW5hbGl6YXRpb25fZXJyb3IiOiBudWxsLAogICJsaW5lcyI6IHsKICAgICJvYmplY3QiOiAibGlzdCIsCiAgICAiZGF0YSI6IFsKICAgICAgewogICAgICAgICJpZCI6ICJpbF8xSGxyU2cybkhyb1M3bUxYY0tlNHFZdHMiLAogICAgICAgICJvYmplY3QiOiAibGluZV9pdGVtIiwKICAgICAgICAiYW1vdW50IjogMTQ5OSwKICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAiZGVzY3JpcHRpb24iOiAiMSDDlyBUZXN0IFBsYW4gKGF0ICQxNC45OSAvIG1vbnRoKSIsCiAgICAgICAgImRpc2NvdW50X2Ftb3VudHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAiZGlzY291bnRhYmxlIjogdHJ1ZSwKICAgICAgICAiZGlzY291bnRzIjogWwoKICAgICAgICBdLAogICAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgICB9LAogICAgICAgICJwZXJpb2QiOiB7CiAgICAgICAgICAiZW5kIjogMTYwNzU4NjAxNywKICAgICAgICAgICJzdGFydCI6IDE2MDQ5OTQwMTcKICAgICAgICB9LAogICAgICAgICJwbGFuIjogewogICAgICAgICAgImlkIjogInRlc3QiLAogICAgICAgICAgIm9iamVjdCI6ICJwbGFuIiwKICAgICAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAgICAgImFnZ3JlZ2F0ZV91c2FnZSI6IG51bGwsCiAgICAgICAgICAiYW1vdW50IjogMTQ5OSwKICAgICAgICAgICJhbW91bnRfZGVjaW1hbCI6ICIxNDk5IiwKICAgICAgICAgICJiaWxsaW5nX3NjaGVtZSI6ICJwZXJfdW5pdCIsCiAgICAgICAgICAiY3JlYXRlZCI6IDE0ODE4OTIzOTUsCiAgICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAgICJpbnRlcnZhbCI6ICJtb250aCIsCiAgICAgICAgICAiaW50ZXJ2YWxfY291bnQiOiAxLAogICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAibWV0YWRhdGEiOiB7CiAgICAgICAgICB9LAogICAgICAgICAgIm5pY2tuYW1lIjogbnVsbCwKICAgICAgICAgICJwcm9kdWN0IjogInByb2RfQlVnVE5BRWhqQXM3anMiLAogICAgICAgICAgInRpZXJzIjogbnVsbCwKICAgICAgICAgICJ0aWVyc19tb2RlIjogbnVsbCwKICAgICAgICAgICJ0cmFuc2Zvcm1fdXNhZ2UiOiBudWxsLAogICAgICAgICAgInRyaWFsX3BlcmlvZF9kYXlzIjogbnVsbCwKICAgICAgICAgICJ1c2FnZV90eXBlIjogImxpY2Vuc2VkIgogICAgICAgIH0sCiAgICAgICAgInByaWNlIjogewogICAgICAgICAgImlkIjogInRlc3QiLAogICAgICAgICAgIm9iamVjdCI6ICJwcmljZSIsCiAgICAgICAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICAgICAgICJiaWxsaW5nX3NjaGVtZSI6ICJwZXJfdW5pdCIsCiAgICAgICAgICAiY3JlYXRlZCI6IDE0ODE4OTIzOTUsCiAgICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAgICAgImxvb2t1cF9rZXkiOiBudWxsLAogICAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgfSwKICAgICAgICAgICJuaWNrbmFtZSI6IG51bGwsCiAgICAgICAgICAicHJvZHVjdCI6ICJwcm9kX0JVZ1ROQUVoakFzN2pzIiwKICAgICAgICAgICJyZWN1cnJpbmciOiB7CiAgICAgICAgICAgICJhZ2dyZWdhdGVfdXNhZ2UiOiBudWxsLAogICAgICAgICAgICAiaW50ZXJ2YWwiOiAibW9udGgiLAogICAgICAgICAgICAiaW50ZXJ2YWxfY291bnQiOiAxLAogICAgICAgICAgICAidHJpYWxfcGVyaW9kX2RheXMiOiBudWxsLAogICAgICAgICAgICAidXNhZ2VfdHlwZSI6ICJsaWNlbnNlZCIKICAgICAgICAgIH0sCiAgICAgICAgICAidGllcnNfbW9kZSI6IG51bGwsCiAgICAgICAgICAidHJhbnNmb3JtX3F1YW50aXR5IjogbnVsbCwKICAgICAgICAgICJ0eXBlIjogInJlY3VycmluZyIsCiAgICAgICAgICAidW5pdF9hbW91bnQiOiAxNDk5LAogICAgICAgICAgInVuaXRfYW1vdW50X2RlY2ltYWwiOiAiMTQ5OSIKICAgICAgICB9LAogICAgICAgICJwcm9yYXRpb24iOiBmYWxzZSwKICAgICAgICAicXVhbnRpdHkiOiAxLAogICAgICAgICJzdWJzY3JpcHRpb24iOiAic3ViX0lNYWRKVDdQOVJxb2lUIiwKICAgICAgICAic3Vic2NyaXB0aW9uX2l0ZW0iOiAic2lfSU1hZFF0RmVEUExlRHkiLAogICAgICAgICJ0YXhfYW1vdW50cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImFtb3VudCI6IDIzNiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAidGF4X3JhdGUiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJ0YXhfcmF0ZXMiOiBbCgogICAgICAgIF0sCiAgICAgICAgInR5cGUiOiAic3Vic2NyaXB0aW9uIgogICAgICB9CiAgICBdLAogICAgImhhc19tb3JlIjogZmFsc2UsCiAgICAidG90YWxfY291bnQiOiAxLAogICAgInVybCI6ICIvdjEvaW52b2ljZXMvaW5fMUhsclNnMm5Icm9TN21MWEM2aEhLWUlVL2xpbmVzIgogIH0sCiAgImxpdmVtb2RlIjogZmFsc2UsCiAgIm1ldGFkYXRhIjogewogIH0sCiAgIm5leHRfcGF5bWVudF9hdHRlbXB0IjogbnVsbCwKICAibnVtYmVyIjogIkQzMDZFMUFCLTAwMDEiLAogICJwYWlkIjogdHJ1ZSwKICAicGF5bWVudF9pbnRlbnQiOiAicGlfMUhsclNnMm5Icm9TN21MWFZUVlhvUzhaIiwKICAicGVyaW9kX2VuZCI6IDE2MDQ5OTQwMTcsCiAgInBlcmlvZF9zdGFydCI6IDE2MDQ5OTQwMTcsCiAgInBvc3RfcGF5bWVudF9jcmVkaXRfbm90ZXNfYW1vdW50IjogMCwKICAicHJlX3BheW1lbnRfY3JlZGl0X25vdGVzX2Ftb3VudCI6IDAsCiAgInJlY2VpcHRfbnVtYmVyIjogbnVsbCwKICAic3RhcnRpbmdfYmFsYW5jZSI6IDAsCiAgInN0YXRlbWVudF9kZXNjcmlwdG9yIjogbnVsbCwKICAic3RhdHVzIjogInBhaWQiLAogICJzdGF0dXNfdHJhbnNpdGlvbnMiOiB7CiAgICAiZmluYWxpemVkX2F0IjogMTYwNDk5NDAxNywKICAgICJtYXJrZWRfdW5jb2xsZWN0aWJsZV9hdCI6IG51bGwsCiAgICAicGFpZF9hdCI6IDE2MDQ5OTQwMTcsCiAgICAidm9pZGVkX2F0IjogbnVsbAogIH0sCiAgInN1YnNjcmlwdGlvbiI6ICJzdWJfSU1hZEpUN1A5UnFvaVQiLAogICJzdWJ0b3RhbCI6IDE0OTksCiAgInRheCI6IDIzNiwKICAidGF4X3BlcmNlbnQiOiAyMS4wLAogICJ0b3RhbCI6IDEzNjAsCiAgInRvdGFsX2Rpc2NvdW50X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICB9CiAgXSwKICAidG90YWxfdGF4X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAyMzYsCiAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgInRheF9yYXRlIjogInR4cl8xQ0xFajMybkhyb1M3bUxYTWlobkQzVVIiCiAgICB9CiAgXSwKICAidHJhbnNmZXJfZGF0YSI6IG51bGwsCiAgIndlYmhvb2tzX2RlbGl2ZXJlZF9hdCI6IG51bGwKfQo=
+  recorded_at: Tue, 10 Nov 2020 07:40:20 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/charges/ch_1HlrSg2nHroS7mLXW3JbPL03
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_kHjs6WJhE5ihjf","request_duration_ms":337}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:20 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '3034'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_li3wu3k9zzBHGK
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "ch_1HlrSg2nHroS7mLXW3JbPL03",
+          "object": "charge",
+          "amount": 1360,
+          "amount_captured": 1360,
+          "amount_refunded": 0,
+          "application": null,
+          "application_fee": null,
+          "application_fee_amount": null,
+          "balance_transaction": "txn_1HlrSg2nHroS7mLXuv2RYXHW",
+          "billing_details": {
+            "address": {
+              "city": null,
+              "country": null,
+              "line1": null,
+              "line2": null,
+              "postal_code": null,
+              "state": null
+            },
+            "email": null,
+            "name": null,
+            "phone": null
+          },
+          "calculated_statement_descriptor": "PIESYNC.COM",
+          "captured": true,
+          "created": 1604994018,
+          "currency": "usd",
+          "customer": "cus_IMadJlPDD38bo2",
+          "description": "Subscription creation",
+          "destination": null,
+          "dispute": null,
+          "disputed": false,
+          "failure_code": null,
+          "failure_message": null,
+          "fraud_details": {
+          },
+          "invoice": "in_1HlrSg2nHroS7mLXC6hHKYIU",
+          "livemode": false,
+          "metadata": {
+          },
+          "on_behalf_of": null,
+          "order": null,
+          "outcome": {
+            "network_status": "approved_by_network",
+            "reason": null,
+            "risk_level": "normal",
+            "risk_score": 21,
+            "seller_message": "Payment complete.",
+            "type": "authorized"
+          },
+          "paid": true,
+          "payment_intent": "pi_1HlrSg2nHroS7mLXVTVXoS8Z",
+          "payment_method": "card_1HlrSd2nHroS7mLX2r488wZE",
+          "payment_method_details": {
+            "card": {
+              "brand": "visa",
+              "checks": {
+                "address_line1_check": null,
+                "address_postal_code_check": null,
+                "cvc_check": "pass"
+              },
+              "country": "US",
+              "exp_month": 12,
+              "exp_year": 2030,
+              "fingerprint": "0K7oMWAQAFG7TEob",
+              "funding": "credit",
+              "installments": null,
+              "last4": "4242",
+              "network": "visa",
+              "three_d_secure": null,
+              "wallet": null
+            },
+            "type": "card"
+          },
+          "receipt_email": null,
+          "receipt_number": null,
+          "receipt_url": "https://pay.stripe.com/receipts/acct_102w3g2nHroS7mLX/ch_1HlrSg2nHroS7mLXW3JbPL03/rcpt_IMad6GyL86I7l8e2mQ5O4OfwwfziCqk",
+          "refunded": false,
+          "refunds": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/charges/ch_1HlrSg2nHroS7mLXW3JbPL03/refunds"
+          },
+          "review": null,
+          "shipping": null,
+          "source": {
+            "id": "card_1HlrSd2nHroS7mLX2r488wZE",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "Visa",
+            "country": "US",
+            "customer": "cus_IMadJlPDD38bo2",
+            "cvc_check": "pass",
+            "dynamic_last4": null,
+            "exp_month": 12,
+            "exp_year": 2030,
+            "fingerprint": "0K7oMWAQAFG7TEob",
+            "funding": "credit",
+            "last4": "4242",
+            "metadata": {
+            },
+            "name": null,
+            "tokenization_method": null
+          },
+          "source_transfer": null,
+          "statement_descriptor": null,
+          "statement_descriptor_suffix": null,
+          "status": "succeeded",
+          "transfer_data": null,
+          "transfer_group": null
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:20 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/subscriptions/sub_IMadJT7P9RqoiT
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_li3wu3k9zzBHGK","request_duration_ms":420}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:21 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '4494'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_h9NwjRIiGUX2ee
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "sub_IMadJT7P9RqoiT",
+          "object": "subscription",
+          "application_fee_percent": null,
+          "billing_cycle_anchor": 1604994017,
+          "billing_thresholds": null,
+          "cancel_at": null,
+          "cancel_at_period_end": false,
+          "canceled_at": null,
+          "collection_method": "charge_automatically",
+          "created": 1604994017,
+          "current_period_end": 1607586017,
+          "current_period_start": 1604994017,
+          "customer": "cus_IMadJlPDD38bo2",
+          "days_until_due": null,
+          "default_payment_method": null,
+          "default_source": null,
+          "default_tax_rates": [
+            {
+              "id": "txr_1CLEj32nHroS7mLXMihnD3UR",
+              "object": "tax_rate",
+              "active": true,
+              "created": 1524766909,
+              "description": null,
+              "display_name": "Tax",
+              "inclusive": false,
+              "jurisdiction": null,
+              "livemode": false,
+              "metadata": {
+              },
+              "percentage": 21.0
+            }
+          ],
+          "discount": {
+            "id": "di_1HlrSf2nHroS7mLXFaPauI1H",
+            "object": "discount",
+            "checkout_session": null,
+            "coupon": {
+              "id": "25OFF",
+              "object": "coupon",
+              "amount_off": null,
+              "created": 1582638654,
+              "currency": null,
+              "duration": "repeating",
+              "duration_in_months": 3,
+              "livemode": false,
+              "max_redemptions": null,
+              "metadata": {
+              },
+              "name": null,
+              "percent_off": 25.0,
+              "redeem_by": null,
+              "times_redeemed": 57,
+              "valid": true
+            },
+            "customer": "cus_IMadJlPDD38bo2",
+            "end": 1612942817,
+            "invoice": null,
+            "invoice_item": null,
+            "promotion_code": null,
+            "start": 1604994017,
+            "subscription": "sub_IMadJT7P9RqoiT"
+          },
+          "ended_at": null,
+          "items": {
+            "object": "list",
+            "data": [
+              {
+                "id": "si_IMadQtFeDPLeDy",
+                "object": "subscription_item",
+                "billing_thresholds": null,
+                "created": 1604994018,
+                "metadata": {
+                },
+                "plan": {
+                  "id": "test",
+                  "object": "plan",
+                  "active": true,
+                  "aggregate_usage": null,
+                  "amount": 1499,
+                  "amount_decimal": "1499",
+                  "billing_scheme": "per_unit",
+                  "created": 1481892395,
+                  "currency": "usd",
+                  "interval": "month",
+                  "interval_count": 1,
+                  "livemode": false,
+                  "metadata": {
+                  },
+                  "nickname": null,
+                  "product": "prod_BUgTNAEhjAs7js",
+                  "tiers": null,
+                  "tiers_mode": null,
+                  "transform_usage": null,
+                  "trial_period_days": null,
+                  "usage_type": "licensed"
+                },
+                "price": {
+                  "id": "test",
+                  "object": "price",
+                  "active": true,
+                  "billing_scheme": "per_unit",
+                  "created": 1481892395,
+                  "currency": "usd",
+                  "livemode": false,
+                  "lookup_key": null,
+                  "metadata": {
+                  },
+                  "nickname": null,
+                  "product": "prod_BUgTNAEhjAs7js",
+                  "recurring": {
+                    "aggregate_usage": null,
+                    "interval": "month",
+                    "interval_count": 1,
+                    "trial_period_days": null,
+                    "usage_type": "licensed"
+                  },
+                  "tiers_mode": null,
+                  "transform_quantity": null,
+                  "type": "recurring",
+                  "unit_amount": 1499,
+                  "unit_amount_decimal": "1499"
+                },
+                "quantity": 1,
+                "subscription": "sub_IMadJT7P9RqoiT",
+                "tax_rates": [
+
+                ]
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/subscription_items?subscription=sub_IMadJT7P9RqoiT"
+          },
+          "latest_invoice": "in_1HlrSg2nHroS7mLXC6hHKYIU",
+          "livemode": false,
+          "metadata": {
+          },
+          "next_pending_invoice_item_invoice": null,
+          "pause_collection": null,
+          "pending_invoice_item_interval": null,
+          "pending_setup_intent": null,
+          "pending_update": null,
+          "plan": {
+            "id": "test",
+            "object": "plan",
+            "active": true,
+            "aggregate_usage": null,
+            "amount": 1499,
+            "amount_decimal": "1499",
+            "billing_scheme": "per_unit",
+            "created": 1481892395,
+            "currency": "usd",
+            "interval": "month",
+            "interval_count": 1,
+            "livemode": false,
+            "metadata": {
+            },
+            "nickname": null,
+            "product": "prod_BUgTNAEhjAs7js",
+            "tiers": null,
+            "tiers_mode": null,
+            "transform_usage": null,
+            "trial_period_days": null,
+            "usage_type": "licensed"
+          },
+          "quantity": 1,
+          "schedule": null,
+          "start_date": 1604994017,
+          "status": "active",
+          "tax_percent": 21.0,
+          "transfer_data": null,
+          "trial_end": null,
+          "trial_start": null
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:21 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/customers/cus_IMadJlPDD38bo2
+    body:
+      encoding: UTF-8
+      string: metadata[country_code]=FI&metadata[vat_registered]=false&metadata[vat_number]=FI789456
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_h9NwjRIiGUX2ee","request_duration_ms":310}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:22 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '7510'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_PBxUjogBSkzEVN
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "cus_IMadJlPDD38bo2",
+          "object": "customer",
+          "address": null,
+          "balance": 0,
+          "created": 1604994015,
+          "currency": "usd",
+          "default_source": "card_1HlrSd2nHroS7mLX2r488wZE",
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": null,
+          "invoice_prefix": "D306E1AB",
+          "invoice_settings": {
+            "custom_fields": null,
+            "default_payment_method": null,
+            "footer": null
+          },
+          "livemode": false,
+          "metadata": {
+            "country_code": "FI",
+            "vat_registered": "false",
+            "vat_number": "FI789456",
+            "accounting_id": "10001",
+            "other": "random"
+          },
+          "name": null,
+          "next_invoice_sequence": 2,
+          "phone": null,
+          "preferred_locales": [
+
+          ],
+          "shipping": null,
+          "sources": {
+            "object": "list",
+            "data": [
+              {
+                "id": "card_1HlrSd2nHroS7mLX2r488wZE",
+                "object": "card",
+                "address_city": null,
+                "address_country": null,
+                "address_line1": null,
+                "address_line1_check": null,
+                "address_line2": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_zip_check": null,
+                "brand": "Visa",
+                "country": "US",
+                "customer": "cus_IMadJlPDD38bo2",
+                "cvc_check": "pass",
+                "dynamic_last4": null,
+                "exp_month": 12,
+                "exp_year": 2030,
+                "fingerprint": "0K7oMWAQAFG7TEob",
+                "funding": "credit",
+                "last4": "4242",
+                "metadata": {
+                },
+                "name": null,
+                "tokenization_method": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/sources"
+          },
+          "subscriptions": {
+            "object": "list",
+            "data": [
+              {
+                "id": "sub_IMadJT7P9RqoiT",
+                "object": "subscription",
+                "application_fee_percent": null,
+                "billing_cycle_anchor": 1604994017,
+                "billing_thresholds": null,
+                "cancel_at": null,
+                "cancel_at_period_end": false,
+                "canceled_at": null,
+                "collection_method": "charge_automatically",
+                "created": 1604994017,
+                "current_period_end": 1607586017,
+                "current_period_start": 1604994017,
+                "customer": "cus_IMadJlPDD38bo2",
+                "days_until_due": null,
+                "default_payment_method": null,
+                "default_source": null,
+                "default_tax_rates": [
+                  {
+                    "id": "txr_1CLEj32nHroS7mLXMihnD3UR",
+                    "object": "tax_rate",
+                    "active": true,
+                    "created": 1524766909,
+                    "description": null,
+                    "display_name": "Tax",
+                    "inclusive": false,
+                    "jurisdiction": null,
+                    "livemode": false,
+                    "metadata": {
+                    },
+                    "percentage": 21.0
+                  }
+                ],
+                "discount": {
+                  "id": "di_1HlrSf2nHroS7mLXFaPauI1H",
+                  "object": "discount",
+                  "checkout_session": null,
+                  "coupon": {
+                    "id": "25OFF",
+                    "object": "coupon",
+                    "amount_off": null,
+                    "created": 1582638654,
+                    "currency": null,
+                    "duration": "repeating",
+                    "duration_in_months": 3,
+                    "livemode": false,
+                    "max_redemptions": null,
+                    "metadata": {
+                    },
+                    "name": null,
+                    "percent_off": 25.0,
+                    "redeem_by": null,
+                    "times_redeemed": 57,
+                    "valid": true
+                  },
+                  "customer": "cus_IMadJlPDD38bo2",
+                  "end": 1612942817,
+                  "invoice": null,
+                  "invoice_item": null,
+                  "promotion_code": null,
+                  "start": 1604994017,
+                  "subscription": "sub_IMadJT7P9RqoiT"
+                },
+                "ended_at": null,
+                "items": {
+                  "object": "list",
+                  "data": [
+                    {
+                      "id": "si_IMadQtFeDPLeDy",
+                      "object": "subscription_item",
+                      "billing_thresholds": null,
+                      "created": 1604994018,
+                      "metadata": {
+                      },
+                      "plan": {
+                        "id": "test",
+                        "object": "plan",
+                        "active": true,
+                        "aggregate_usage": null,
+                        "amount": 1499,
+                        "amount_decimal": "1499",
+                        "billing_scheme": "per_unit",
+                        "created": 1481892395,
+                        "currency": "usd",
+                        "interval": "month",
+                        "interval_count": 1,
+                        "livemode": false,
+                        "metadata": {
+                        },
+                        "nickname": null,
+                        "product": "prod_BUgTNAEhjAs7js",
+                        "tiers": null,
+                        "tiers_mode": null,
+                        "transform_usage": null,
+                        "trial_period_days": null,
+                        "usage_type": "licensed"
+                      },
+                      "price": {
+                        "id": "test",
+                        "object": "price",
+                        "active": true,
+                        "billing_scheme": "per_unit",
+                        "created": 1481892395,
+                        "currency": "usd",
+                        "livemode": false,
+                        "lookup_key": null,
+                        "metadata": {
+                        },
+                        "nickname": null,
+                        "product": "prod_BUgTNAEhjAs7js",
+                        "recurring": {
+                          "aggregate_usage": null,
+                          "interval": "month",
+                          "interval_count": 1,
+                          "trial_period_days": null,
+                          "usage_type": "licensed"
+                        },
+                        "tiers_mode": null,
+                        "transform_quantity": null,
+                        "type": "recurring",
+                        "unit_amount": 1499,
+                        "unit_amount_decimal": "1499"
+                      },
+                      "quantity": 1,
+                      "subscription": "sub_IMadJT7P9RqoiT",
+                      "tax_rates": [
+
+                      ]
+                    }
+                  ],
+                  "has_more": false,
+                  "total_count": 1,
+                  "url": "/v1/subscription_items?subscription=sub_IMadJT7P9RqoiT"
+                },
+                "latest_invoice": "in_1HlrSg2nHroS7mLXC6hHKYIU",
+                "livemode": false,
+                "metadata": {
+                },
+                "next_pending_invoice_item_invoice": null,
+                "pause_collection": null,
+                "pending_invoice_item_interval": null,
+                "pending_setup_intent": null,
+                "pending_update": null,
+                "plan": {
+                  "id": "test",
+                  "object": "plan",
+                  "active": true,
+                  "aggregate_usage": null,
+                  "amount": 1499,
+                  "amount_decimal": "1499",
+                  "billing_scheme": "per_unit",
+                  "created": 1481892395,
+                  "currency": "usd",
+                  "interval": "month",
+                  "interval_count": 1,
+                  "livemode": false,
+                  "metadata": {
+                  },
+                  "nickname": null,
+                  "product": "prod_BUgTNAEhjAs7js",
+                  "tiers": null,
+                  "tiers_mode": null,
+                  "transform_usage": null,
+                  "trial_period_days": null,
+                  "usage_type": "licensed"
+                },
+                "quantity": 1,
+                "schedule": null,
+                "start_date": 1604994017,
+                "status": "active",
+                "tax_percent": 21.0,
+                "transfer_data": null,
+                "trial_end": null,
+                "trial_start": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/subscriptions"
+          },
+          "tax_exempt": "none",
+          "tax_ids": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IMadJlPDD38bo2/tax_ids"
+          }
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:22 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/invoices/in_1HlrSg2nHroS7mLXC6hHKYIU
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_PBxUjogBSkzEVN","request_duration_ms":975}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:23 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '5858'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_wEyfRhTlTSMA8t
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJpbl8xSGxyU2cybkhyb1M3bUxYQzZoSEtZSVUiLAogICJvYmplY3QiOiAiaW52b2ljZSIsCiAgImFjY291bnRfY291bnRyeSI6ICJCRSIsCiAgImFjY291bnRfbmFtZSI6ICJQaWVTeW5jIiwKICAiYWNjb3VudF90YXhfaWRzIjogbnVsbCwKICAiYW1vdW50X2R1ZSI6IDEzNjAsCiAgImFtb3VudF9wYWlkIjogMTM2MCwKICAiYW1vdW50X3JlbWFpbmluZyI6IDAsCiAgImFwcGxpY2F0aW9uX2ZlZV9hbW91bnQiOiBudWxsLAogICJhdHRlbXB0X2NvdW50IjogMSwKICAiYXR0ZW1wdGVkIjogdHJ1ZSwKICAiYXV0b19hZHZhbmNlIjogZmFsc2UsCiAgImJpbGxpbmdfcmVhc29uIjogInN1YnNjcmlwdGlvbl9jcmVhdGUiLAogICJjaGFyZ2UiOiAiY2hfMUhsclNnMm5Icm9TN21MWFczSmJQTDAzIiwKICAiY29sbGVjdGlvbl9tZXRob2QiOiAiY2hhcmdlX2F1dG9tYXRpY2FsbHkiLAogICJjcmVhdGVkIjogMTYwNDk5NDAxOCwKICAiY3VycmVuY3kiOiAidXNkIiwKICAiY3VzdG9tX2ZpZWxkcyI6IG51bGwsCiAgImN1c3RvbWVyIjogImN1c19JTWFkSmxQREQzOGJvMiIsCiAgImN1c3RvbWVyX2FkZHJlc3MiOiBudWxsLAogICJjdXN0b21lcl9lbWFpbCI6IG51bGwsCiAgImN1c3RvbWVyX25hbWUiOiBudWxsLAogICJjdXN0b21lcl9waG9uZSI6IG51bGwsCiAgImN1c3RvbWVyX3NoaXBwaW5nIjogbnVsbCwKICAiY3VzdG9tZXJfdGF4X2V4ZW1wdCI6ICJub25lIiwKICAiY3VzdG9tZXJfdGF4X2lkcyI6IFsKCiAgXSwKICAiZGVmYXVsdF9wYXltZW50X21ldGhvZCI6IG51bGwsCiAgImRlZmF1bHRfc291cmNlIjogbnVsbCwKICAiZGVmYXVsdF90YXhfcmF0ZXMiOiBbCiAgICB7CiAgICAgICJpZCI6ICJ0eHJfMUNMRWozMm5Icm9TN21MWE1paG5EM1VSIiwKICAgICAgIm9iamVjdCI6ICJ0YXhfcmF0ZSIsCiAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAiY3JlYXRlZCI6IDE1MjQ3NjY5MDksCiAgICAgICJkZXNjcmlwdGlvbiI6IG51bGwsCiAgICAgICJkaXNwbGF5X25hbWUiOiAiVGF4IiwKICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAianVyaXNkaWN0aW9uIjogbnVsbCwKICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgfSwKICAgICAgInBlcmNlbnRhZ2UiOiAyMS4wCiAgICB9CiAgXSwKICAiZGVzY3JpcHRpb24iOiBudWxsLAogICJkaXNjb3VudCI6IHsKICAgICJpZCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiLAogICAgIm9iamVjdCI6ICJkaXNjb3VudCIsCiAgICAiY2hlY2tvdXRfc2Vzc2lvbiI6IG51bGwsCiAgICAiY291cG9uIjogewogICAgICAiaWQiOiAiMjVPRkYiLAogICAgICAib2JqZWN0IjogImNvdXBvbiIsCiAgICAgICJhbW91bnRfb2ZmIjogbnVsbCwKICAgICAgImNyZWF0ZWQiOiAxNTgyNjM4NjU0LAogICAgICAiY3VycmVuY3kiOiBudWxsLAogICAgICAiZHVyYXRpb24iOiAicmVwZWF0aW5nIiwKICAgICAgImR1cmF0aW9uX2luX21vbnRocyI6IDMsCiAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAibWF4X3JlZGVtcHRpb25zIjogbnVsbCwKICAgICAgIm1ldGFkYXRhIjogewogICAgICB9LAogICAgICAibmFtZSI6IG51bGwsCiAgICAgICJwZXJjZW50X29mZiI6IDI1LjAsCiAgICAgICJyZWRlZW1fYnkiOiBudWxsLAogICAgICAidGltZXNfcmVkZWVtZWQiOiA1NywKICAgICAgInZhbGlkIjogdHJ1ZQogICAgfSwKICAgICJjdXN0b21lciI6ICJjdXNfSU1hZEpsUEREMzhibzIiLAogICAgImVuZCI6IDE2MTI5NDI4MTcsCiAgICAiaW52b2ljZSI6IG51bGwsCiAgICAiaW52b2ljZV9pdGVtIjogbnVsbCwKICAgICJwcm9tb3Rpb25fY29kZSI6IG51bGwsCiAgICAic3RhcnQiOiAxNjA0OTk0MDE3LAogICAgInN1YnNjcmlwdGlvbiI6ICJzdWJfSU1hZEpUN1A5UnFvaVQiCiAgfSwKICAiZGlzY291bnRzIjogWwogICAgImRpXzFIbHJTZjJuSHJvUzdtTFhGYVBhdUkxSCIKICBdLAogICJkdWVfZGF0ZSI6IG51bGwsCiAgImVuZGluZ19iYWxhbmNlIjogMCwKICAiZm9vdGVyIjogbnVsbCwKICAiaG9zdGVkX2ludm9pY2VfdXJsIjogImh0dHBzOi8vaW52b2ljZS5zdHJpcGUuY29tL2kvYWNjdF8xMDJ3M2cybkhyb1M3bUxYL2ludnN0X0lNYWRlWXRjU1ZBMjRkYnF5aHN6aHNOU01sWUFZZ3oiLAogICJpbnZvaWNlX3BkZiI6ICJodHRwczovL3BheS5zdHJpcGUuY29tL2ludm9pY2UvYWNjdF8xMDJ3M2cybkhyb1M3bUxYL2ludnN0X0lNYWRlWXRjU1ZBMjRkYnF5aHN6aHNOU01sWUFZZ3ovcGRmIiwKICAibGFzdF9maW5hbGl6YXRpb25fZXJyb3IiOiBudWxsLAogICJsaW5lcyI6IHsKICAgICJvYmplY3QiOiAibGlzdCIsCiAgICAiZGF0YSI6IFsKICAgICAgewogICAgICAgICJpZCI6ICJpbF8xSGxyU2cybkhyb1M3bUxYY0tlNHFZdHMiLAogICAgICAgICJvYmplY3QiOiAibGluZV9pdGVtIiwKICAgICAgICAiYW1vdW50IjogMTQ5OSwKICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAiZGVzY3JpcHRpb24iOiAiMSDDlyBUZXN0IFBsYW4gKGF0ICQxNC45OSAvIG1vbnRoKSIsCiAgICAgICAgImRpc2NvdW50X2Ftb3VudHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAiZGlzY291bnRhYmxlIjogdHJ1ZSwKICAgICAgICAiZGlzY291bnRzIjogWwoKICAgICAgICBdLAogICAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgICB9LAogICAgICAgICJwZXJpb2QiOiB7CiAgICAgICAgICAiZW5kIjogMTYwNzU4NjAxNywKICAgICAgICAgICJzdGFydCI6IDE2MDQ5OTQwMTcKICAgICAgICB9LAogICAgICAgICJwbGFuIjogewogICAgICAgICAgImlkIjogInRlc3QiLAogICAgICAgICAgIm9iamVjdCI6ICJwbGFuIiwKICAgICAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAgICAgImFnZ3JlZ2F0ZV91c2FnZSI6IG51bGwsCiAgICAgICAgICAiYW1vdW50IjogMTQ5OSwKICAgICAgICAgICJhbW91bnRfZGVjaW1hbCI6ICIxNDk5IiwKICAgICAgICAgICJiaWxsaW5nX3NjaGVtZSI6ICJwZXJfdW5pdCIsCiAgICAgICAgICAiY3JlYXRlZCI6IDE0ODE4OTIzOTUsCiAgICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAgICJpbnRlcnZhbCI6ICJtb250aCIsCiAgICAgICAgICAiaW50ZXJ2YWxfY291bnQiOiAxLAogICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAibWV0YWRhdGEiOiB7CiAgICAgICAgICB9LAogICAgICAgICAgIm5pY2tuYW1lIjogbnVsbCwKICAgICAgICAgICJwcm9kdWN0IjogInByb2RfQlVnVE5BRWhqQXM3anMiLAogICAgICAgICAgInRpZXJzIjogbnVsbCwKICAgICAgICAgICJ0aWVyc19tb2RlIjogbnVsbCwKICAgICAgICAgICJ0cmFuc2Zvcm1fdXNhZ2UiOiBudWxsLAogICAgICAgICAgInRyaWFsX3BlcmlvZF9kYXlzIjogbnVsbCwKICAgICAgICAgICJ1c2FnZV90eXBlIjogImxpY2Vuc2VkIgogICAgICAgIH0sCiAgICAgICAgInByaWNlIjogewogICAgICAgICAgImlkIjogInRlc3QiLAogICAgICAgICAgIm9iamVjdCI6ICJwcmljZSIsCiAgICAgICAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICAgICAgICJiaWxsaW5nX3NjaGVtZSI6ICJwZXJfdW5pdCIsCiAgICAgICAgICAiY3JlYXRlZCI6IDE0ODE4OTIzOTUsCiAgICAgICAgICAiY3VycmVuY3kiOiAidXNkIiwKICAgICAgICAgICJsaXZlbW9kZSI6IGZhbHNlLAogICAgICAgICAgImxvb2t1cF9rZXkiOiBudWxsLAogICAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgfSwKICAgICAgICAgICJuaWNrbmFtZSI6IG51bGwsCiAgICAgICAgICAicHJvZHVjdCI6ICJwcm9kX0JVZ1ROQUVoakFzN2pzIiwKICAgICAgICAgICJyZWN1cnJpbmciOiB7CiAgICAgICAgICAgICJhZ2dyZWdhdGVfdXNhZ2UiOiBudWxsLAogICAgICAgICAgICAiaW50ZXJ2YWwiOiAibW9udGgiLAogICAgICAgICAgICAiaW50ZXJ2YWxfY291bnQiOiAxLAogICAgICAgICAgICAidHJpYWxfcGVyaW9kX2RheXMiOiBudWxsLAogICAgICAgICAgICAidXNhZ2VfdHlwZSI6ICJsaWNlbnNlZCIKICAgICAgICAgIH0sCiAgICAgICAgICAidGllcnNfbW9kZSI6IG51bGwsCiAgICAgICAgICAidHJhbnNmb3JtX3F1YW50aXR5IjogbnVsbCwKICAgICAgICAgICJ0eXBlIjogInJlY3VycmluZyIsCiAgICAgICAgICAidW5pdF9hbW91bnQiOiAxNDk5LAogICAgICAgICAgInVuaXRfYW1vdW50X2RlY2ltYWwiOiAiMTQ5OSIKICAgICAgICB9LAogICAgICAgICJwcm9yYXRpb24iOiBmYWxzZSwKICAgICAgICAicXVhbnRpdHkiOiAxLAogICAgICAgICJzdWJzY3JpcHRpb24iOiAic3ViX0lNYWRKVDdQOVJxb2lUIiwKICAgICAgICAic3Vic2NyaXB0aW9uX2l0ZW0iOiAic2lfSU1hZFF0RmVEUExlRHkiLAogICAgICAgICJ0YXhfYW1vdW50cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImFtb3VudCI6IDIzNiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAidGF4X3JhdGUiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJ0YXhfcmF0ZXMiOiBbCgogICAgICAgIF0sCiAgICAgICAgInR5cGUiOiAic3Vic2NyaXB0aW9uIgogICAgICB9CiAgICBdLAogICAgImhhc19tb3JlIjogZmFsc2UsCiAgICAidG90YWxfY291bnQiOiAxLAogICAgInVybCI6ICIvdjEvaW52b2ljZXMvaW5fMUhsclNnMm5Icm9TN21MWEM2aEhLWUlVL2xpbmVzIgogIH0sCiAgImxpdmVtb2RlIjogZmFsc2UsCiAgIm1ldGFkYXRhIjogewogIH0sCiAgIm5leHRfcGF5bWVudF9hdHRlbXB0IjogbnVsbCwKICAibnVtYmVyIjogIkQzMDZFMUFCLTAwMDEiLAogICJwYWlkIjogdHJ1ZSwKICAicGF5bWVudF9pbnRlbnQiOiAicGlfMUhsclNnMm5Icm9TN21MWFZUVlhvUzhaIiwKICAicGVyaW9kX2VuZCI6IDE2MDQ5OTQwMTcsCiAgInBlcmlvZF9zdGFydCI6IDE2MDQ5OTQwMTcsCiAgInBvc3RfcGF5bWVudF9jcmVkaXRfbm90ZXNfYW1vdW50IjogMCwKICAicHJlX3BheW1lbnRfY3JlZGl0X25vdGVzX2Ftb3VudCI6IDAsCiAgInJlY2VpcHRfbnVtYmVyIjogbnVsbCwKICAic3RhcnRpbmdfYmFsYW5jZSI6IDAsCiAgInN0YXRlbWVudF9kZXNjcmlwdG9yIjogbnVsbCwKICAic3RhdHVzIjogInBhaWQiLAogICJzdGF0dXNfdHJhbnNpdGlvbnMiOiB7CiAgICAiZmluYWxpemVkX2F0IjogMTYwNDk5NDAxNywKICAgICJtYXJrZWRfdW5jb2xsZWN0aWJsZV9hdCI6IG51bGwsCiAgICAicGFpZF9hdCI6IDE2MDQ5OTQwMTcsCiAgICAidm9pZGVkX2F0IjogbnVsbAogIH0sCiAgInN1YnNjcmlwdGlvbiI6ICJzdWJfSU1hZEpUN1A5UnFvaVQiLAogICJzdWJ0b3RhbCI6IDE0OTksCiAgInRheCI6IDIzNiwKICAidGF4X3BlcmNlbnQiOiAyMS4wLAogICJ0b3RhbCI6IDEzNjAsCiAgInRvdGFsX2Rpc2NvdW50X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICB9CiAgXSwKICAidG90YWxfdGF4X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAyMzYsCiAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgInRheF9yYXRlIjogInR4cl8xQ0xFajMybkhyb1M3bUxYTWlobkQzVVIiCiAgICB9CiAgXSwKICAidHJhbnNmZXJfZGF0YSI6IG51bGwsCiAgIndlYmhvb2tzX2RlbGl2ZXJlZF9hdCI6IDE2MDQ5OTQwMjEKfQo=
+  recorded_at: Tue, 10 Nov 2020 07:40:23 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/credit_notes
+    body:
+      encoding: UTF-8
+      string: invoice=in_1HlrSg2nHroS7mLXC6hHKYIU&reason=order_change&refund_amount=1360&lines[0][type]=invoice_line_item&lines[0][invoice_line_item]=il_1HlrSg2nHroS7mLXcKe4qYts&lines[0][quantity]=1
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_wEyfRhTlTSMA8t","request_duration_ms":1013}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:24 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2279'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_hPyepVFfYDrJV5
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjbl8xSGxyU20ybkhyb1M3bUxYOXJ4UDdueDciLAogICJvYmplY3QiOiAiY3JlZGl0X25vdGUiLAogICJhbW91bnQiOiAxMzYwLAogICJjcmVhdGVkIjogMTYwNDk5NDAyMywKICAiY3VycmVuY3kiOiAidXNkIiwKICAiY3VzdG9tZXIiOiAiY3VzX0lNYWRKbFBERDM4Ym8yIiwKICAiY3VzdG9tZXJfYmFsYW5jZV90cmFuc2FjdGlvbiI6IG51bGwsCiAgImRpc2NvdW50X2Ftb3VudCI6IDM3NSwKICAiZGlzY291bnRfYW1vdW50cyI6IFsKICAgIHsKICAgICAgImFtb3VudCI6IDM3NSwKICAgICAgImRpc2NvdW50IjogImRpXzFIbHJTZjJuSHJvUzdtTFhGYVBhdUkxSCIKICAgIH0KICBdLAogICJpbnZvaWNlIjogImluXzFIbHJTZzJuSHJvUzdtTFhDNmhIS1lJVSIsCiAgImxpbmVzIjogewogICAgIm9iamVjdCI6ICJsaXN0IiwKICAgICJkYXRhIjogWwogICAgICB7CiAgICAgICAgImlkIjogImNubGlfMUhsclNtMm5Icm9TN21MWHNtS2E4bEM5IiwKICAgICAgICAib2JqZWN0IjogImNyZWRpdF9ub3RlX2xpbmVfaXRlbSIsCiAgICAgICAgImFtb3VudCI6IDE0OTksCiAgICAgICAgImRlc2NyaXB0aW9uIjogIjEgw5cgVGVzdCBQbGFuIChhdCAkMTQuOTkgLyBtb250aCkiLAogICAgICAgICJkaXNjb3VudF9hbW91bnQiOiAzNzUsCiAgICAgICAgImRpc2NvdW50X2Ftb3VudHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAiaW52b2ljZV9saW5lX2l0ZW0iOiAiaWxfMUhsclNnMm5Icm9TN21MWGNLZTRxWXRzIiwKICAgICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgICAicXVhbnRpdHkiOiAxLAogICAgICAgICJ0YXhfYW1vdW50cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImFtb3VudCI6IDIzNiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAidGF4X3JhdGUiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJ0YXhfcmF0ZXMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJpZCI6ICJ0eHJfMUNMRWozMm5Icm9TN21MWE1paG5EM1VSIiwKICAgICAgICAgICAgIm9iamVjdCI6ICJ0YXhfcmF0ZSIsCiAgICAgICAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAgICAgICAiY3JlYXRlZCI6IDE1MjQ3NjY5MDksCiAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6IG51bGwsCiAgICAgICAgICAgICJkaXNwbGF5X25hbWUiOiAiVGF4IiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAianVyaXNkaWN0aW9uIjogbnVsbCwKICAgICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgICAgICAgfSwKICAgICAgICAgICAgInBlcmNlbnRhZ2UiOiAyMS4wCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAidHlwZSI6ICJpbnZvaWNlX2xpbmVfaXRlbSIsCiAgICAgICAgInVuaXRfYW1vdW50IjogMTQ5OSwKICAgICAgICAidW5pdF9hbW91bnRfZGVjaW1hbCI6ICIxNDk5IgogICAgICB9CiAgICBdLAogICAgImhhc19tb3JlIjogZmFsc2UsCiAgICAidXJsIjogIi92MS9jcmVkaXRfbm90ZXMvY25fMUhsclNtMm5Icm9TN21MWDlyeFA3bng3L2xpbmVzIgogIH0sCiAgImxpdmVtb2RlIjogZmFsc2UsCiAgIm1lbW8iOiBudWxsLAogICJtZXRhZGF0YSI6IHsKICB9LAogICJudW1iZXIiOiAiRDMwNkUxQUItMDAwMS1DTi0wMSIsCiAgIm91dF9vZl9iYW5kX2Ftb3VudCI6IG51bGwsCiAgInBkZiI6ICJodHRwczovL3BheS5zdHJpcGUuY29tL2NyZWRpdF9ub3Rlcy9hY2N0XzEwMnczZzJuSHJvUzdtTFgvY25zdF9JTWFlcUN4QmdDc2NZZkl3UjgzU0pzM29iUVZOQTBoL3BkZiIsCiAgInJlYXNvbiI6ICJvcmRlcl9jaGFuZ2UiLAogICJyZWZ1bmQiOiAicmVfMUhsclNtMm5Icm9TN21MWFFEclNkbkVrIiwKICAic3RhdHVzIjogImlzc3VlZCIsCiAgInN1YnRvdGFsIjogMTQ5OSwKICAidGF4X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAyMzYsCiAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgInRheF9yYXRlIjogInR4cl8xQ0xFajMybkhyb1M3bUxYTWlobkQzVVIiCiAgICB9CiAgXSwKICAidG90YWwiOiAxMzYwLAogICJ0eXBlIjogInBvc3RfcGF5bWVudCIsCiAgInZvaWRlZF9hdCI6IG51bGwKfQo=
+  recorded_at: Tue, 10 Nov 2020 07:40:24 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/credit_notes/cn_1HlrSm2nHroS7mLX9rxP7nx7
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_hPyepVFfYDrJV5","request_duration_ms":1735}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:25 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2279'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_BFHZ2ZlcHagZH8
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjbl8xSGxyU20ybkhyb1M3bUxYOXJ4UDdueDciLAogICJvYmplY3QiOiAiY3JlZGl0X25vdGUiLAogICJhbW91bnQiOiAxMzYwLAogICJjcmVhdGVkIjogMTYwNDk5NDAyMywKICAiY3VycmVuY3kiOiAidXNkIiwKICAiY3VzdG9tZXIiOiAiY3VzX0lNYWRKbFBERDM4Ym8yIiwKICAiY3VzdG9tZXJfYmFsYW5jZV90cmFuc2FjdGlvbiI6IG51bGwsCiAgImRpc2NvdW50X2Ftb3VudCI6IDM3NSwKICAiZGlzY291bnRfYW1vdW50cyI6IFsKICAgIHsKICAgICAgImFtb3VudCI6IDM3NSwKICAgICAgImRpc2NvdW50IjogImRpXzFIbHJTZjJuSHJvUzdtTFhGYVBhdUkxSCIKICAgIH0KICBdLAogICJpbnZvaWNlIjogImluXzFIbHJTZzJuSHJvUzdtTFhDNmhIS1lJVSIsCiAgImxpbmVzIjogewogICAgIm9iamVjdCI6ICJsaXN0IiwKICAgICJkYXRhIjogWwogICAgICB7CiAgICAgICAgImlkIjogImNubGlfMUhsclNtMm5Icm9TN21MWHNtS2E4bEM5IiwKICAgICAgICAib2JqZWN0IjogImNyZWRpdF9ub3RlX2xpbmVfaXRlbSIsCiAgICAgICAgImFtb3VudCI6IDE0OTksCiAgICAgICAgImRlc2NyaXB0aW9uIjogIjEgw5cgVGVzdCBQbGFuIChhdCAkMTQuOTkgLyBtb250aCkiLAogICAgICAgICJkaXNjb3VudF9hbW91bnQiOiAzNzUsCiAgICAgICAgImRpc2NvdW50X2Ftb3VudHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJhbW91bnQiOiAzNzUsCiAgICAgICAgICAgICJkaXNjb3VudCI6ICJkaV8xSGxyU2Yybkhyb1M3bUxYRmFQYXVJMUgiCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAiaW52b2ljZV9saW5lX2l0ZW0iOiAiaWxfMUhsclNnMm5Icm9TN21MWGNLZTRxWXRzIiwKICAgICAgICAibGl2ZW1vZGUiOiBmYWxzZSwKICAgICAgICAicXVhbnRpdHkiOiAxLAogICAgICAgICJ0YXhfYW1vdW50cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImFtb3VudCI6IDIzNiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAidGF4X3JhdGUiOiAidHhyXzFDTEVqMzJuSHJvUzdtTFhNaWhuRDNVUiIKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJ0YXhfcmF0ZXMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJpZCI6ICJ0eHJfMUNMRWozMm5Icm9TN21MWE1paG5EM1VSIiwKICAgICAgICAgICAgIm9iamVjdCI6ICJ0YXhfcmF0ZSIsCiAgICAgICAgICAgICJhY3RpdmUiOiB0cnVlLAogICAgICAgICAgICAiY3JlYXRlZCI6IDE1MjQ3NjY5MDksCiAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6IG51bGwsCiAgICAgICAgICAgICJkaXNwbGF5X25hbWUiOiAiVGF4IiwKICAgICAgICAgICAgImluY2x1c2l2ZSI6IGZhbHNlLAogICAgICAgICAgICAianVyaXNkaWN0aW9uIjogbnVsbCwKICAgICAgICAgICAgImxpdmVtb2RlIjogZmFsc2UsCiAgICAgICAgICAgICJtZXRhZGF0YSI6IHsKICAgICAgICAgICAgfSwKICAgICAgICAgICAgInBlcmNlbnRhZ2UiOiAyMS4wCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAidHlwZSI6ICJpbnZvaWNlX2xpbmVfaXRlbSIsCiAgICAgICAgInVuaXRfYW1vdW50IjogMTQ5OSwKICAgICAgICAidW5pdF9hbW91bnRfZGVjaW1hbCI6ICIxNDk5IgogICAgICB9CiAgICBdLAogICAgImhhc19tb3JlIjogZmFsc2UsCiAgICAidXJsIjogIi92MS9jcmVkaXRfbm90ZXMvY25fMUhsclNtMm5Icm9TN21MWDlyeFA3bng3L2xpbmVzIgogIH0sCiAgImxpdmVtb2RlIjogZmFsc2UsCiAgIm1lbW8iOiBudWxsLAogICJtZXRhZGF0YSI6IHsKICB9LAogICJudW1iZXIiOiAiRDMwNkUxQUItMDAwMS1DTi0wMSIsCiAgIm91dF9vZl9iYW5kX2Ftb3VudCI6IG51bGwsCiAgInBkZiI6ICJodHRwczovL3BheS5zdHJpcGUuY29tL2NyZWRpdF9ub3Rlcy9hY2N0XzEwMnczZzJuSHJvUzdtTFgvY25zdF9JTWFlcUN4QmdDc2NZZkl3UjgzU0pzM29iUVZOQTBoL3BkZiIsCiAgInJlYXNvbiI6ICJvcmRlcl9jaGFuZ2UiLAogICJyZWZ1bmQiOiAicmVfMUhsclNtMm5Icm9TN21MWFFEclNkbkVrIiwKICAic3RhdHVzIjogImlzc3VlZCIsCiAgInN1YnRvdGFsIjogMTQ5OSwKICAidGF4X2Ftb3VudHMiOiBbCiAgICB7CiAgICAgICJhbW91bnQiOiAyMzYsCiAgICAgICJpbmNsdXNpdmUiOiBmYWxzZSwKICAgICAgInRheF9yYXRlIjogInR4cl8xQ0xFajMybkhyb1M3bUxYTWlobkQzVVIiCiAgICB9CiAgXSwKICAidG90YWwiOiAxMzYwLAogICJ0eXBlIjogInBvc3RfcGF5bWVudCIsCiAgInZvaWRlZF9hdCI6IG51bGwKfQo=
+  recorded_at: Tue, 10 Nov 2020 07:40:25 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/refunds/re_1HlrSm2nHroS7mLXQDrSdnEk
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_BFHZ2ZlcHagZH8","request_duration_ms":307}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:25 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '453'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_L0UZAFlLDekgWP
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "re_1HlrSm2nHroS7mLXQDrSdnEk",
+          "object": "refund",
+          "amount": 1360,
+          "balance_transaction": "txn_1HlrSm2nHroS7mLXN7lRJ8Zf",
+          "charge": "ch_1HlrSg2nHroS7mLXW3JbPL03",
+          "created": 1604994024,
+          "currency": "usd",
+          "metadata": {
+          },
+          "payment_intent": "pi_1HlrSg2nHroS7mLXVTVXoS8Z",
+          "reason": "requested_by_customer",
+          "receipt_number": null,
+          "source_transfer_reversal": null,
+          "status": "succeeded",
+          "transfer_reversal": null
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:25 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/charges/ch_1HlrSg2nHroS7mLXW3JbPL03
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/5.22.0
+      Authorization:
+      - "<AUTH>"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_L0UZAFlLDekgWP","request_duration_ms":313}}'
+      Stripe-Version:
+      - '2019-12-03'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"5.22.0","lang":"ruby","lang_version":"2.6.5 p114 (2019-10-01)","platform":"x86_64-darwin19","engine":"ruby","publisher":"stripe","uname":"Darwin
+        solid-snake.local 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45
+        PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64","hostname":"solid-snake.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 10 Nov 2020 07:40:26 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '3590'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_oesDoEenjabebg
+      Stripe-Version:
+      - '2019-12-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "ch_1HlrSg2nHroS7mLXW3JbPL03",
+          "object": "charge",
+          "amount": 1360,
+          "amount_captured": 1360,
+          "amount_refunded": 1360,
+          "application": null,
+          "application_fee": null,
+          "application_fee_amount": null,
+          "balance_transaction": "txn_1HlrSg2nHroS7mLXuv2RYXHW",
+          "billing_details": {
+            "address": {
+              "city": null,
+              "country": null,
+              "line1": null,
+              "line2": null,
+              "postal_code": null,
+              "state": null
+            },
+            "email": null,
+            "name": null,
+            "phone": null
+          },
+          "calculated_statement_descriptor": "PIESYNC.COM",
+          "captured": true,
+          "created": 1604994018,
+          "currency": "usd",
+          "customer": "cus_IMadJlPDD38bo2",
+          "description": "Subscription creation",
+          "destination": null,
+          "dispute": null,
+          "disputed": false,
+          "failure_code": null,
+          "failure_message": null,
+          "fraud_details": {
+          },
+          "invoice": "in_1HlrSg2nHroS7mLXC6hHKYIU",
+          "livemode": false,
+          "metadata": {
+          },
+          "on_behalf_of": null,
+          "order": null,
+          "outcome": {
+            "network_status": "approved_by_network",
+            "reason": null,
+            "risk_level": "normal",
+            "risk_score": 21,
+            "seller_message": "Payment complete.",
+            "type": "authorized"
+          },
+          "paid": true,
+          "payment_intent": "pi_1HlrSg2nHroS7mLXVTVXoS8Z",
+          "payment_method": "card_1HlrSd2nHroS7mLX2r488wZE",
+          "payment_method_details": {
+            "card": {
+              "brand": "visa",
+              "checks": {
+                "address_line1_check": null,
+                "address_postal_code_check": null,
+                "cvc_check": "pass"
+              },
+              "country": "US",
+              "exp_month": 12,
+              "exp_year": 2030,
+              "fingerprint": "0K7oMWAQAFG7TEob",
+              "funding": "credit",
+              "installments": null,
+              "last4": "4242",
+              "network": "visa",
+              "three_d_secure": null,
+              "wallet": null
+            },
+            "type": "card"
+          },
+          "receipt_email": null,
+          "receipt_number": null,
+          "receipt_url": "https://pay.stripe.com/receipts/acct_102w3g2nHroS7mLX/ch_1HlrSg2nHroS7mLXW3JbPL03/rcpt_IMad6GyL86I7l8e2mQ5O4OfwwfziCqk",
+          "refunded": true,
+          "refunds": {
+            "object": "list",
+            "data": [
+              {
+                "id": "re_1HlrSm2nHroS7mLXQDrSdnEk",
+                "object": "refund",
+                "amount": 1360,
+                "balance_transaction": "txn_1HlrSm2nHroS7mLXN7lRJ8Zf",
+                "charge": "ch_1HlrSg2nHroS7mLXW3JbPL03",
+                "created": 1604994024,
+                "currency": "usd",
+                "metadata": {
+                },
+                "payment_intent": "pi_1HlrSg2nHroS7mLXVTVXoS8Z",
+                "reason": "requested_by_customer",
+                "receipt_number": null,
+                "source_transfer_reversal": null,
+                "status": "succeeded",
+                "transfer_reversal": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/charges/ch_1HlrSg2nHroS7mLXW3JbPL03/refunds"
+          },
+          "review": null,
+          "shipping": null,
+          "source": {
+            "id": "card_1HlrSd2nHroS7mLX2r488wZE",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "Visa",
+            "country": "US",
+            "customer": "cus_IMadJlPDD38bo2",
+            "cvc_check": "pass",
+            "dynamic_last4": null,
+            "exp_month": 12,
+            "exp_year": 2030,
+            "fingerprint": "0K7oMWAQAFG7TEob",
+            "funding": "credit",
+            "last4": "4242",
+            "metadata": {
+            },
+            "name": null,
+            "tokenization_method": null
+          },
+          "source_transfer": null,
+          "statement_descriptor": null,
+          "statement_descriptor_suffix": null,
+          "status": "succeeded",
+          "transfer_data": null,
+          "transfer_group": null
+        }
+  recorded_at: Tue, 10 Nov 2020 07:40:26 GMT
+recorded_with: VCR 6.0.0
