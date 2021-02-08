@@ -31,7 +31,6 @@ class VatService
     'SK' => 20, # Slovakia
     'FI' => 24, # Finland
     'SE' => 25, # Sweden
-    'GB' => 20  # United Kingdom
   }
 
   # Calculates VAT amount based on country and whether the customer
