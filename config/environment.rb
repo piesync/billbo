@@ -49,14 +49,6 @@ Money.default_bank = EuCentralBank.new
 Money.rounding_mode = BigDecimal::ROUND_HALF_EVEN
 Money.default_currency = Configuration.default_currency
 
-# # Configure Timeouts for VIES checks
-# {
-#   open_timeout: 10,
-#   read_timeout: 10
-# }.each do |key, d|
-#   Valvat::Lookup.client.globals[key] = d
-# end
-
 # Configure Rumor
 require 'rumor/async/sucker_punch'
 

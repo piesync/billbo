@@ -53,7 +53,7 @@ class VatService
   #
   # Returns true or false
   def valid?(vat_number:)
-    vies_valid = Valvat::Lookup.validate(vat_number)
+    vies_valid = Valvat::Lookup.validate(vat_number, savon: {open_timeout: 10, read_timeout: 10})
     if vies_valid.nil?
       Valvat.new(vat_number).valid_checksum?
     else
