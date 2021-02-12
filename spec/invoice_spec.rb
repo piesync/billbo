@@ -142,4 +142,32 @@ describe Invoice do
     end
   end
 
+  describe 'eu?' do
+    let(:invoice) { Invoice.new(customer_country_code: customer_country_code) }
+
+    describe 'outside eu' do
+      let(:customer_country_code) { 'US' }
+
+      it 'should return false' do
+        _(invoice.eu?).must_equal false
+      end
+    end
+
+    describe 'brexit uk' do
+      let(:customer_country_code) { 'GB' }
+
+      it 'should return false' do
+        _(invoice.eu?).must_equal false
+      end
+    end
+
+    describe 'outside eu' do
+      let(:customer_country_code) { 'FR' }
+
+      it 'should return false' do
+        _(invoice.eu?).must_equal true
+      end
+    end
+  end
+
 end

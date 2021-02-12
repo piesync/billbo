@@ -43,6 +43,50 @@ describe Job do
       end
     end
 
+    describe 'to VIES or not to VIES' do
+      describe 'EU' do
+        let(:customer_country_code) { 'BE' }
+        it 'loads VIES data' do
+          VCR.use_cassette('vies_eu') do
+            invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_country_code: customer_country_code, customer_vat_number: 'BE0849451764')
+
+            VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).once
+            PdfService.any_instance.expects(:generate_pdf).with(invoice).once
+
+            Job.new.perform_for([invoice])
+          end
+        end
+      end
+
+      describe 'UK' do
+        let(:customer_country_code) { 'UK' }
+        it 'does not load VIES data' do
+          VCR.use_cassette('vies_uk') do
+            invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_country_code: customer_country_code, customer_vat_number: 'GB123456789')
+
+            VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
+            PdfService.any_instance.expects(:generate_pdf).with(invoice).once
+
+            Job.new.perform_for([invoice])
+          end
+        end
+      end
+
+      describe 'US' do
+        let(:customer_country_code) { 'US' }
+        it 'does not load VIES data' do
+          VCR.use_cassette('vies_us') do
+            invoice = Invoice.create(vat_amount: 100, total: 1000, currency: 'usd', customer_country_code: customer_country_code)
+
+            VatService.any_instance.expects(:load_vies_data).with(invoice: invoice).never
+            PdfService.any_instance.expects(:generate_pdf).with(invoice).once
+
+            Job.new.perform_for([invoice])
+          end
+        end
+      end
+    end
+
     describe 'a vat number is present' do
       it 'loads vies data, euro amounts and generates a pdf' do
         VCR.use_cassette('job_vat') do
