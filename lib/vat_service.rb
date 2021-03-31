@@ -31,6 +31,8 @@ class VatService
     'SK' => 20, # Slovakia
     'FI' => 24, # Finland
     'SE' => 25, # Sweden
+
+    'GB' => 20, # United Kingdom
   }
 
   # Calculates VAT amount based on country and whether the customer
@@ -53,16 +55,24 @@ class VatService
   #
   # Returns true or false
   def valid?(vat_number:)
-    vies_valid = Valvat::Lookup.validate(vat_number, savon: {open_timeout: 10, read_timeout: 10})
-    if vies_valid.nil?
-      Valvat.new(vat_number).valid_checksum?
-    else
-      vies_valid
-    end
-  rescue Savon::Error => e
-    puts "Failed checking VAT validity of #{var_number}: #{e.to_s}"
+    checksum = Valvat.new(vat_number).valid_checksum?
 
-    Valvat.new(vat_number).valid_checksum?
+    # Special case for the UK as after the brexit, the VIES service does not work anymore
+    # for the UK. We can however still checksum.
+    if vat_number[0..1] == 'GB'
+      return checksum
+    end
+
+    vies_valid = Valvat::Lookup.validate(vat_number, savon: {open_timeout: 10, read_timeout: 10})
+
+    if !vies_valid.nil?
+      vies_valid
+    else
+      checksum
+    end
+
+  rescue Savon::Error => e
+    checksum
   end
 
   # returns extra info about the given vat_number
@@ -115,17 +125,15 @@ class VatService
 
     # Companies pay VAT in the origin country when you are VAT registered there.
     # Individuals always need to pay the VAT rate set in their origin country.
-    if registered?(country_code) || (eu?(country_code) && !vat_registered)
+    if VAT_RATES[country_code] && (registered?(country_code) || !vat_registered)
       VAT_RATES[country_code]
 
-    # Companies in other EU countries don't need to pay VAT.
-    # All non-EU customers don't need to pay VAT.
+    # Companies in other EU countries (or in the UK) don't need to pay VAT.
+    # All non-EU (and non-UK) customers don't need to pay VAT.
     else
       0
     end
   end
-
-  private
 
   # Whether the seller is registered in the given country.
   def registered?(country_code)
@@ -134,5 +142,9 @@ class VatService
 
   def eu?(country_code)
     Valvat::Utils::EU_COUNTRIES.include?(country_code)
+  end
+
+  def vat_reverse_charged?(country_code)
+    !registered?(country_code) && !!VAT_RATES[country_code]
   end
 end

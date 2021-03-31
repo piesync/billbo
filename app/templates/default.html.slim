@@ -133,7 +133,7 @@ html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
         p
           - if !vat?
             // we need to show a reason for not charging vat.
-            - if eu?
+            - if vat_reverse_charged?
               | * VAT Reverse-charged
             - else
               | * No EU VAT applicable - Article 59 Directive 2006/112/EC
