@@ -55,6 +55,10 @@ def yuki_line(invoice)
   original_invoice = invoice.reference || invoice
   vat_desc, vat_type = vat_code(invoice)
 
+  if ["1", "8"].include?(vat_type) && invoice.vat_rate.to_i == 0
+    puts "error: #{invoice.number} (#{invoice.stripe_id}); type: #{vat_type}; rate: #{(invoice.vat_rate || 0).round(2).to_f.to_s}"
+  end
+
   total = (invoice.total_eur.to_f / 100).round(2)
 
   total = -total if invoice.credit_note?

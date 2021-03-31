@@ -26,6 +26,10 @@ describe VatService do
     it 'works for the canary islands' do
       _(example(100, 'IC', true).amount).must_equal(0)
     end
+
+    it 'works for the UK' do
+      _(example(100, 'GB', false).amount).must_equal(20)
+    end
   end
 
   describe '#validate' do
@@ -40,6 +44,17 @@ describe VatService do
       Valvat::Lookup.stubs(:validate).returns(nil)
       _(service.valid?(vat_number: 'IE6388047V')).must_equal true
       _(service.valid?(vat_number: 'LU21416128')).must_equal false
+    end
+
+    it 'uses the checksum if there is a communication error' do
+      Valvat::Lookup.stubs(:validate).raises(Savon::Error)
+      _(service.valid?(vat_number: 'IE6388047V')).must_equal true
+    end
+
+    it 'falls back to checksum for the UK' do
+      VCR.use_cassette('validate_vat_gb') do
+        _(service.valid?(vat_number: 'GB867935561')).must_equal true
+      end
     end
   end
 

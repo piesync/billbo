@@ -127,7 +127,11 @@ class Invoice < Sequel::Model
   end
 
   def eu?
-    Valvat::Utils::EU_COUNTRIES.include?(customer_country_code)
+    VatService.new.eu?(customer_country_code)
+  end
+
+  def vat_reverse_charged?
+    VatService.new.vat_reverse_charged?(customer_country_code)
   end
 
   def customer_name

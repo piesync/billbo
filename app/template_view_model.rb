@@ -16,7 +16,7 @@ class TemplateViewModel
     :customer_name, :customer_company_name, :customer_address, :customer_country_code,
     :customer_vat_registered?, :customer_vat_number, :discount?, :discount_amount,
     :subtotal_after_discount, :vat?, :vat_rate, :vat_amount, :vat_amount_eur, :total,
-    :total_eur, :eu?
+    :total_eur, :eu?, :vat_reverse_charged?
 
   def_delegators :stripe_invoice, :lines
 

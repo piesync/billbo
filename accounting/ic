@@ -11,6 +11,7 @@ WHERE customer_vat_number IS NOT NULL
 AND finalized_at >= ?
 AND finalized_at < ?
 AND customer_vat_number NOT LIKE 'BE%'
+AND customer_vat_number NOT LIKE 'GB%'
 GROUP BY customer_vat_number
 HAVING SUM(total_eur*CASE credit_note WHEN true THEN -1 ELSE 1 END) > 0
 ORDER BY total DESC
