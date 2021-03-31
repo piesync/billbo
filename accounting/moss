@@ -4,7 +4,10 @@ require './config/environment'
 quarter = ARGV[0].to_i
 year    = (ARGV[1] || Time.now.year).to_i
 
-countries = VatService::VAT_RATES.keys - [Configuration.primary_country]
+vat_service = VatService.new
+countries = Valvat::Utils::EU_COUNTRIES.reject do |country|
+  vat_service.registered?(country)
+end
 
 invoices = Invoice.quarter(year, quarter) \
   .where(customer_vat_number: nil) \
