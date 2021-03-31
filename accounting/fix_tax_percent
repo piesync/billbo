@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+require './config/environment'
+
+def vat_rate(customer)
+  country_code = if vat = customer.metadata[:vat_number]
+    vat[0..1]
+  else
+    customer.metadata[:country_code]
+  end
+
+  VatService.new.vat_rate(
+    country_code: customer.metadata[:country_code],
+    vat_registered: customer.metadata[:vat_registered] == "true"
+  ).to_i
+end
+
+list = Stripe::Subscription.list
+loop do
+  # Already fetch next list
+  next_list = nil
+  next_list_thread = Thread.new do
+    next_list = list.next_page
+  end if list.has_more?
+
+  # Fetch customers concurrently
+  mutex = Mutex.new
+  customers = {}
+
+  list.map(&:customer).map do |id|
+    Thread.new do
+      mutex.synchronize do
+        customers[id] = Stripe::Customer.retrieve(id)
+      end
+    end
+  end.each(&:join)
+
+  list.each do |s|
+    customer = customers[s.customer]
+
+    exp_vat_rate = vat_rate(customer)
+    actual_vat_rate = s.tax_percent || 0
+
+    if exp_vat_rate != actual_vat_rate
+      print "#{s.id} (#{s.customer}): expected #{exp_vat_rate} but found #{actual_vat_rate} (#{customer.metadata[:country_code]}, #{customer.metadata[:vat_registered]}, #{customer.metadata[:vat_number]}) ..."
+
+      STDIN.gets # Press any key to fix
+      s.tax_percent = exp_vat_rate
+      s.save
+
+      puts "fixed"
+    else
+      puts "#{s.id} (#{s.customer}): ok"
+    end
+  end
+
+  if list.has_more?
+    next_list_thread.join
+    list = next_list
+  else
+    break
+  end
+end
