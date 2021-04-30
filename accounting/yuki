@@ -39,7 +39,9 @@ TEMPLATE = Tox.dsl do
 end
 
 def vat_code(invoice)
-  vat_code = if !invoice.eu?
+  vat_code = if invoice.customer_country_code == 'GB' && !invoice.customer_vat_number
+    ['UK B2C', '8']
+  elsif !invoice.eu?
     ['TRMExport outside the EU', '6']
   elsif invoice.customer_vat_number && invoice.eu? && invoice.customer_vat_number[0..1] != 'BE'
     ['TRMVAT reverse-charged', '17']
